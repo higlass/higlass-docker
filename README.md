@@ -16,6 +16,8 @@ docker build --tag higlass-image .
 #   Port 8000 is hardcoded in the image;
 #   Port 8001 is what it should be mapped to on the host.
 docker run --name higlass-container --detach --publish 8001:8000 higlass-image
+
+# test:
 curl http://localhost:8001/
 
 # If that doesn't work, look at the logs:

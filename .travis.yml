@@ -5,15 +5,15 @@ services:
   - docker
 
 install:
-  - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 's{.*/}{};s/\W/-/g'`
+  - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
   - TAG=gehlenborglab/higlass-server:$BRANCH
   - echo $TAG
   - docker build --tag $TAG .
 
 script:
-  - set -e
   - docker run --name higlass-container --detach --publish 8001:8000 $TAG
   - JSON=`curl http://localhost:8001/`
+  - echo $JSON
   - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "Got expected response. Yay!"'
   # TODO: Test API and UI
 
