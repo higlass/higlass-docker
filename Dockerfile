@@ -13,10 +13,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get --yes install gcc=4:4.9.2-2 zlib1g-de
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
 RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 
-# TODO: Need new releases for both
+# TODO: Need new releases for all
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 # TODO: Rename, and then get rid of explicit directory at the end
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass.git --branch v0.3.0 higlass-client
+# TODO: Pin the version
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-website.git
 
 # Setup server
 WORKDIR higlass-server
@@ -30,11 +32,16 @@ WORKDIR higlass-client
 RUN npm install
 WORKDIR ..
 
+# Setup website
+WORKDIR higlass-website
+RUN npm install
+RUN npm build
+WORKDIR ..
+
 # Setup nginx
 COPY sites-enabled/* /etc/nginx/sites-enabled/
 RUN /etc/init.d/nginx restart
 
 EXPOSE 8000
-# TODO: Source also has "uwsgi --http :7000 --module api.wsgi &"
 # Given as list so that an extra shell does not need to be started.
 CMD ["uwsgi", "--socket", ":8000", "--plugins", "python", "--module", "higlass_server.wsgi"]
