@@ -7,7 +7,7 @@ FROM continuumio/miniconda:4.1.11
 # "pip install clodius" complained about missing gcc,
 # and "apt-get install gcc" failed and suggested apt-get update.
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get --yes install gcc=4:4.9.2-2 zlib1g-dev=1:1.2.8.dfsg-2+b1 uwsgi-plugin-python=2.0.7-1 nginx=1.6.2-5+deb8u4 npm=1.4.21+ds-2
+RUN DEBIAN_FRONTEND=noninteractive apt-get --yes install gcc=4:4.9.2-2 zlib1g-dev=1:1.2.8.dfsg-2+b1 uwsgi-plugin-python=2.0.7-1 nginx=1.6.2-5+deb8u4 node=0.3.2-7.4 npm=1.4.21+ds-2
 
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
