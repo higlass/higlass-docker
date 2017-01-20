@@ -14,10 +14,10 @@ script:
   - docker run --name higlass-container --detach --publish 8001:8000 $TAG
   - JSON=`curl http://localhost:8001/`
   - echo $JSON
-  - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "Got expected response. Yay!"'
+  - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "PASS"'
   # TODO: Test API and UI
 
-after_success:
+# TODO: get bad image | after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - if [ "$TRAVIS_EVENT_TYPE" == 'pull_request' ]; then
   -   docker push $TAG
