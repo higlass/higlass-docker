@@ -18,7 +18,10 @@ docker build --tag higlass-image .
 docker run --name higlass-container --detach --publish 8001:8000 higlass-image
 curl http://localhost:8001/
 
-# connect to an already running container:
+# If that doesn't work, look at the logs:
+docker logs higlass-container
+
+# or connect to an already running container:
 docker exec --interactive --tty higlass-container bash
 
 # remove all containers (use with caution):

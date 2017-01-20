@@ -12,7 +12,7 @@ install:
 
 script:
   - set -e
-  - docker run --detach --publish 8001:8000 $TAG
+  - docker run --name higlass-container --detach --publish 8001:8000 $TAG
   - JSON=`curl http://localhost:8001/`
   - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "Got expected response. Yay!"'
   # TODO: Test API and UI
@@ -22,3 +22,6 @@ after_success:
   - if [ "$TRAVIS_EVENT_TYPE" == 'pull_request' ]; then
   -   docker push $TAG
   - fi
+
+after_failure:
+  - docker logs higlass-container
