@@ -1,0 +1,29 @@
+# Docker on Travis requires sudo.
+sudo: required
+
+services:
+  - docker
+
+install:
+  - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
+  - TAG=gehlenborglab/higlass-server:$BRANCH
+  - echo $TAG
+  - docker build --tag $TAG .
+
+script:
+  # "set -e" would abort the Travis run,
+  # but we still want after_failure if the last line fails.
+  - docker run --name higlass-container --detach --publish 8001:8000 $TAG
+  - docker ps
+  - URL=http://localhost:8001/
+  - until $(curl --output /dev/null --silent --fail --globoff $URL); do echo '.'; sleep 1; done
+  - JSON=`curl http://localhost:8001/`
+  - echo $JSON
+  - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "PASS"'
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - '[ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && docker push $TAG'
+
+after_failure:
+  - docker logs higlass-container
