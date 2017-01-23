@@ -8,7 +8,12 @@ install:
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
   - TAG=gehlenborglab/higlass-server:$BRANCH
   - echo $TAG
-  - docker build --tag $TAG context
+  - >
+      docker build
+      --tag $TAG
+      --tag `git rev-parse HEAD`
+      --tag https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID
+      context
 
 script:
   # "set -e" would abort the Travis run,
