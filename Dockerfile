@@ -28,17 +28,21 @@ RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass
 RUN chown higlass:higlass .
 USER higlass
-
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
+
 
 # Setup server
 WORKDIR higlass-server
+VOLUME data
+
 USER root
 RUN pip install clodius==0.3.2
 RUN pip install -r requirements.txt
 USER higlass
+
 RUN python manage.py migrate
 WORKDIR ..
+
 
 # Setup client
 ENV CLIENT_REPO higlass
@@ -47,6 +51,7 @@ RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
 RUN unzip v$CLIENT_VERSION.zip
 RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
 
+
 # Setup website
 ENV SITE_REPO higlass-website
 ENV SITE_VERSION 0.0.1
@@ -54,6 +59,7 @@ ENV SITE_VERSION 0.0.1
 #RUN wget https://github.com/hms-dbmi/$SITE_REPO/archive/v$SITE_VERSION.zip
 #RUN unzip v$SITE_VERSION.zip
 #RUN mv $SITE_REPO-$SITE_VERSION higlass-website
+
 
 EXPOSE 8000
 # Given as list so that an extra shell does not need to be started.
