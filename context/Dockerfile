@@ -19,11 +19,12 @@ RUN apt-get update && apt-get install -y \
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
 RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
+RUN pip install uwsgi==2.0.14
 
 # Setup nginx
 COPY sites-enabled/* /etc/nginx/sites-enabled/
 # Setup supervisord
-COPY supervisor-app.conf /etc/supervisor/conf.d/
+COPY supervisor.conf /etc/supervisor/conf.d/
 
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass/projects
@@ -50,22 +51,23 @@ WORKDIR ..
 ENV CLIENT_REPO higlass
 ENV CLIENT_VERSION 0.3.0
 RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
+# TODO: We actually want a built distribution, not source
 RUN unzip v$CLIENT_VERSION.zip
 RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
 
 
 # Setup website
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.0.1
-# TODO: There is no release
-#RUN wget https://github.com/hms-dbmi/$SITE_REPO/archive/v$SITE_VERSION.zip
-#RUN unzip v$SITE_VERSION.zip
-#RUN mv $SITE_REPO-$SITE_VERSION higlass-website
+ENV SITE_VERSION 0.1.0
+RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
+RUN unzip dist.zip -d higlass-website
 
 
 #RUN /etc/init.d/nginx restart
 # TODO: Does nginx restart make any filesystem changes?
 
 EXPOSE 8000
+USER root
+# TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]
