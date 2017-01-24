@@ -26,6 +26,7 @@ RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass
 RUN chown higlass:higlass .
 USER higlass
+WORKDIR projects
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 
 
