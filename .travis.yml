@@ -21,7 +21,8 @@ script:
   - docker run --name higlass-container --detach --publish 8001:8000 $TAG
   - docker ps
   - URL=http://localhost:8001/
-  - until $(curl --output /dev/null --silent --fail --globoff $URL); do echo '.'; sleep 1; done
+  - TRY=0
+  - until $(curl --output /dev/null --silent --fail --globoff $URL); do echo '.'; (( TRY++ )); [[ $TRY -lt 10 ]] || exit 1; sleep 1; done
   - JSON=`curl http://localhost:8001/`
   - echo $JSON
   - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "PASS"'
