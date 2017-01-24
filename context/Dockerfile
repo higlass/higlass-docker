@@ -10,8 +10,8 @@ FROM continuumio/miniconda:4.1.11
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
         nginx=1.6.2-5+deb8u4 \
-        supervisor \
-        unzip \
+        supervisor=3.0r1-1 \
+        unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python=2.0.7-1 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
     && rm -rf /var/lib/apt/lists/*
@@ -22,15 +22,15 @@ RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
 
-
+# Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 
 
 # Setup server
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 WORKDIR higlass-server
 VOLUME data
 
@@ -59,19 +59,15 @@ RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION
 RUN unzip dist.zip -d higlass-website
 
 
-#RUN /etc/init.d/nginx restart
-# TODO: Does nginx restart make any filesystem changes?
-
-EXPOSE 8000
+# Setup supervisord and nginx
 USER root
-
-# TODO: In the long run, these files will be more stable than the git checkouts
-# ... but right now they are more volatile, so keep them at the end temporarily.
-COPY supervisor.conf /etc/supervisor/conf.d/
+COPY supervisord.conf .
 COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/
-COPY uwsgi.ini /home/higlass/projects
+RUN rm /etc/nginx/sites-enabled/default
+COPY uwsgi.ini .
 
+EXPOSE 8000
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]
