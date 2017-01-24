@@ -5,14 +5,14 @@ services:
   - docker
 
 install:
+  - REPO=gehlenborglab/higlass-server
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
-  - TAG=gehlenborglab/higlass-server:$BRANCH
-  - echo $TAG
+  - echo $BRANCH
   - >
       docker build
-      --tag $TAG
-      --tag github-`git rev-parse HEAD`
-      --tag travis-$TRAVIS_BUILD_ID
+      --tag $REPO:$BRANCH
+      --tag $REPO:github-`git rev-parse HEAD`
+      --tag $REPO:travis-$TRAVIS_BUILD_ID
       context
 
 script:
@@ -28,7 +28,7 @@ script:
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - '[ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && docker push $TAG'
+  - '[ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && docker push $REPO:$BRANCH'
 
 after_failure:
   - docker logs higlass-container

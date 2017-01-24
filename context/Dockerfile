@@ -21,8 +21,6 @@ RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 
 # Setup nginx
 COPY sites-enabled/* /etc/nginx/sites-enabled/
-#RUN /etc/init.d/nginx restart
-# TODO: Does nginx restart make any filesystem changes?
 
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass
@@ -60,6 +58,9 @@ ENV SITE_VERSION 0.0.1
 #RUN unzip v$SITE_VERSION.zip
 #RUN mv $SITE_REPO-$SITE_VERSION higlass-website
 
+
+#RUN /etc/init.d/nginx restart
+# TODO: Does nginx restart make any filesystem changes?
 
 EXPOSE 8000
 # Given as list so that an extra shell does not need to be started.
