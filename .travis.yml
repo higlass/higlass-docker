@@ -18,12 +18,19 @@ install:
 script:
   # "set -e" would abort the Travis run,
   # but we still want after_failure if the last line fails.
-  - docker run --name higlass-container --detach --publish 8001:8000 $TAG
+  - PORT=8888
+  - docker run --name higlass-container --detach --publish $PORT:80 $TAG
   - docker ps
-  - URL=http://localhost:8001/
+  - URL=http://localhost:$PORT/
   - TRY=0
-  - until $(curl --output /dev/null --silent --fail --globoff $URL); do echo '.'; (( TRY++ )); [[ $TRY -lt 10 ]] || exit 1; sleep 1; done
-  - JSON=`curl http://localhost:8001/`
+  - >
+      until $(curl --output /dev/null --silent --fail --globoff $URL); do
+        echo '.';
+        (( TRY++ ));
+        [[ $TRY -lt 10 ]] || break;
+        sleep 1;
+      done
+  - JSON=`curl $URL`
   - echo $JSON
   - '[ "$JSON" == "{\"tilesets\":\"http://localhost:8001/tilesets/\"}" ] && echo "PASS"'
 
