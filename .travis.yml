@@ -7,10 +7,11 @@ services:
 install:
   - REPO=gehlenborglab/higlass-server
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
-  - echo $BRANCH
+  - TAG=$REPO:$BRANCH
+  - echo $TAG
   - >
       docker build
-      --tag $REPO:$BRANCH
+      --tag $TAG
       --tag $REPO:github-`git rev-parse HEAD`
       --tag $REPO:travis-$TRAVIS_BUILD_ID
       context
@@ -20,7 +21,7 @@ script:
   # but we still want after_failure if the last line fails.
   - PORT=8888
   - docker run --name higlass-container --detach --publish $PORT:80 $TAG
-  - docker ps
+  - docker ps -a
   - URL=http://localhost:$PORT/
   - TRY=0
   - >
@@ -36,7 +37,7 @@ script:
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - '[ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && docker push $REPO:$BRANCH'
+  - '[ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && docker push $TAG'
 
 after_failure:
   - docker logs higlass-container
