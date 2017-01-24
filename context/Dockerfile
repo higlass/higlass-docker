@@ -21,16 +21,12 @@ RUN conda install --yes cython==0.25.2 numpy=1.11.2
 RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
-# Setup nginx
-COPY sites-enabled/* /etc/nginx/sites-enabled/
-# Setup supervisord
-COPY supervisor.conf /etc/supervisor/conf.d/
+
 
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-COPY uwsgi.ini .
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 
 
@@ -68,6 +64,13 @@ RUN unzip dist.zip -d higlass-website
 
 EXPOSE 8000
 USER root
+
+# TODO: In the long run, these files will be more stable than the git checkouts
+# ... but right now they are more volatile, so keep them at the end for now.
+COPY supervisor.conf /etc/supervisor/conf.d/
+COPY sites-enabled/* /etc/nginx/sites-enabled/
+COPY uwsgi.ini /home/higlass/projects
+
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]
