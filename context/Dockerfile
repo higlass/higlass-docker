@@ -23,10 +23,9 @@ RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 COPY sites-enabled/* /etc/nginx/sites-enabled/
 
 RUN groupadd -r higlass && useradd -r -g higlass higlass
-WORKDIR /home/higlass
+WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-WORKDIR projects
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 
 
