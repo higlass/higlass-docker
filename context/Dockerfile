@@ -10,6 +10,7 @@ FROM continuumio/miniconda:4.1.11
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
         nginx=1.6.2-5+deb8u4 \
+        supervisor \
         unzip \
         uwsgi-plugin-python=2.0.7-1 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
@@ -21,11 +22,14 @@ RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 
 # Setup nginx
 COPY sites-enabled/* /etc/nginx/sites-enabled/
+# Setup supervisord
+COPY supervisor-app.conf /etc/supervisor/conf.d/
 
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
+COPY uwsgi.ini .
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
 
 
@@ -64,4 +68,4 @@ ENV SITE_VERSION 0.0.1
 
 EXPOSE 8000
 # Given as list so that an extra shell does not need to be started.
-CMD ["uwsgi", "--socket", ":8000", "--plugins", "python", "--module", "higlass_server.wsgi"]
+CMD ["supervisord", "-n"]
