@@ -66,8 +66,9 @@ EXPOSE 8000
 USER root
 
 # TODO: In the long run, these files will be more stable than the git checkouts
-# ... but right now they are more volatile, so keep them at the end for now.
+# ... but right now they are more volatile, so keep them at the end temporarily.
 COPY supervisor.conf /etc/supervisor/conf.d/
+COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/
 COPY uwsgi.ini /home/higlass/projects
 
