@@ -10,7 +10,6 @@ You can see HiGlass in action at [higlass.gehlenborglab.org](http://higlass.gehl
 
 It is also easy to launch your own. Install Docker, and then:
 ```
-docker pull gehlenborglab/higlass-server
 docker run --detach --publish 8001:8000 gehlenborglab/higlass-server
 ```
 
@@ -26,48 +25,63 @@ First, install [aws-cli](https://aws.amazon.com/cli/) and
 Then, create your security group and key pair:
 ```bash
 NAME=higlass-docker
-aws ec2 create-security-group --group-name $NAME --description $NAME
-aws ec2 authorize-security-group-ingress --group-name $NAME --protocol tcp --port 22 --cidr 0.0.0.0/0
-aws ec2 create-key-pair --key-name $NAME --query 'KeyMaterial' --output text > $NAME.pem
-chmod 400 $NAME.pem
+GROUP_NAME=${NAME}-group
+aws ec2 create-security-group --group-name $GROUP_NAME --description $NAME
+aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 80 --cidr 0.0.0.0/0
+KEY_NAME=${NAME}-key
+aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text > ~/$KEY_NAME.pem
+chmod 400 ~/$KEY_NAME.pem
 ```
 
-Then, create an EC2 instance:
+Then, create an EC2 instance, and connect:
 ```bash
-GROUP_ID=`aws ec2 describe-security-groups --group-names $NAME --query 'SecurityGroups[0].GroupId' --output text`
-INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids $GROUP_ID --count 1 --instance-type t2.micro --key-name devenv-key --query 'Instances[0].InstanceId' --output text`
-```
-
-It will need a moment to start, and then:
-```bash
+GROUP_ID=`aws ec2 describe-security-groups --group-names $GROUP_NAME --query 'SecurityGroups[0].GroupId' --output text`
+INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids $GROUP_ID --count 1 --instance-type t2.micro --key-name $KEY_NAME --query 'Instances[0].InstanceId' --output text`
+# Wait until it's "running":
+aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].State.Name' --output text
+# and then:
 IP=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text`
-# After a moment, you can connect
-ssh -i $NAME.pem ubuntu@$IP
+ssh -i ~/$KEY_NAME.pem ubuntu@$IP
 ```
 
 Once you've connected, install docker as you would locally.
 (For more help with these steps, see the
-[AWS ECS docs](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#install_docker),
-though at the moment we are just using EC2, not ECS.)
+[Docker docs](https://docs.docker.com/engine/installation/linux/ubuntu/).)
 
-SSH in, and then:
+SSH in, and then get the file system tools Docker needs:
 ```
-sudo yum update -y
-sudo yum install -y docker
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+sudo apt-get update
+sudo apt-get install -y curl \
+    linux-image-extra-$(uname -r) \
+    linux-image-extra-virtual
 ```
-Logout and then reconnect for the group to take effect.
+Add the Docker repo to apt-get:
 ```
-docker pull gehlenborglab/higlass-server
-docker run --detach --publish 8001:8000 gehlenborglab/higlass-server
+sudo apt-get install apt-transport-https \
+                       ca-certificates
+curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
+# Verify the fingerprint:
+apt-key finger | grep -A1 '5811 8E89 F3A9 1289 7C07  0ADB F762 2157 2C52 609D'
+sudo add-apt-repository \
+       "deb https://apt.dockerproject.org/repo/ \
+       ubuntu-$(lsb_release -cs) \
+       main"
+```
+And install docker itself:
+```
+sudo apt-get update
+sudo apt-get -y install docker-engine
+sudo docker run --detach --publish 80:8000 gehlenborglab/higlass-server
 ```
 
 When you're done with the instance, clean up:
 ```
-aws ec2 terminate-instances --instance-id $ID
+aws ec2 terminate-instances --instance-id $INSTANCE_ID
+# Wait while instance terminates, and then
 aws ec2 delete-security-group --group-id $GROUP_ID
-aws ec2 delete-key-pair --key-name $NAME
+aws ec2 delete-key-pair --key-name $KEY_NAME
+rm ~/$KEY_NAME.pem
 ```
 
 
