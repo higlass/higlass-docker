@@ -21,6 +21,7 @@ Then visit [localhost:8001](http://localhost:8001/) in your browser.
 
 First, install [aws-cli](https://aws.amazon.com/cli/) and 
 [add your credentials](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-quick-configuration).
+(For more help with this, see the [AWS documentation](http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html).)
 
 Then, create your security group and key pair:
 ```bash
@@ -31,9 +32,7 @@ aws ec2 create-key-pair --key-name $NAME --query 'KeyMaterial' --output text > $
 chmod 400 $NAME.pem
 ```
 
-TODO: Maybe there's an AMI optimized for Docker?
-
-Then, create and connect to an EC2 instance:
+Then, create an EC2 instance:
 ```bash
 GROUP_ID=`aws ec2 describe-security-groups --group-names $NAME --query 'SecurityGroups[0].GroupId' --output text`
 INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids $GROUP_ID --count 1 --instance-type t2.micro --key-name devenv-key --query 'Instances[0].InstanceId' --output text`
@@ -42,14 +41,26 @@ INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids 
 It will need a moment to start, and then:
 ```bash
 IP=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text`
+# After a moment, you can connect
 ssh -i $NAME.pem ubuntu@$IP
 ```
 
-TODO: Mount EBS volume? Or experiment with S3FS?
+Once you've connected, install docker as you would locally.
+(For more help with these steps, see the
+[AWS ECS docs](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#install_docker),
+though at the moment we are just using EC2, not ECS.)
 
-Once you've connected, launch docker as you would locally:
+SSH in, and then:
 ```
-TODO
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+```
+Logout and then reconnect for the group to take effect.
+```
+docker pull gehlenborglab/higlass-server
+docker run --detach --publish 8001:8000 gehlenborglab/higlass-server
 ```
 
 When you're done with the instance, clean up:
