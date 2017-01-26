@@ -119,4 +119,4 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-TODO
+TODO!
