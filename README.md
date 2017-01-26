@@ -96,7 +96,7 @@ To work on the Docker deployment, checkout this repo, install Docker, and then:
 
 ```bash
 # build:
-docker build --tag higlass-image .
+docker build --tag higlass-image context
 
 # run:
 #   Port 8000 is hardcoded in the image;
