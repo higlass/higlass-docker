@@ -34,12 +34,12 @@ after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
       [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]
-      && docker push $TAG
-      && docker push $REPO:github-`git rev-parse HEAD`
-      && docker push $REPO:travis-$TRAVIS_BUILD_ID
+      && docker tag $TAG $REPO:github-`git rev-parse HEAD` $REPO:travis-$TRAVIS_BUILD_ID
+      && docker push $REPO
   - >
-      [ "$TRAVIS_EVENT_TYPE" == "pull_request" ] && [ ! -z "TRAVIS_TAG" ]
-      && docker push $REPO:$TRAVIS_TAG
-      
+      [ ! -z "TRAVIS_TAG" ]
+      && docker tag $REPO:latest $REPO:$TRAVIS_TAG
+      && docker push $REPO
+
 after_failure:
   - docker logs higlass-container
