@@ -122,4 +122,9 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-TODO
+Travis will push an image to DockerHub on every successful PR run,
+and will additionally push tags with the GitHub hash and the Travis
+build number, for reference.
+
+If this PR is tagged with a version number, then that version number
+will also be pushed to DockerHub, along with updating `latest`.
