@@ -9,12 +9,7 @@ install:
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
   - TAG=$REPO:$BRANCH
   - echo $TAG
-  - >
-      docker build
-      --tag $TAG
-      --tag $REPO:github-`git rev-parse HEAD`
-      --tag $REPO:travis-$TRAVIS_BUILD_ID
-      context
+  - docker build --tag $TAG context
 
 script:
   # "set -e" would abort the Travis run,
