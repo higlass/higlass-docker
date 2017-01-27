@@ -100,7 +100,7 @@ docker build --tag higlass-image context
 
 # run:
 #   Port 80 is what nginx communicates on within the docker container
-#   Port 8001 is what it should be mapped to on the host.
+#   Port 8888 is what it should be mapped to on the host.
 docker run --name higlass-container --detach --publish 8888:80 higlass-image
 
 # test:
@@ -126,5 +126,6 @@ Travis will push an image to DockerHub on every successful PR run,
 and will additionally push tags with the GitHub hash and the Travis
 build number, for reference.
 
-If this PR is tagged with a version number, then that version number
-will also be pushed to DockerHub, along with updating `latest`.
+If this PR is tagged (ie `git tag v0.0.1 && git push origin --tags`),
+then that version number will also be pushed to DockerHub,
+along with updating `latest`.
