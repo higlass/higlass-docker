@@ -64,10 +64,10 @@ USER root
 COPY supervisord.conf .
 COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/
-RUN rm /etc/nginx/sites-enabled/default
 COPY uwsgi.ini .
+COPY uwsgi_params /home/higlass/projects/higlass-server/
+# TODO: Is it confusing to have this file in a directory which is otherwise a git checkout?
 
-EXPOSE 8000
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]

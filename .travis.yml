@@ -10,13 +10,13 @@ install:
   - echo $BRANCH
   # Try to fill cache from dockerhub rather than starting from scratch.
   - docker pull $REPO:$BRANCH || docker pull $REPO || true
-  - docker build --tag $REPO context
+  - docker build --tag image context
 
 script:
   # "set -e" would abort the Travis run,
   # but we still want after_failure if the last line fails.
   - PORT=8888
-  - docker run --name higlass-container --detach --publish $PORT:80 $IMAGE_ID
+  - docker run --name higlass-container --detach --publish $PORT:80 image
   - docker ps -a
   - URL=http://localhost:$PORT/
   - >
@@ -35,15 +35,15 @@ after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
       [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]
-      && docker tag $REPO $REPO:github-`git rev-parse HEAD`
-      && docker tag $REPO $REPO:travis-$TRAVIS_BUILD_ID
+      && docker tag image $REPO:github-`git rev-parse HEAD`
+      && docker tag image $REPO:travis-$TRAVIS_BUILD_ID
 
   - >
       [ ! -z "TRAVIS_TAG" ]
-      && docker tag $REPO $REPO:latest
-      && docker tag $REPO $REPO:$TRAVIS_TAG
+      && docker tag image $REPO:latest
+      && docker tag image $REPO:$TRAVIS_TAG
   - >
-      docker tag $REPO $REPO:$BRANCH
+      docker tag image $REPO:$BRANCH
       && docker push $REPO:$BRANCH
 
 

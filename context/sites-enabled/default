@@ -1,0 +1,3 @@
+# Empty placeholder to replace the actual default.
+# There seem to be issues around "rm" and layer caching that I don't understand,
+# and this avoids that.
