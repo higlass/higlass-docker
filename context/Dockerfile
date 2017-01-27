@@ -30,7 +30,7 @@ USER higlass
 
 
 # Setup server
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.1
 WORKDIR higlass-server
 VOLUME data
 
@@ -45,7 +45,7 @@ WORKDIR ..
 
 # Setup client
 ENV CLIENT_REPO higlass
-ENV CLIENT_VERSION 0.3.0
+ENV CLIENT_VERSION 0.4.10
 RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
 # TODO: We actually want a built distribution, not source
 RUN unzip v$CLIENT_VERSION.zip
@@ -54,7 +54,7 @@ RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
 
 # Setup website
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.1.0
+ENV SITE_VERSION 0.2.0
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
