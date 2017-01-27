@@ -9,6 +9,10 @@ install:
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
   - TAG=$REPO:$BRANCH
   - echo $TAG
+  - docker pull $TAG
+  # Once things are stable, pulling latest will speed up builds by filling the layer cache,
+  # and it will make builds more reliable, by minimizing the network hits from Travis.
+  # TODO: Would something like dev-latest make sense, for even tighter caching?
   - docker build --tag $TAG context
 
 script:
