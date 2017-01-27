@@ -122,11 +122,11 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-Travis will push an image to DockerHub on every successful PR run
+Travis will push an image to DockerHub on every successful run
 with the name of the branch.
 
-If this PR is tagged (ie `git tag v0.0.x && git push origin --tags`),
-then that version number will also be pushed to DockerHub.
+If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
+then that version number will be pushed to DockerHub.
 
 If you want to update `latest`:
 ```
