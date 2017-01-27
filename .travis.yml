@@ -8,12 +8,8 @@ install:
   - REPO=gehlenborglab/higlass-server
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
   - echo $BRANCH
-
-  # Cache latest release
-  - docker pull $REPO
-  # Cache previous work in this branch
-  - docker pull $REPO:$BRANCH
-
+  # Try to fill cache from dockerhub rather than starting from scratch.
+  - docker pull $REPO:$BRANCH || docker pull $REPO || true
   - docker build --tag $REPO context
 
 script:
