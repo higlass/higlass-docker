@@ -33,7 +33,9 @@ script:
   - echo $HTML
   - >
       [ "$JSON" == '{"count": 0, "results": []}' ]
-      && ( echo $HTML | grep '404 Not Found' )
+      && ( echo $HTML | grep 'HiGlass' )
+      && ( echo $HTML | grep 'Peter Kerpedjiev' )
+      && ( echo $HTML | grep 'Department of Biomedical Informatics' )
       && echo "PASS"
   # TODO: Hopefully the homepage will not be a 404. :)
 
