@@ -7,19 +7,20 @@ services:
 install:
   - REPO=gehlenborglab/higlass-server
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
-  - TAG=$REPO:$BRANCH
-  - echo $TAG
-  - docker pull $TAG
-  # Once things are stable, pulling latest will speed up builds by filling the layer cache,
-  # and it will make builds more reliable, by minimizing the network hits from Travis.
-  # TODO: Would something like dev-latest make sense, for even tighter caching?
-  - docker build --tag $TAG context
+  - echo $BRANCH
+
+  # Cache latest release
+  - docker pull $REPO
+  # Cache previous work in this branch
+  - docker pull $REPO:$BRANCH
+
+  - docker build --tag $REPO context
 
 script:
   # "set -e" would abort the Travis run,
   # but we still want after_failure if the last line fails.
   - PORT=8888
-  - docker run --name higlass-container --detach --publish $PORT:80 $TAG
+  - docker run --name higlass-container --detach --publish $PORT:80 $IMAGE_ID
   - docker ps -a
   - URL=http://localhost:$PORT/
   - >
@@ -38,12 +39,17 @@ after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
       [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]
-      && docker tag $TAG $REPO:github-`git rev-parse HEAD` $REPO:travis-$TRAVIS_BUILD_ID
-      && docker push $REPO
+      && docker tag $REPO $REPO:github-`git rev-parse HEAD`
+      && docker tag $REPO $REPO:travis-$TRAVIS_BUILD_ID
+
   - >
       [ ! -z "TRAVIS_TAG" ]
-      && docker tag $REPO:latest $REPO:$TRAVIS_TAG
-      && docker push $REPO
+      && docker tag $REPO $REPO:latest
+      && docker tag $REPO $REPO:$TRAVIS_TAG
+  - >
+      docker tag $REPO $REPO:$BRANCH
+      && docker push $REPO:$BRANCH
+
 
 after_failure:
   - docker logs higlass-container
