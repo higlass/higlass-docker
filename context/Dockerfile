@@ -40,30 +40,39 @@ USER higlass
 
 # Build goofys
 # TODO: There are supposed to be prebuilt images, but wasn't clear how they would be installed?
-ENV GOPATH /home/higlass/go-workspace
-RUN go get github.com/kahing/goofys
-#RUN git checkout a tagged release
-# Just doing the checkout didn't work for me; could be a dumb mistake.
+# TODO: Just doing the clone didn't work for me; could be a dumb mistake.
 #RUN git clone --depth 1 https://github.com/kahing/goofys.git $GOPATH/src/github.com/kahing/goofys
-RUN go install github.com/kahing/goofys
+ENV GOPATH /home/higlass/go-workspace
+RUN go get github.com/kahing/goofys \
+    && cd /home/higlass/go-workspace/src/github.com/kahing/goofys \
+    && git checkout tags/v0.0.9 \
+    && go install github.com/kahing/goofys
 # TODO: start it with AWS credentials and the bucket ID
 RUN $GOPATH/bin/goofys --version
-
+# TODO: can the extras be removed if we just need the binary?
 
 # Setup server
-WORKDIR /home/higlass/projects
+# Most dependencies should come from a cached layer, even before we checkout:
+# The idea is that you want to be able to release small updates to the code,
+# without having to refetch all dependencies.
 USER root
+RUN pip install clodius==0.3.2
+# This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
+RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.1
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.2
 WORKDIR higlass-server
 VOLUME data
 
 USER root
-RUN pip install clodius==0.3.2
 RUN pip install -r requirements.txt
 USER higlass
 
+# TODO: This needs to be part of CMD and be run against user data.
 RUN python manage.py migrate
 WORKDIR ..
 
