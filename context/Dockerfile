@@ -71,7 +71,7 @@ COPY uwsgi.ini .
 COPY uwsgi_params /home/higlass/projects/higlass-server/
 # TODO: Is it confusing to have this file in a directory which is otherwise a git checkout?
 
-RUN rm /etc/nginx/sites-available/default
+RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
