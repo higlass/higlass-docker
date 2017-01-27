@@ -18,7 +18,7 @@ script:
   - PORT=8888
   - docker run --name higlass-container --detach --publish $PORT:80 image
   - docker ps -a
-  - URL=http://localhost:$PORT/
+  - URL=http://localhost:$PORT/api/v1/tilesets/
   - >
       TRY=0;
       until $(curl --output /dev/null --silent --fail --globoff $URL); do
@@ -29,7 +29,7 @@ script:
       done
   - JSON=`curl $URL`
   - echo $JSON
-  - '[ "$JSON" == "{\"tilesets\":\"${URL}tilesets/\"}" ] && echo "PASS"'
+  - '[ "$JSON" == "{\"count\": 0, \"results\": []}" ] && echo "PASS"'
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS

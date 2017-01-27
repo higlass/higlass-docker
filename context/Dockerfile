@@ -54,7 +54,7 @@ RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
 
 # Setup website
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.1.0
+ENV SITE_VERSION 0.2.0
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
