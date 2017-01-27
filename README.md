@@ -10,10 +10,10 @@ You can see HiGlass in action at [higlass.gehlenborglab.org](http://higlass.gehl
 
 It is also easy to launch your own. Install Docker, and then:
 ```
-docker run --detach --publish 8001:8000 gehlenborglab/higlass-server
+docker run --detach --publish 8888:80 gehlenborglab/higlass-server
 ```
 
-Then visit [localhost:8001](http://localhost:8001/) in your browser.
+Then visit [localhost:8888](http://localhost:8888/) in your browser.
 
 
 ## Running on AWS
@@ -72,7 +72,7 @@ And install docker itself:
 ```
 sudo apt-get update
 sudo apt-get -y install docker-engine
-sudo docker run --detach --publish 80:8000 gehlenborglab/higlass-server
+sudo docker run --detach --publish 80:80 gehlenborglab/higlass-server
 ```
 
 When you're done with the instance, clean up:
@@ -100,16 +100,16 @@ docker build --tag higlass-image context
 
 # run:
 #   Port 80 is what nginx communicates on within the docker container
-#   Port 8001 is what it should be mapped to on the host.
-docker run --name higlass-container --detach --publish 8001:80 higlass-image
+#   Port 8888 is what it should be mapped to on the host.
+docker run --name higlass-container --detach --publish 8888:80 higlass-image
 
 # test:
-curl http://localhost:8001/
+curl http://localhost:8888/
 
 # If that doesn't work, check the port mapping:
 docker ps
 
-# And then check the logs
+# and then check the logs
 docker logs higlass-container
 
 # or connect to an already running container:
@@ -126,5 +126,6 @@ Travis will push an image to DockerHub on every successful PR run,
 and will additionally push tags with the GitHub hash and the Travis
 build number, for reference.
 
-If this PR is tagged with a version number, then that version number
-will also be pushed to DockerHub, along with updating `latest`.
+If this PR is tagged (ie `git tag v0.0.1 && git push origin --tags`),
+then that version number will also be pushed to DockerHub,
+along with updating `latest`.

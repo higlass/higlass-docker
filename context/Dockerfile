@@ -31,6 +31,7 @@ USER higlass
 
 # Setup server
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
+# TODO: 0.2.1
 WORKDIR higlass-server
 VOLUME data
 
@@ -46,6 +47,7 @@ WORKDIR ..
 # Setup client
 ENV CLIENT_REPO higlass
 ENV CLIENT_VERSION 0.3.0
+# TODO: 0.4.10
 RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
 # TODO: We actually want a built distribution, not source
 RUN unzip v$CLIENT_VERSION.zip
@@ -55,6 +57,7 @@ RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
 # Setup website
 ENV SITE_REPO higlass-website
 ENV SITE_VERSION 0.1.0
+# TODO: 0.1.0
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
@@ -64,10 +67,14 @@ USER root
 COPY supervisord.conf .
 COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/
-RUN rm /etc/nginx/sites-enabled/default
 COPY uwsgi.ini .
+COPY uwsgi_params /home/higlass/projects/higlass-server/
+# TODO: Is it confusing to have this file in a directory which is otherwise a git checkout?
 
-EXPOSE 8000
+RUN rm /etc/nginx/sites-available/default
+# Without this, two config files are trying to grab port 80:
+# nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]

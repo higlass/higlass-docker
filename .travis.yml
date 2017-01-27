@@ -7,15 +7,16 @@ services:
 install:
   - REPO=gehlenborglab/higlass-server
   - BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
-  - TAG=$REPO:$BRANCH
-  - echo $TAG
-  - docker build --tag $TAG context
+  - echo $BRANCH
+  # Try to fill cache from dockerhub rather than starting from scratch.
+  - docker pull $REPO:$BRANCH || docker pull $REPO || true
+  - docker build --tag image context
 
 script:
   # "set -e" would abort the Travis run,
   # but we still want after_failure if the last line fails.
   - PORT=8888
-  - docker run --name higlass-container --detach --publish $PORT:80 $TAG
+  - docker run --name higlass-container --detach --publish $PORT:80 image
   - docker ps -a
   - URL=http://localhost:$PORT/
   - >
@@ -33,13 +34,22 @@ script:
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
-      [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]
-      && docker tag $TAG $REPO:github-`git rev-parse HEAD` $REPO:travis-$TRAVIS_BUILD_ID
-      && docker push $REPO
-  - >
-      [ ! -z "TRAVIS_TAG" ]
-      && docker tag $REPO:latest $REPO:$TRAVIS_TAG
-      && docker push $REPO
+      if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
+        echo "PR!";
+        docker tag image $REPO:github-`git rev-parse HEAD`;
+        docker tag image $REPO:travis-$TRAVIS_BUILD_ID;
+      fi
 
-after_failure:
+  - >
+      if [ ! -z "$TRAVIS_TAG" ]; then
+        echo "Tagged $TRAVIS_TAG!";
+        docker tag image $REPO:latest;
+        docker tag image $REPO:$TRAVIS_TAG;
+      fi
+
+after_script:
   - docker logs higlass-container
+  - docker tag image $REPO:$BRANCH && docker push $REPO:$BRANCH
+  # Always push to the branch tag, at least, so that it's cached for the next run:
+  # Even if this failed, it will save time to download the earlier layers,
+  # rather than rebuilding them.
