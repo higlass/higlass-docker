@@ -30,8 +30,7 @@ USER higlass
 
 
 # Setup server
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.1.0
-# TODO: 0.2.1
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.1
 WORKDIR higlass-server
 VOLUME data
 
@@ -44,20 +43,9 @@ RUN python manage.py migrate
 WORKDIR ..
 
 
-# Setup client
-ENV CLIENT_REPO higlass
-ENV CLIENT_VERSION 0.3.0
-# TODO: 0.4.10
-RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
-# TODO: We actually want a built distribution, not source
-RUN unzip v$CLIENT_VERSION.zip
-RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
-
-
-# Setup website
+# Setup website (includes client js)
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.1.0
-# TODO: 0.1.0
+ENV SITE_VERSION 0.2.0
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
@@ -71,7 +59,7 @@ COPY uwsgi.ini .
 COPY uwsgi_params /home/higlass/projects/higlass-server/
 # TODO: Is it confusing to have this file in a directory which is otherwise a git checkout?
 
-RUN rm /etc/nginx/sites-available/default
+RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
