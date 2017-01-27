@@ -34,18 +34,22 @@ script:
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
-      [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]
-      && docker tag image $REPO:github-`git rev-parse HEAD`
-      && docker tag image $REPO:travis-$TRAVIS_BUILD_ID
+      if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
+        echo "PR!";
+        docker tag image $REPO:github-`git rev-parse HEAD`;
+        docker tag image $REPO:travis-$TRAVIS_BUILD_ID;
+      fi
 
   - >
-      [ ! -z "TRAVIS_TAG" ]
-      && docker tag image $REPO:latest
-      && docker tag image $REPO:$TRAVIS_TAG
-  - >
-      docker tag image $REPO:$BRANCH
-      && docker push $REPO:$BRANCH
+      if [ ! -z "$TRAVIS_TAG" ]; then
+        echo "Tagged $TRAVIS_TAG!";
+        docker tag image $REPO:latest;
+        docker tag image $REPO:$TRAVIS_TAG;
+      fi
 
-
-after_failure:
+after_script:
   - docker logs higlass-container
+  - docker tag image $REPO:$BRANCH && docker push $REPO:$BRANCH
+  # Always push to the branch tag, at least, so that it's cached for the next run:
+  # Even if this failed, it will save time to download the earlier layers,
+  # rather than rebuilding them.
