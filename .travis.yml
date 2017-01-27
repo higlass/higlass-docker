@@ -29,7 +29,13 @@ script:
       done
   - JSON=`curl $URL`
   - echo $JSON
-  - '[ "$JSON" == "{\"count\": 0, \"results\": []}" ] && echo "PASS"'
+  - HTML=`curl http://localhost:$PORT/`
+  - echo $HTML
+  - >
+      [ "$JSON" == '{"count": 0, "results": []}' ]
+      && ( echo $HTML | grep '404 Not Found' )
+      && echo "PASS"'
+  # TODO: Hopefully the homepage will not be a 404. :)
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS

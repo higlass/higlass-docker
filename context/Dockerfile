@@ -43,16 +43,7 @@ RUN python manage.py migrate
 WORKDIR ..
 
 
-# Setup client
-ENV CLIENT_REPO higlass
-ENV CLIENT_VERSION 0.4.10
-RUN wget https://github.com/hms-dbmi/$CLIENT_REPO/archive/v$CLIENT_VERSION.zip
-# TODO: We actually want a built distribution, not source
-RUN unzip v$CLIENT_VERSION.zip
-RUN mv $CLIENT_REPO-$CLIENT_VERSION higlass-client
-
-
-# Setup website
+# Setup website (includes client js)
 ENV SITE_REPO higlass-website
 ENV SITE_VERSION 0.2.0
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
