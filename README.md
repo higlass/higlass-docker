@@ -122,10 +122,15 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-Travis will push an image to DockerHub on every successful PR run,
-and will additionally push tags with the GitHub hash and the Travis
-build number, for reference.
+Travis will push an image to DockerHub on every successful PR run
+with the name of the branch.
 
-If this PR is tagged (ie `git tag v0.0.1 && git push origin --tags`),
-then that version number will also be pushed to DockerHub,
-along with updating `latest`.
+If this PR is tagged (ie `git tag v0.0.x && git push origin --tags`),
+then that version number will also be pushed to DockerHub.
+
+If you want to update `latest`:
+```
+docker pull gehlenborglab/higlass-server:v0-0-x
+docker tag gehlenborglab/higlass-server:v0-0-x  gehlenborglab/higlass-server:latest
+docker push gehlenborglab/higlass-server:latest
+```
