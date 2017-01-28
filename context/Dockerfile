@@ -97,6 +97,8 @@ RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
+EXPOSE 80
+
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]
