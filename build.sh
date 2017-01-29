@@ -44,8 +44,11 @@ TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL); do
     echo $TRY
     (( TRY++ ))
+    echo 'increment?'
     [[ $TRY -lt 20 ]] || break
+    echo 'test?'
     sleep 1
+    echo 'sleep?'
 done
 
 JSON=`curl -s $URL`
