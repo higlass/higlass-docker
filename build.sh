@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o verbose
+set -e
 # DO NOT set -x: We do not want credentials in travis logs.
-# DO NOT set -e: We want to use Travis's error handing.
 
 echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH=this-is/fake-travis-branch}"
 
@@ -14,7 +14,7 @@ echo "BRANCH: $BRANCH"
 #- docker pull $REPO:$BRANCH || docker pull $REPO || true
 
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-docker build --tag image-$STAMP context
+docker build --build-arg WORKERS=2 --tag image-$STAMP context
 
 VOLUME=/tmp/docker-volumes/volume-$STAMP
 mkdir -p $VOLUME

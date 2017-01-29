@@ -94,7 +94,10 @@ RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 
 EXPOSE 80
 
-ENV WORKERS 2
+ARG WORKERS
+ENV WORKERS ${WORKERS}
+RUN echo $WORKERS
+
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
 CMD ["supervisord", "-n"]
