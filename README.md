@@ -95,25 +95,17 @@ check out the corresponding repos.
 To work on the Docker deployment, checkout this repo, install Docker, and then:
 
 ```bash
-# build:
-docker build --tag higlass-image context
-
-# run:
-#   Port 80 is what nginx communicates on within the docker container
-#   Port 8888 is what it should be mapped to on the host.
-docker run --name higlass-container --detach --publish 8888:80 higlass-image
-
-# test:
-curl http://localhost:8888/
+# build and run:
+./build.sh
 
 # If that doesn't work, check the port mapping:
 docker ps
 
 # and then check the logs
-docker logs higlass-container
+docker logs container-TIMESTAMP
 
 # or connect to an already running container:
-docker exec --interactive --tty higlass-container bash
+docker exec --interactive --tty container-TIMESTAMP bash
 
 # remove all containers (use with caution):
 docker ps -a -q | xargs docker stop | xargs docker rm

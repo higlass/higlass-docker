@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o verbose
-# DO NOT set -x: We do not want credentials in travis logs
-# DO NOT set -e: We want to user travis's error handing
+# DO NOT set -x: We do not want credentials in travis logs.
+# DO NOT set -e: We want to use Travis's error handing.
 
 echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH=this-is/fake-travis-branch}"
 
@@ -19,7 +19,7 @@ docker build --tag image-$STAMP context
 docker run --name container-$STAMP --detach --publish-all image-$STAMP
 docker ps -a
 
-PORT=`docker port container-2017-01-28_15-24-45 | perl -pne 's/.*://'`
+PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
 TRY=0;
@@ -30,13 +30,15 @@ until $(curl --output /dev/null --silent --fail --globoff $URL); do
     sleep 1
 done
 
-JSON=`curl $URL`
+JSON=`curl -s $URL`
 echo "API: $JSON"
-HTML=`curl http://localhost:$PORT/`
+HTML=`curl -s http://localhost:$PORT/`
 echo "homepage: $HTML" | head -c 200
 
 [ "$JSON" == '{"count": 0, "results": []}' ] \
-    && ( echo $HTML | grep 'HiGlass' > /dev/null ) \
-    && ( echo $HTML | grep 'Peter Kerpedjiev' > /dev/null ) \
-    && ( echo $HTML | grep 'Department of Biomedical Informatics' > /dev/null ) \
-    && echo "PASS"
+    && ( echo $HTML | grep -o 'HiGlass' ) \
+    && ( echo $HTML | grep -o 'Peter Kerpedjiev' ) \
+    && ( echo $HTML | grep -o 'Department of Biomedical Informatics' ) \
+    && echo 'PASS!' \
+    && echo "visit:   http://localhost:$PORT" \
+    && echo "connect: docker exec --interactive --tty container-$STAMP bash"
