@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -o verbose
-set -e
 # DO NOT set -x: We do not want credentials in travis logs.
 
 error_report() {
@@ -37,18 +36,15 @@ docker ps -a
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
-echo "If it doesn't start, try:"
+echo "If $URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
 TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL); do
-    echo $TRY
+    echo "try $TRY"
     (( TRY++ ))
-    echo 'increment?'
     [[ $TRY -lt 20 ]] || break
-    echo 'test?'
     sleep 1
-    echo 'sleep?'
 done
 
 JSON=`curl -s $URL`
