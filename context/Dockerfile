@@ -65,17 +65,12 @@ WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.2
-WORKDIR higlass-server
-VOLUME data
+
+VOLUME higlass-server/data
 
 USER root
-RUN pip install -r requirements.txt
+RUN pip install -r higlass-server/requirements.txt
 USER higlass
-
-# TODO: This needs to be part of CMD and be run against user data.
-RUN python manage.py migrate
-WORKDIR ..
-
 
 # Setup website (includes client js)
 ENV SITE_REPO higlass-website

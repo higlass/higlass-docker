@@ -27,9 +27,9 @@ URL=http://localhost:$PORT/api/v1/tilesets/
 
 TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL); do
-    echo '.'
+    echo $TRY
     (( TRY++ ))
-    [[ $TRY -lt 10 ]] || break
+    [[ $TRY -lt 60 ]] || break
     sleep 1
 done
 
