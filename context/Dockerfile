@@ -8,6 +8,7 @@ FROM continuumio/miniconda:4.1.11
 # and "apt-get install gcc" failed and suggested apt-get update.
 # (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
+        fuse=2.9.3-15+deb8u2 \
         gcc=4:4.9.2-2 \
         nginx=1.6.2-5+deb8u4 \
         supervisor=3.0r1-1 \

@@ -27,9 +27,12 @@ VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
 DB=/tmp/higlass-docker/db-$STAMP.sqlite3
 touch $DB
+# "--privileged" is needed for fuse/goofys
 docker run --name container-$STAMP \
+           --privileged \
            --volume $VOLUME:/home/higlass/projects/higlass-server/data \
            --volume $DB:/home/higlass/projects/higlass-server/db.sqlite3 \
+           --volume $HOME/.aws/credentials:/home/higlass/.aws/credentials \
            --detach --publish-all image-$STAMP
 docker ps -a
 
