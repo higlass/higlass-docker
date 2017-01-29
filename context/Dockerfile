@@ -65,17 +65,12 @@ WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.2
-WORKDIR higlass-server
-VOLUME data
+
+VOLUME higlass-server/data
 
 USER root
-RUN pip install -r requirements.txt
+RUN pip install -r higlass-server/requirements.txt
 USER higlass
-
-# TODO: This needs to be part of CMD and be run against user data.
-RUN python manage.py migrate
-WORKDIR ..
-
 
 # Setup website (includes client js)
 ENV SITE_REPO higlass-website
@@ -96,6 +91,12 @@ COPY uwsgi_params /home/higlass/projects/higlass-server/
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+
+EXPOSE 80
+
+ARG WORKERS
+ENV WORKERS ${WORKERS}
+RUN echo $WORKERS
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
