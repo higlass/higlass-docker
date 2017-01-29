@@ -16,7 +16,10 @@ echo "BRANCH: $BRANCH"
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 docker build --tag image-$STAMP context
 
-docker run --name container-$STAMP --detach --publish-all image-$STAMP
+VOLUME=/tmp/docker-volumes/volume-$STAMP
+mkdir -p $VOLUME
+
+docker run --name container-$STAMP --volume $VOLUME:/data --detach --publish-all image-$STAMP
 docker ps -a
 
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
@@ -39,6 +42,7 @@ echo "homepage: $HTML" | head -c 200
     && ( echo $HTML | grep -o 'HiGlass' ) \
     && ( echo $HTML | grep -o 'Peter Kerpedjiev' ) \
     && ( echo $HTML | grep -o 'Department of Biomedical Informatics' ) \
-    && echo 'PASS!' \
-    && echo "visit:   http://localhost:$PORT" \
-    && echo "connect: docker exec --interactive --tty container-$STAMP bash"
+    && echo 'PASS!:' \
+    && echo "  visit:   http://localhost:$PORT" \
+    && echo "  connect: docker exec --interactive --tty container-$STAMP bash" \
+    && echo "  volume:  $VOLUME"
