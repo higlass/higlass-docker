@@ -16,10 +16,14 @@ echo "BRANCH: $BRANCH"
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 docker build --build-arg WORKERS=2 --tag image-$STAMP context
 
-VOLUME=/tmp/docker-volumes/volume-$STAMP
+VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
-
-docker run --name container-$STAMP --volume $VOLUME:/data --detach --publish-all image-$STAMP
+DB=/tmp/higlass-docker/db-$STAMP.sqlite3
+touch $DB
+docker run --name container-$STAMP \
+           --volume $VOLUME:/home/higlass/projects/higlass-server/data \
+           --volume $DB:/home/higlass/projects/higlass-server/db.sqlite3 \
+           --detach --publish-all image-$STAMP
 docker ps -a
 
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
@@ -48,4 +52,5 @@ echo "homepage: $HTML" | head -c 200
     && echo 'PASS!:' \
     && echo "  visit:   http://localhost:$PORT" \
     && echo "  connect: docker exec --interactive --tty container-$STAMP bash" \
-    && echo "  volume:  $VOLUME"
+    && echo "  volume:  $VOLUME" \
+    && echo "  db:      $DB"
