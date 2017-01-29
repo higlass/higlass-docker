@@ -25,6 +25,9 @@ docker ps -a
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
+echo "If it doesn't start, try:"
+echo "  docker exec --interactive --tty container-$STAMP bash"
+
 TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL); do
     echo $TRY
