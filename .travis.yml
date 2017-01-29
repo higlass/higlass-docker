@@ -19,10 +19,3 @@ after_success:
         echo "Tagged $TRAVIS_TAG!";
         docker tag image $REPO:$TRAVIS_TAG;
       fi
-
-after_script:
-  - docker logs higlass-container
-  - docker tag image $REPO:$BRANCH && docker push $REPO:$BRANCH
-  # Always push to the branch tag, at least, so that it's cached for the next run:
-  # Even if this failed, it will save time to download the earlier layers,
-  # rather than rebuilding them.

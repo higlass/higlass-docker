@@ -3,6 +3,14 @@ set -o verbose
 set -e
 # DO NOT set -x: We do not want credentials in travis logs.
 
+error_report() {
+  docker logs container-$STAMP
+}
+
+trap 'error_report' ERR
+
+### TODO: Add error handling here!
+
 echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH=this-is/fake-travis-branch}"
 
 REPO=gehlenborglab/higlass-server
@@ -36,7 +44,7 @@ TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL); do
     echo $TRY
     (( TRY++ ))
-    [[ $TRY -lt 60 ]] || break
+    [[ $TRY -lt 20 ]] || break
     sleep 1
 done
 
