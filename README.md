@@ -6,7 +6,7 @@ tests that it works, and if there are no errors in the PR, pushes the image to
 
 ## Running locally
 
-You can see HiGlass in action at [higlass.gehlenborglab.org](http://higlass.gehlenborglab.org/).
+You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```
