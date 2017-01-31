@@ -6,9 +6,9 @@ FROM continuumio/miniconda:4.1.11
 
 # "pip install clodius" complained about missing gcc,
 # and "apt-get install gcc" failed and suggested apt-get update.
-# (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
+        make=4.0-8.1 \
         nginx=1.6.2-5+deb8u4 \
         supervisor=3.0r1-1 \
         unzip=6.0-16+deb8u2 \
@@ -16,19 +16,17 @@ RUN apt-get update && apt-get install -y \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
     && rm -rf /var/lib/apt/lists/*
 
+RUN REDIS=redis-3.2.6 \
+    && wget http://download.redis.io/releases/$REDIS.tar.gz \
+    && tar xvzf $REDIS.tar.gz \
+    && cd $REDIS \
+    && make && make test && make install \
+    && cd .. && rm -rf $REDIS
+
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
 RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 RUN pip install uwsgi==2.0.14
-
-
-# TODO: We want to use goofys (if we can randomly access files), which in turn requires go...
-# Not working yet, but if the prereqs themselves cause problems, good to figure that out soon.
-# Install Go
-ENV GO_TAR go1.7.5.linux-amd64.tar.gz
-RUN wget https://storage.googleapis.com/golang/$GO_TAR && tar -C /usr/local -xzf $GO_TAR && rm $GO_TAR
-ENV PATH $PATH:/usr/local/go/bin
-RUN go version
 
 
 # Setup home directory
@@ -37,19 +35,6 @@ WORKDIR /home/higlass
 RUN chown higlass:higlass .
 USER higlass
 
-
-# Build goofys
-# TODO: There are supposed to be prebuilt images, but wasn't clear how they would be installed?
-# TODO: Just doing the clone didn't work for me; could be a dumb mistake.
-#RUN git clone --depth 1 https://github.com/kahing/goofys.git $GOPATH/src/github.com/kahing/goofys
-ENV GOPATH /home/higlass/go-workspace
-RUN go get github.com/kahing/goofys \
-    && cd /home/higlass/go-workspace/src/github.com/kahing/goofys \
-    && git checkout tags/v0.0.9 \
-    && go install github.com/kahing/goofys
-# TODO: start it with AWS credentials and the bucket ID
-RUN $GOPATH/bin/goofys --version
-# TODO: can the extras be removed if we just need the binary?
 
 # Setup server
 # Most dependencies should come from a cached layer, even before we checkout:

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -o verbose
+set -e
 # DO NOT set -x: We do not want credentials in travis logs.
 
 error_report() {
@@ -8,20 +9,22 @@ error_report() {
 
 trap 'error_report' ERR
 
-### TODO: Add error handling here!
-
-echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH=this-is/fake-travis-branch}"
+if [ -z "$TRAVIS_BRANCH" ]; then
+  TRAVIS_BRANCH=`git status --porcelain --branch | grep '##' | perl -pne 's/.* //'`
+fi
+echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
 
 REPO=gehlenborglab/higlass-server
 BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
 echo "BRANCH: $BRANCH"
 
 # TODO: Try to fill cache from dockerhub rather than starting from scratch.
-# Not actually working for me: https://github.com/hms-dbmi/higlass-docker/issues/27
-#- docker pull $REPO:$BRANCH || docker pull $REPO || true
+docker pull $REPO:$BRANCH || docker pull $REPO || true
 
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-docker build --build-arg WORKERS=2 --tag image-$STAMP context
+docker build --cache-from $REPO:latest \
+             --build-arg WORKERS=2 \
+             --tag image-$STAMP context
 
 VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
