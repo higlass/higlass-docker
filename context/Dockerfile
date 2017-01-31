@@ -6,15 +6,22 @@ FROM continuumio/miniconda:4.1.11
 
 # "pip install clodius" complained about missing gcc,
 # and "apt-get install gcc" failed and suggested apt-get update.
-# (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
+        make=4.0-8.1 \
         nginx=1.6.2-5+deb8u4 \
         supervisor=3.0r1-1 \
         unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python=2.0.7-1 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
     && rm -rf /var/lib/apt/lists/*
+
+RUN REDIS=redis-3.2.6 \
+    && wget http://download.redis.io/releases/$REDIS.tar.gz \
+    && tar xvzf $REDIS.tar.gz \
+    && cd $REDIS \
+    && make && make test && make install \
+    && cd .. && rm -rf $REDIS
 
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
