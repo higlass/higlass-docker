@@ -2,8 +2,9 @@
 sudo: required
 
 install:
-  - wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-precise_amd64.deb
-  - sudo dpkg -i docker-engine_1.13.0-0~ubuntu-trusty_amd64.deb
+  - DEB=docker-engine_1.13.0-0~ubuntu-precise_amd64.deb
+  - wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/$DEB
+  - sudo dpkg -i $DEB
   - sudo docker run hello-world
   - sudo docker --version
   - docker run hello-world
