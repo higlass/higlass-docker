@@ -42,10 +42,9 @@ echo "If $URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
 TRY=0;
-until $(curl --output /dev/null --silent --fail --globoff $URL); do
+until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 20 ]]; do
     echo "try $TRY"
     (( TRY++ ))
-    [[ $TRY -lt 20 ]] || break
     sleep 1
 done
 
