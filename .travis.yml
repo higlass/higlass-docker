@@ -1,8 +1,11 @@
 # Docker on Travis requires sudo.
 sudo: required
 
-services:
-  - docker
+install:
+  - sudo apt-get update
+  - sudo apt-get install docker-engine
+  # TODO: pin version
+  - sudo dbpk -s docker-engine
 
 script:
   - ./build.sh
