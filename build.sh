@@ -9,6 +9,7 @@ error_report() {
 
 trap 'error_report' ERR
 
+
 if [ -z "$TRAVIS_BRANCH" ]; then
   TRAVIS_BRANCH=`git status --porcelain --branch | grep '##' | perl -pne 's/.* //'`
 fi
@@ -19,11 +20,15 @@ BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{
 echo "BRANCH: $BRANCH"
 
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+
+REDIS_HOST=redis
+docker run --hostname $REDIS_HOST --detach redis:3.2.7-alpine
+
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
              --build-arg WORKERS=2 \
              --tag image-$STAMP \
-             context
+             web-context
 
 VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
@@ -32,6 +37,8 @@ touch $DB
 docker run --name container-$STAMP \
            --volume $VOLUME:/home/higlass/projects/higlass-server/data \
            --volume $DB:/home/higlass/projects/higlass-server/db.sqlite3 \
+           --env REDIS_HOST=$REDIS_HOST \
+           --env REDIS_PORT=6379 \
            --detach --publish-all image-$STAMP
 docker ps -a
 
