@@ -1,14 +1,24 @@
 # Docker on Travis requires sudo.
 sudo: required
 
-services:
-  - docker
+install:
+  # Docker 1.13 adds "--cache-from" which really speeds up our Travis builds.
+  # Travis is currently several versions behind: When/if they catch up,
+  # this can all go away, and we can stop sudoing docker.
+  - sudo apt-get install libapparmor1
+  - DEB=docker-engine_1.13.0-0~ubuntu-precise_amd64.deb
+  - wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/$DEB
+  - sudo dpkg -i $DEB
+  - sudo docker --version
 
 script:
-  - ./build.sh
+  - sudo ./build.sh
 
 after_success:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - REPO=gehlenborglab/higlass-server
+  - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'`
+
+  - sudo docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
       if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
         echo "PR!";
@@ -17,5 +27,9 @@ after_success:
   - >
       if [ ! -z "$TRAVIS_TAG" ]; then
         echo "Tagged $TRAVIS_TAG!";
-        docker tag image $REPO:$TRAVIS_TAG;
+        sudo docker tag $IMAGE $REPO:$TRAVIS_TAG;
       fi
+
+  # Always update the "latest" tag: its cache will be used for the next build.
+  - sudo docker tag $IMAGE $REPO
+  - sudo docker push $REPO

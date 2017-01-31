@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -o verbose
+set -e
 # DO NOT set -x: We do not want credentials in travis logs.
 
 error_report() {
@@ -8,20 +9,21 @@ error_report() {
 
 trap 'error_report' ERR
 
-### TODO: Add error handling here!
-
-echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH=this-is/fake-travis-branch}"
+if [ -z "$TRAVIS_BRANCH" ]; then
+  TRAVIS_BRANCH=`git status --porcelain --branch | grep '##' | perl -pne 's/.* //'`
+fi
+echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
 
 REPO=gehlenborglab/higlass-server
 BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
 echo "BRANCH: $BRANCH"
 
-# TODO: Try to fill cache from dockerhub rather than starting from scratch.
-# Not actually working for me: https://github.com/hms-dbmi/higlass-docker/issues/27
-#- docker pull $REPO:$BRANCH || docker pull $REPO || true
-
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-docker build --build-arg WORKERS=2 --tag image-$STAMP context
+docker pull $REPO:latest
+docker build --cache-from $REPO:latest \
+             --build-arg WORKERS=2 \
+             --tag image-$STAMP \
+             context
 
 VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
@@ -39,13 +41,14 @@ URL=http://localhost:$PORT/api/v1/tilesets/
 echo "If $URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
+set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
-until $(curl --output /dev/null --silent --fail --globoff $URL); do
+until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 20 ]]; do
     echo "try $TRY"
     (( TRY++ ))
-    [[ $TRY -lt 20 ]] || break
     sleep 1
 done
+set -e
 
 JSON=`curl -s $URL`
 echo "API: $JSON"
