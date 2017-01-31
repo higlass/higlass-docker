@@ -11,14 +11,16 @@ after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - >
       if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
-        echo "PR!";
-        docker tag image $REPO
-        docker push $REPO
+        echo "PR!"
       fi
 
   - >
       if [ ! -z "$TRAVIS_TAG" ]; then
-        echo "Tagged $TRAVIS_TAG!";
-        docker tag image $REPO:$TRAVIS_TAG;
+        echo "Tagged $TRAVIS_TAG!"
+        docker tag image $REPO:$TRAVIS_TAG
         docker push $REPO:$TRAVIS_TAG
       fi
+
+  - >
+      docker tag image $REPO
+      docker push $REPO
