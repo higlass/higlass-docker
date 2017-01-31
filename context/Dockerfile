@@ -22,34 +22,12 @@ RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
 
-# TODO: We want to use goofys (if we can randomly access files), which in turn requires go...
-# Not working yet, but if the prereqs themselves cause problems, good to figure that out soon.
-# Install Go
-ENV GO_TAR go1.7.5.linux-amd64.tar.gz
-RUN wget https://storage.googleapis.com/golang/$GO_TAR && tar -C /usr/local -xzf $GO_TAR && rm $GO_TAR
-ENV PATH $PATH:/usr/local/go/bin
-RUN go version
-
-
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
 WORKDIR /home/higlass
 RUN chown higlass:higlass .
 USER higlass
 
-
-# Build goofys
-# TODO: There are supposed to be prebuilt images, but wasn't clear how they would be installed?
-# TODO: Just doing the clone didn't work for me; could be a dumb mistake.
-#RUN git clone --depth 1 https://github.com/kahing/goofys.git $GOPATH/src/github.com/kahing/goofys
-ENV GOPATH /home/higlass/go-workspace
-RUN go get github.com/kahing/goofys \
-    && cd /home/higlass/go-workspace/src/github.com/kahing/goofys \
-    && git checkout tags/v0.0.9 \
-    && go install github.com/kahing/goofys
-# TODO: start it with AWS credentials and the bucket ID
-RUN $GOPATH/bin/goofys --version
-# TODO: can the extras be removed if we just need the binary?
 
 # Setup server
 # Most dependencies should come from a cached layer, even before we checkout:
