@@ -2,10 +2,16 @@
 sudo: required
 
 install:
-  - sudo apt-get update
-  - sudo apt-get install docker-engine
-  # TODO: pin version
-  - sudo dbpk -s docker-engine
+  - wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-precise_amd64.deb
+  - sudo dpkg -i docker-engine_1.13.0-0~ubuntu-trusty_amd64.deb
+  - sudo docker run hello-world
+  - sudo docker --version
+  - docker run hello-world
+  - exit 1
+#  - sudo apt-get update
+#  - sudo apt-get install docker-engine
+#  # TODO: pin version
+#  - sudo dbpk -s docker-engine
 
 script:
   - ./build.sh
