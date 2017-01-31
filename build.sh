@@ -41,15 +41,12 @@ URL=http://localhost:$PORT/api/v1/tilesets/
 echo "If $URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
-set +e
+set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
 until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 20 ]]; do
     echo "try $TRY"
-    echo 'increment?'
     (( TRY++ ))
-    echo 'sleep?'
     sleep 1
-    echo 'next?'
 done
 set -e
 
