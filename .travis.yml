@@ -2,6 +2,7 @@
 sudo: required
 
 install:
+  - sudo apt-get install libapparmor1
   - DEB=docker-engine_1.13.0-0~ubuntu-precise_amd64.deb
   - wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/$DEB
   - sudo dpkg -i $DEB
