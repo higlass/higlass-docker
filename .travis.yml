@@ -12,7 +12,7 @@ install:
   - sudo docker --version
 
 script:
-  - ./build.sh
+  - sudo ./build.sh
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
