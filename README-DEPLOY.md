@@ -8,11 +8,28 @@ Then, create your security group and key pair:
 ```bash
 NAME=higlass-docker
 GROUP_NAME=${NAME}-group
-aws ec2 create-security-group --group-name $GROUP_NAME --description $NAME
-aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 22 --cidr 0.0.0.0/0
-aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 80 --cidr 0.0.0.0/0
+aws ec2 create-security-group \
+    --group-name $GROUP_NAME \
+    --description $NAME
+    
+aws ec2 authorize-security-group-ingress \
+   --group-name $GROUP_NAME \
+   --protocol tcp \
+   --port 22 \
+   --cidr 0.0.0.0/0
+   
+aws ec2 authorize-security-group-ingress \
+    --group-name $GROUP_NAME \
+    --protocol tcp \
+    --port 80 \
+    --cidr 0.0.0.0/0
+    
 KEY_NAME=${NAME}-key
-aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text > ~/$KEY_NAME.pem
+aws ec2 create-key-pair \
+    --key-name $KEY_NAME \
+    --query 'KeyMaterial' \
+    --output text > ~/$KEY_NAME.pem
+    
 chmod 400 ~/$KEY_NAME.pem
 ```
 
