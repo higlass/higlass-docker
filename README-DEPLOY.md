@@ -18,12 +18,33 @@ chmod 400 ~/$KEY_NAME.pem
 
 Then, create an EC2 instance, and connect:
 ```bash
-GROUP_ID=`aws ec2 describe-security-groups --group-names $GROUP_NAME --query 'SecurityGroups[0].GroupId' --output text`
-INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids $GROUP_ID --count 1 --instance-type t2.micro --key-name $KEY_NAME --query 'Instances[0].InstanceId' --output text`
+
+GROUP_ID=`aws ec2 describe-security-groups \
+          --group-names $GROUP_NAME \
+          --query 'SecurityGroups[0].GroupId' \
+          --output text`
+          
+INSTANCE_ID=`aws ec2 run-instances \
+          --image-id ami-29ebb519 \
+          --security-group-ids $GROUP_ID \
+          --count 1 \
+          --instance-type t2.micro \
+          --key-name $KEY_NAME \
+          --query 'Instances[0].InstanceId' \
+          --output text`
+          
 # Wait until it's "running":
-aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].State.Name' --output text
+aws ec2 describe-instances \
+    --instance-ids $INSTANCE_ID \
+    --query 'Reservations[0].Instances[0].State.Name' \
+    --output text
+    
 # and then:
-IP=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text`
+IP=`aws ec2 describe-instances \
+     --instance-ids $INSTANCE_ID \
+     --query 'Reservations[0].Instances[0].PublicIpAddress' \
+     --output text`
+     
 ssh -i ~/$KEY_NAME.pem ubuntu@$IP
 ```
 
