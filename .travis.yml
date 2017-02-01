@@ -17,19 +17,26 @@ script:
 after_success:
   - REPO=gehlenborglab/higlass-server
   - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'`
+  - tag_push() { echo "Tagging into $2"; sudo docker tag $1 $2; sudo docker push $2; }
 
   - sudo docker login -u $DOCKER_USER -p $DOCKER_PASS
+  # Always update "latest": the cache will be used for the next build.
+  - tag_push $IMAGE $REPO
   - >
       if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
         echo "PR!";
-      fi
 
+        BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`;
+        tag_push $IMAGE $REPO:$BRANCH;
+
+        HASH=`git rev-parse HEAD`;
+        tag_push $IMAGE $REPO:git-$HASH;
+
+        tag_push $IMAGE $REPO:travis-$TRAVIS_JOB_NUMBER;
+      fi
   - >
       if [ ! -z "$TRAVIS_TAG" ]; then
-        echo "Tagged $TRAVIS_TAG!";
-        sudo docker tag $IMAGE $REPO:$TRAVIS_TAG;
+        echo "Git tag!";
+        tag_push $IMAGE $REPO:$TRAVIS_TAG;
       fi
 
-  # Always update the "latest" tag: its cache will be used for the next build.
-  - sudo docker tag $IMAGE $REPO
-  - sudo docker push $REPO

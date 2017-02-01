@@ -10,15 +10,7 @@ error_report() {
 trap 'error_report' ERR
 
 
-if [ -z "$TRAVIS_BRANCH" ]; then
-  TRAVIS_BRANCH=`git status --porcelain --branch | grep '##' | perl -pne 's/.* //'`
-fi
-echo "TRAVIS_BRANCH: $TRAVIS_BRANCH"
-
 REPO=gehlenborglab/higlass-server
-BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`
-echo "BRANCH: $BRANCH"
-
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 
 REDIS_HOST=redis
