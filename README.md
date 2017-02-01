@@ -34,7 +34,7 @@ To work on the Docker deployment, checkout this repo, install Docker, and then:
 
 ```bash
 # build and run:
-./build.sh
+./build.sh -d
 
 # If that doesn't work, check the port mapping:
 docker ps

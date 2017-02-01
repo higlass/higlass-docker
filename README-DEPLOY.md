@@ -54,7 +54,13 @@ And install docker itself:
 ```
 sudo apt-get update
 sudo apt-get -y install docker-engine
-sudo docker run --detach --publish 80:80 gehlenborglab/higlass-server
+```
+
+Finally, call our script to setup all the containers.
+```
+git clone https://github.com/hms-dbmi/higlass-docker.git
+cd higlass-docker
+./build.sh -p80 -v/choose/a/directory/for/data
 ```
 
 When you're done with the instance, clean up:
