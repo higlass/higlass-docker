@@ -9,6 +9,15 @@ error_report() {
 
 trap 'error_report' ERR
 
+PORT=0 # Kernel will assign randomly
+
+while getopts 'p:' OPT; do
+  case $OPT in
+    p)
+      PORT=$OPTARG
+      ;;
+  esac
+done
 
 REPO=gehlenborglab/higlass-server
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
@@ -27,6 +36,7 @@ mkdir -p $VOLUME
 DB=/tmp/higlass-docker/db-$STAMP.sqlite3
 touch $DB
 docker run --name container-$STAMP \
+           --publish $PORT:80 \
            --volume $VOLUME:/home/higlass/projects/higlass-server/data \
            --volume $DB:/home/higlass/projects/higlass-server/db.sqlite3 \
            --env REDIS_HOST=$REDIS_HOST \
