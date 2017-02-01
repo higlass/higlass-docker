@@ -42,7 +42,7 @@ RUN pip install -r requirements.txt
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.2
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.3
 
 VOLUME higlass-server/data
 
@@ -52,7 +52,7 @@ USER higlass
 
 # Setup website (includes client js)
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.2.0
+ENV SITE_VERSION 0.3.3
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
