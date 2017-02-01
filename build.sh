@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -o verbose
 set -e
 # DO NOT set -x: We do not want credentials in travis logs.
 
@@ -9,29 +8,42 @@ error_report() {
 
 trap 'error_report' ERR
 
-PORT=0 # Kernel will assign randomly
+STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 
-while getopts 'p:' OPT; do
+while getopts 'dp:v:' OPT; do
   case $OPT in
     p)
       PORT=$OPTARG
       ;;
+    v)
+      VOLUME=$OPTARG
+      ;;
+    d)
+      PORT=0 # Kernel will assign randomly.
+      VOLUME=/tmp/higlass-docker/volume-$STAMP
+      ;;
   esac
 done
 
-REPO=gehlenborglab/higlass-server
-STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+if [ -z $PORT ] || [ -z $VOLUME ]; then
+  echo \
+"USAGE: $0 -d              # For defaults, or...
+       $0 -pPORT -vVOLUME # If one is given, all are required." >&2
+  exit 1
+fi
+
+set -o verbose # Keep this after the usage message to reduce clutter.
 
 REDIS_HOST=redis
 docker run --hostname $REDIS_HOST --detach redis:3.2.7-alpine
 
+REPO=gehlenborglab/higlass-server
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
              --build-arg WORKERS=2 \
              --tag image-$STAMP \
              web-context
 
-VOLUME=/tmp/higlass-docker/volume-$STAMP
 mkdir -p $VOLUME
 DB=/tmp/higlass-docker/db-$STAMP.sqlite3
 touch $DB
@@ -44,10 +56,15 @@ docker run --name container-$STAMP \
            --detach --publish-all image-$STAMP
 docker ps -a
 
+# $PORT may be 0 if defaults were used, so we do need to look it up.
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
-echo "If $URL doesn't work, try:"
+set +o verbose # Less clutter on test output
+echo
+echo "## TESTS ##"
+echo
+echo "If tests fail, or $URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
 set +e # So we don't exit travis, instead of exiting the loop.
@@ -68,7 +85,7 @@ echo "homepage: $HTML" | head -c 200
     && ( echo $HTML | grep -o 'HiGlass' ) \
     && ( echo $HTML | grep -o 'Peter Kerpedjiev' ) \
     && ( echo $HTML | grep -o 'Department of Biomedical Informatics' ) \
-    && echo 'PASS!:' \
+    && echo && echo 'PASS!' \
     && echo "  visit:   http://localhost:$PORT" \
     && echo "  connect: docker exec --interactive --tty container-$STAMP bash" \
     && echo "  volume:  $VOLUME" \
