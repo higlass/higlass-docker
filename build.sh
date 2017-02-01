@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-# DO NOT set -x: We do not want credentials in travis logs.
+# DO NOT set -x: We do not want to risk credentials in travis logs.
 
 error_report() {
   docker logs container-$STAMP

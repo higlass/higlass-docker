@@ -12,11 +12,11 @@ install:
   - sudo docker --version
 
 script:
-  - sudo ./build.sh
+  - sudo ./build.sh -d
 
 after_success:
   - REPO=gehlenborglab/higlass-server
-  - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'`
+  - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'` # TODO: with more containers, can't rely on ordering
   - tag_push() { echo "Tagging into $2"; sudo docker tag $1 $2; sudo docker push $2; }
 
   - sudo docker login -u $DOCKER_USER -p $DOCKER_PASS
