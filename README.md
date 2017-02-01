@@ -16,77 +16,15 @@ docker run --detach --publish 8888:80 gehlenborglab/higlass-server
 Then visit [localhost:8888](http://localhost:8888/) in your browser.
 
 
-## Running on AWS
+## Deployment
 
-First, install [aws-cli](https://aws.amazon.com/cli/) and 
-[add your credentials](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-quick-configuration).
-(For more help with this, see the [AWS documentation](http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html).)
-
-Then, create your security group and key pair:
-```bash
-NAME=higlass-docker
-GROUP_NAME=${NAME}-group
-aws ec2 create-security-group --group-name $GROUP_NAME --description $NAME
-aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 22 --cidr 0.0.0.0/0
-aws ec2 authorize-security-group-ingress --group-name $GROUP_NAME --protocol tcp --port 80 --cidr 0.0.0.0/0
-KEY_NAME=${NAME}-key
-aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text > ~/$KEY_NAME.pem
-chmod 400 ~/$KEY_NAME.pem
-```
-
-Then, create an EC2 instance, and connect:
-```bash
-GROUP_ID=`aws ec2 describe-security-groups --group-names $GROUP_NAME --query 'SecurityGroups[0].GroupId' --output text`
-INSTANCE_ID=`aws ec2 run-instances --image-id ami-29ebb519 --security-group-ids $GROUP_ID --count 1 --instance-type t2.micro --key-name $KEY_NAME --query 'Instances[0].InstanceId' --output text`
-# Wait until it's "running":
-aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].State.Name' --output text
-# and then:
-IP=`aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text`
-ssh -i ~/$KEY_NAME.pem ubuntu@$IP
-```
-
-Once you've connected, install docker as you would locally.
-(For more help with these steps, see the
-[Docker docs](https://docs.docker.com/engine/installation/linux/ubuntu/).)
-
-SSH in, and then get the file system tools Docker needs:
-```
-sudo apt-get update
-sudo apt-get install -y curl \
-    linux-image-extra-$(uname -r) \
-    linux-image-extra-virtual
-```
-Add the Docker repo to apt-get:
-```
-sudo apt-get install apt-transport-https \
-                       ca-certificates
-curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
-# Verify the fingerprint:
-apt-key finger | grep -A1 '5811 8E89 F3A9 1289 7C07  0ADB F762 2157 2C52 609D'
-sudo add-apt-repository \
-       "deb https://apt.dockerproject.org/repo/ \
-       ubuntu-$(lsb_release -cs) \
-       main"
-```
-And install docker itself:
-```
-sudo apt-get update
-sudo apt-get -y install docker-engine
-sudo docker run --detach --publish 80:80 gehlenborglab/higlass-server
-```
-
-When you're done with the instance, clean up:
-```
-aws ec2 terminate-instances --instance-id $INSTANCE_ID
-# Wait while instance terminates, and then
-aws ec2 delete-security-group --group-id $GROUP_ID
-aws ec2 delete-key-pair --key-name $KEY_NAME
-rm ~/$KEY_NAME.pem
-```
+Only one Docker container is required, but in production, you'll probably
+want other containers for nginx, redis, etc. Our current
+[deployment strategy](README-DEPLOY.md) wraps up most of the details in the
+`build.sh` script.
 
 
-
-## Developing
+## Development
 
 To develop [higlass-client](https://github.com/hms-dbmi/higlass) and
 [higlass-server](https://github.com/hms-dbmi/higlass-server),
@@ -114,15 +52,13 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-Travis will push an image to DockerHub on every successful run
-with the name of the branch.
+Travis will update `latest` on DockerHub with every successful run
+with the name of the branch. This is used as a cache to speed up builds.
 
 If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
 then that version number will be pushed to DockerHub.
 
-If you want to update `latest`:
-```
-docker pull gehlenborglab/higlass-server:v0-0-x
-docker tag gehlenborglab/higlass-server:v0-0-x  gehlenborglab/higlass-server:latest
-docker push gehlenborglab/higlass-server:latest
-```
+If it's a PR, several informative tag names will be pushed:
+- Branch name
+- Git hash
+- Travis run
