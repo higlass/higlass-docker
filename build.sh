@@ -58,6 +58,4 @@ docker ps -a
 
 export STAMP
 export PORT
-export VOLUME
-export DB
 ./test.sh
