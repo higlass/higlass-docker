@@ -12,12 +12,14 @@ aws ec2 create-security-group \
     --group-name $GROUP_NAME \
     --description $NAME
     
+# allow incoming ssh connections from anywhere
 aws ec2 authorize-security-group-ingress \
    --group-name $GROUP_NAME \
    --protocol tcp \
    --port 22 \
    --cidr 0.0.0.0/0
-   
+
+# allow incoming http connections from anywhere
 aws ec2 authorize-security-group-ingress \
     --group-name $GROUP_NAME \
     --protocol tcp \
@@ -34,12 +36,14 @@ chmod 400 ~/$KEY_NAME.pem
 ```
 
 Then, create an EC2 instance, and connect:
+
 ```bash
 
 GROUP_ID=`aws ec2 describe-security-groups \
           --group-names $GROUP_NAME \
           --query 'SecurityGroups[0].GroupId' \
           --output text`
+echo $GROUP_ID     #sanity check (should look like sg-xxxxxxx)
           
 INSTANCE_ID=`aws ec2 run-instances \
           --image-id ami-29ebb519 \
