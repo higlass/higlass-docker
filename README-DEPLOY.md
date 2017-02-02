@@ -1,7 +1,9 @@
 
 # higlass-docker: Deployment
 
-## OUT OF DATE (more complete version on the Google doc)
+OUT OF DATE (more complete version on the Google doc)
+
+<hr>
 
 First, install [aws-cli](https://aws.amazon.com/cli/) and 
 [add your credentials](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-quick-configuration).
