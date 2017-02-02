@@ -1,78 +1,7 @@
 
 # higlass-docker: Deployment
 
-OUT OF DATE (more complete version on the Google doc)
-
-<hr>
-
-First, install [aws-cli](https://aws.amazon.com/cli/) and 
-[add your credentials](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-quick-configuration).
-(For more help with this, see the [AWS documentation](http://docs.aws.amazon.com/cli/latest/userguide/tutorial-ec2-ubuntu.html).)
-
-Then, create your security group and key pair:
-```bash
-NAME=higlass-docker
-GROUP_NAME=${NAME}-group
-aws ec2 create-security-group \
-    --group-name $GROUP_NAME \
-    --description $NAME
-    
-# allow incoming ssh connections from anywhere
-aws ec2 authorize-security-group-ingress \
-   --group-name $GROUP_NAME \
-   --protocol tcp \
-   --port 22 \
-   --cidr 0.0.0.0/0
-
-# allow incoming http connections from anywhere
-aws ec2 authorize-security-group-ingress \
-    --group-name $GROUP_NAME \
-    --protocol tcp \
-    --port 80 \
-    --cidr 0.0.0.0/0
-    
-KEY_NAME=${NAME}-key
-aws ec2 create-key-pair \
-    --key-name $KEY_NAME \
-    --query 'KeyMaterial' \
-    --output text > ~/$KEY_NAME.pem
-    
-chmod 400 ~/$KEY_NAME.pem
-```
-
-Then, create an EC2 instance, and connect:
-
-```bash
-
-GROUP_ID=`aws ec2 describe-security-groups \
-          --group-names $GROUP_NAME \
-          --query 'SecurityGroups[0].GroupId' \
-          --output text`
-echo $GROUP_ID     #sanity check (should look like sg-xxxxxxx)
-          
-INSTANCE_ID=`aws ec2 run-instances \
-          --image-id ami-29ebb519 \
-          --security-group-ids $GROUP_ID \
-          --count 1 \
-          --instance-type t2.micro \
-          --key-name $KEY_NAME \
-          --query 'Instances[0].InstanceId' \
-          --output text`
-          
-# Wait until it's "running":
-aws ec2 describe-instances \
-    --instance-ids $INSTANCE_ID \
-    --query 'Reservations[0].Instances[0].State.Name' \
-    --output text
-    
-# and then:
-IP=`aws ec2 describe-instances \
-     --instance-ids $INSTANCE_ID \
-     --query 'Reservations[0].Instances[0].PublicIpAddress' \
-     --output text`
-     
-ssh -i ~/$KEY_NAME.pem ubuntu@$IP
-```
+On any Ubuntu computer...
 
 Once you've connected, install docker as you would locally.
 (For more help with these steps, see the
