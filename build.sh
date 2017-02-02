@@ -59,9 +59,10 @@ docker run --name container-$STAMP \
            --publish $PORT:80 \
            --network network-$STAMP \
            --volume $VOLUME:/data \
-           --env REDIS_HOST=$REDIS_HOST \
-           --env REDIS_PORT=6379 \
            --detach --publish-all image-$STAMP
+
+#         --env REDIS_HOST=$REDIS_HOST \
+#         --env REDIS_PORT=6379 \
 docker ps -a
 
 export STAMP
