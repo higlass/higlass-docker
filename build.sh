@@ -49,12 +49,9 @@ docker build --cache-from $REPO:latest \
              web-context
 
 mkdir -p $VOLUME
-DB=/tmp/higlass-docker/db-$STAMP.sqlite3
-touch $DB
 docker run --name container-$STAMP \
            --publish $PORT:80 \
-           --volume $VOLUME:/home/higlass/projects/higlass-server/data \
-           --volume $DB:/home/higlass/projects/higlass-server/db.sqlite3 \
+           --volume $VOLUME:/data \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
            --detach --publish-all image-$STAMP

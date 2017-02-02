@@ -44,7 +44,8 @@ RUN chown higlass:higlass .
 USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.3
 
-VOLUME higlass-server/data
+ENV HIGLASS_SERVER_BASE_DIR /data
+VOLUME /data
 
 USER root
 RUN pip install -r higlass-server/requirements.txt
@@ -74,7 +75,7 @@ EXPOSE 80
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
-RUN echo $WORKERS
+RUN echo "WORKERS: $WORKERS"
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
