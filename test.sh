@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 set +o verbose # Less clutter at the start...
 
+STAMP=$1
+echo "STAMP: $STAMP"
+
 # $PORT may be 0 if defaults were used, so we do need to look it up.
-PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
+PORT=`docker port hg-container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
 echo
 echo "## TESTS ##"
 echo
 echo "If tests fail, or $URL doesn't work, try:"
-echo "  docker exec --interactive --tty container-$STAMP bash"
+echo "  docker exec --interactive --tty hg-container-$STAMP bash"
 
 set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
-until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 20 ]]; do
+until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 10 ]]; do
     echo "try $TRY"
     (( TRY++ ))
     sleep 1
@@ -26,7 +29,7 @@ printf "\n\nAPI: \n$JSON"
 HTML=`curl -s http://localhost:$PORT/`
 printf "\n\nhomepage: \n$HTML" | head -c 200
 
-NGINX_LOG=`docker exec container-$STAMP cat /var/log/nginx/error.log`
+NGINX_LOG=`docker logs nginx-container-$STAMP`
 printf "\n\nnginx log: \n$NGINX_LOG"
 # TODO: Make assertions against this.
 
