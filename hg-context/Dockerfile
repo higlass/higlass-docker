@@ -64,7 +64,7 @@ COPY supervisord.conf .
 COPY uwsgi.ini .
 
 
-EXPOSE 80
+EXPOSE 8000
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}

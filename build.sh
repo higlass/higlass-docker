@@ -8,12 +8,12 @@ error_report() {
   docker logs redis-container-$STAMP
 
   echo
-  echo 'Nginx logs:'
-  docker logs nginx-container-$STAMP
-
-  echo
   echo 'HiGlass logs:'
   docker logs hg-container-$STAMP
+
+  echo
+  echo 'Nginx logs:'
+  docker logs nginx-container-$STAMP
 }
 
 trap 'error_report' ERR
@@ -55,17 +55,8 @@ docker run --name redis-container-$STAMP \
            --detach redis:3.2.7-alpine
 
 
-# Nginx
-NGINX_HOST=nginx
-docker build --tag nginx-image-$STAMP nginx-context
-docker run --name nginx-container-$STAMP \
-           --hostname $NGINX_HOST \
-           --detach \
-           --publish-all \
-           nginx-image-$STAMP
-
-
 # HiGlass
+HG_HOST=higlass
 REPO=gehlenborglab/higlass-server
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
@@ -74,13 +65,24 @@ docker build --cache-from $REPO:latest \
              hg-context
 mkdir -p $VOLUME
 docker run --name hg-container-$STAMP \
-           --publish $PORT:80 \
+           --hostname $HG_HOST \
            --volume $VOLUME:/data \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
-           --env NGINX_HOST=$NGINX_HOST \
            --detach \
            hg-image-$STAMP
+
+
+# Nginx
+docker build --tag nginx-image-$STAMP nginx-context
+docker run --name nginx-container-$STAMP \
+           --publish $PORT:80 \
+           --detach \
+           --publish-all \
+           nginx-image-$STAMP
+
+
+
 
 docker ps -a | grep $STAMP
 
