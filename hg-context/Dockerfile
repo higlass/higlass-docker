@@ -53,7 +53,7 @@ USER higlass
 
 # Setup website (includes client js)
 ENV SITE_REPO higlass-website
-ENV SITE_VERSION 0.3.5
+ENV SITE_VERSION 0.3.8
 RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
 
