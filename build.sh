@@ -4,15 +4,15 @@ set -e
 
 error_report() {
   echo
-  echo 'Redis logs:'
+  echo "docker logs redis-container-$STAMP:"
   docker logs redis-container-$STAMP
 
   echo
-  echo 'HiGlass logs:'
+  echo "docker logs hg-container-$STAMP:"
   docker logs hg-container-$STAMP
 
   echo
-  echo 'Nginx logs:'
+  echo "docker logs nginx-container-$STAMP:"
   docker logs nginx-container-$STAMP
 }
 

@@ -4,8 +4,8 @@ set +o verbose # Less clutter at the start...
 STAMP=$1
 echo "STAMP: $STAMP"
 
-# $PORT may be 0 if defaults were used, so we do need to look it up.
-PORT=`docker port hg-container-$STAMP | perl -pne 's/.*://'`
+# Port may have been randomly assigned, so it can't just be passed in.
+PORT=`docker port nginx-container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
 
 echo
