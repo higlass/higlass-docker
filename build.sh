@@ -29,6 +29,8 @@ while getopts 'dp:v:w:' OPT; do
   esac
 done
 
+mkdir -p $VOLUME/log || echo "Log directory already exists"
+
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
 "USAGE: $0 -d              # For defaults, or...
@@ -57,9 +59,10 @@ docker run --name container-$STAMP \
            --publish $PORT:80 \
            --network network-$STAMP \
            --volume $VOLUME:/data \
-           --env REDIS_HOST=$REDIS_HOST \
-           --env REDIS_PORT=6379 \
            --detach --publish-all image-$STAMP
+
+#         --env REDIS_HOST=$REDIS_HOST \
+#         --env REDIS_PORT=6379 \
 docker ps -a
 
 export STAMP

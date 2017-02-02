@@ -42,7 +42,7 @@ RUN pip install -r requirements.txt
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.3
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v0.2.4
 
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
