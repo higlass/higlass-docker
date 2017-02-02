@@ -29,6 +29,8 @@ while getopts 'dp:v:w:' OPT; do
   esac
 done
 
+mkdir -p $VOLUME/log || echo "Log directory already exists"
+
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
 "USAGE: $0 -d              # For defaults, or...
