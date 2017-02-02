@@ -48,11 +48,17 @@ fi
 
 set -o verbose # Keep this after the usage message to reduce clutter.
 
+# Network
+docker network create --driver bridge network-$STAMP
+
+
 # Redis
 REDIS_HOST=redis
 docker run --name redis-container-$STAMP \
+           --network network-$STAMP \
            --hostname $REDIS_HOST \
-           --detach redis:3.2.7-alpine
+           --detach \
+           redis:3.2.7-alpine
 
 
 # HiGlass
@@ -65,6 +71,7 @@ docker build --cache-from $REPO:latest \
              hg-context
 mkdir -p $VOLUME
 docker run --name hg-container-$STAMP \
+           --network network-$STAMP \
            --hostname $HG_HOST \
            --volume $VOLUME:/data \
            --env REDIS_HOST=$REDIS_HOST \
@@ -76,6 +83,7 @@ docker run --name hg-container-$STAMP \
 # Nginx
 docker build --tag nginx-image-$STAMP nginx-context
 docker run --name nginx-container-$STAMP \
+           --network network-$STAMP \
            --publish $PORT:80 \
            --detach \
            --publish-all \

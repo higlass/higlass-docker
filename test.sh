@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
-set +o verbose # Less clutter at the start...
 
 STAMP=$1
 echo "STAMP: $STAMP"
-
-# Port may have been randomly assigned, so it can't just be passed in.
-PORT=`docker port nginx-container-$STAMP | perl -pne 's/.*://'`
+PORT=`docker port nginx-container-$STAMP | head -n1`
+if [[ -z "$PORT" ]]; then
+  echo "nginx-container-$STAMP has no open ports"
+  exit 1
+fi
+echo "PORT: $PORT"
 URL=http://localhost:$PORT/api/v1/tilesets/
+echo "URL: $URL"
+
+set +o verbose # Less clutter at the start...
 
 echo
 echo "## TESTS ##"
 echo
-echo "If tests fail, or $URL doesn't work, try:"
-echo "  docker exec --interactive --tty hg-container-$STAMP bash"
 
 set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
