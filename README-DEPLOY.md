@@ -1,7 +1,7 @@
 
 # higlass-docker: Deployment
 
-On any Ubuntu computer...
+The following describes setup instructions for a linux machine running ubuntu.
 
 Once you've connected, install docker as you would locally.
 (For more help with these steps, see the
