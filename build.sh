@@ -8,8 +8,8 @@ error_report() {
   docker logs redis-container-$STAMP
 
   echo
-  echo "docker logs hg-container-$STAMP:"
-  docker logs hg-container-$STAMP
+  echo "docker logs higlass-stable-name:"
+  docker logs higlass-stable-name
 
   echo
   echo "docker logs nginx-container-$STAMP:"
@@ -70,7 +70,9 @@ docker build --cache-from $REPO:latest \
              --tag hg-image-$STAMP \
              hg-context
 mkdir -p $VOLUME
-docker run --name hg-container-$STAMP \
+# TODO: Going to have name collisions, but envvars in nginxconf is tricky.
+# --name hg-container-$STAMP \
+docker run --name higlass-stable-name \
            --network network-$STAMP \
            --hostname $HG_HOST \
            --volume $VOLUME:/data \

@@ -2,7 +2,7 @@
 
 STAMP=$1
 echo "STAMP: $STAMP"
-PORT=`docker port nginx-container-$STAMP | head -n1`
+PORT=`docker port nginx-container-$STAMP | grep 80 | perl -pne 's/.*://'`
 if [[ -z "$PORT" ]]; then
   echo "nginx-container-$STAMP has no open ports"
   exit 1
