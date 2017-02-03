@@ -52,7 +52,7 @@ WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
 perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g;" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
-REPO=gehlenborglab/higlass-server
+REPO=gehlenborglab/higlass
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
              --build-arg WORKERS=$WORKERS \
