@@ -56,7 +56,8 @@ printf "\n\nversion.txt: \n$VERSION_TXT"
 echo
 echo
 set -o verbose # ... so we can see which one fails
-[ "$JSON" == '{"count": 0, "results": []}' ]
+
+[[ "$JSON" == '{"count":'* ]] # Redeploy a live server and there will be data already, but should start the same.
 echo $HTML | grep -o 'HiGlass'
 echo $HTML | grep -o 'Peter Kerpedjiev'
 echo $HTML | grep -o 'Department of Biomedical Informatics'
