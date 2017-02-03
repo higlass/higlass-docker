@@ -31,7 +31,9 @@ printf "\n\nnginx log: \n$NGINX_LOG"
 # TODO: Make assertions against this.
 
 PING_REDIS_OUTSIDE=`docker exec container-$STAMP ping -c 1 container-redis-$STAMP`
-printf "\n\nping redis outside: \n$PING_REDIS_OUTSIDE"
+echo; echo # Was getting an error from printf about "\p". Weird.
+echo "ping redis outside:"
+echo $PING_REDIS_OUTSIDE
 
 # TODO
 #PING_REDIS_INSIDE=`docker exec container-$STAMP sh -c '( echo PING | curl -v telnet://container-redis-$STAMP:6379 ) & sleep 1 ; kill $!'`
