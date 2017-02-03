@@ -30,6 +30,13 @@ NGINX_LOG=`docker exec container-$STAMP cat /var/log/nginx/error.log`
 printf "\n\nnginx log: \n$NGINX_LOG"
 # TODO: Make assertions against this.
 
+PING_REDIS_OUTSIDE=`docker exec container-$STAMP ping -c 1 container-redis-$STAMP`
+printf "\n\nping redis outside: \n$PING_REDIS_OUTSIDE"
+
+# TODO
+#PING_REDIS_INSIDE=`docker exec container-$STAMP sh -c '( echo PING | curl -v telnet://container-redis-$STAMP:6379 ) & sleep 1 ; kill $!'`
+#printf "\n\nping redis inside: \n$PING_REDIS_INSIDE"
+
 echo
 echo
 set -o verbose # ... so we can see which one fails
@@ -38,6 +45,8 @@ echo $HTML | grep -o 'HiGlass'
 echo $HTML | grep -o 'Peter Kerpedjiev'
 echo $HTML | grep -o 'Department of Biomedical Informatics'
 [ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ]
+echo $PING_REDIS_OUTSIDE | grep -o '1 packets received, 0% packet loss'
+#echo $PING_REDIS_INSIDE | grep -o 'PONG'
 
 set +o verbose
 echo
