@@ -50,7 +50,8 @@ echo $PING_REDIS_OUTSIDE
 echo
 echo
 set -o verbose # ... so we can see which one fails
-[ "$JSON" == '{"count": 0, "results": []}' ]
+
+[ "$JSON" == '{"count":' ] # Redeploy a live server and there will be data already.
 echo $HTML | grep -o 'HiGlass'
 echo $HTML | grep -o 'Peter Kerpedjiev'
 echo $HTML | grep -o 'Department of Biomedical Informatics'
