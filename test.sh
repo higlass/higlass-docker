@@ -35,6 +35,9 @@ echo; echo # Was getting an error from printf about "\p". Weird.
 echo "ping redis outside:"
 echo $PING_REDIS_OUTSIDE
 
+VERSION_TXT=`curl -s http://localhost:$PORT/version.txt`
+printf "\n\nversion.txt: \n$VERSION_TXT"
+
 # TODO
 #PING_REDIS_INSIDE=`docker exec container-$STAMP sh -c '( echo PING | curl -v telnet://container-redis-$STAMP:6379 ) & sleep 1 ; kill $!'`
 #printf "\n\nping redis inside: \n$PING_REDIS_INSIDE"
@@ -57,6 +60,7 @@ echo $HTML | grep -o 'Department of Biomedical Informatics'
 [ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ]
 echo $PING_REDIS_OUTSIDE | grep -o '1 packets received, 0% packet loss'
 #echo $PING_REDIS_INSIDE | grep -o 'PONG'
+echo $VERSION_TXT | grep -o 'WEBSITE_VERSION'
 
 set +o verbose
 echo

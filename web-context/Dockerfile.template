@@ -53,10 +53,14 @@ RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
 # Setup website (includes client js)
-ENV SITE_REPO higlass-website
-ENV SITE_VERSION <WEBSITE_VERSION>
-RUN wget https://github.com/hms-dbmi/$SITE_REPO/releases/download/v$SITE_VERSION/dist.zip
+ENV WEBSITE_REPO higlass-website
+ENV WEBSITE_VERSION <WEBSITE_VERSION>
+RUN wget https://github.com/hms-dbmi/$WEBSITE_REPO/releases/download/v$WEBSITE_VERSION/dist.zip
 RUN unzip dist.zip -d higlass-website
+
+RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
+      echo "WEBSITE_VERSION: <WEBSITE_VERSION>" ) \
+    > higlass-website/version.txt
 
 
 # Setup supervisord and nginx
@@ -77,6 +81,7 @@ EXPOSE 80
 ARG WORKERS
 ENV WORKERS ${WORKERS}
 RUN echo "WORKERS: $WORKERS"
+
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
