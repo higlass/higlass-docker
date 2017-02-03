@@ -36,6 +36,14 @@ printf "\n\nping redis outside: \n$PING_REDIS_OUTSIDE"
 # TODO
 #PING_REDIS_INSIDE=`docker exec container-$STAMP sh -c '( echo PING | curl -v telnet://container-redis-$STAMP:6379 ) & sleep 1 ; kill $!'`
 #printf "\n\nping redis inside: \n$PING_REDIS_INSIDE"
+# -- OR --
+# `docker exec -it container-$STAMP sh -c "echo 'PING' | nc -w 1 container-redis-$STAMP 6379"`
+# but that requires the installation of netcat
+# -- OR --
+# exec 3<>/dev/tcp/container-redis-$STAMP/6379 && echo -e "PING\n\r" >&3 && cat <&3
+# which requires no installations, but it's crazy, and keeps the connection open.
+# -- OR --
+# install the Redis client
 
 echo
 echo
