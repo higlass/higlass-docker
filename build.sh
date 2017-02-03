@@ -46,6 +46,12 @@ docker run --name container-redis-$STAMP \
            --network network-$STAMP \
            --detach redis:3.2.7-alpine
 
+# When development settles down, consider going back to static Dockerfile.
+SERVER_VERSION=`python latest.py hms-dbmi/higlass-server`
+WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
+perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g;" \
+          web-context/Dockerfile.template > web-context/Dockerfile
+
 REPO=gehlenborglab/higlass-server
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
