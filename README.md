@@ -2,7 +2,7 @@
 
 Builds a docker container wrapping higlass-client and higlass-server in nginx,
 tests that it works, and if there are no errors in the PR, pushes the image to 
-[DockerHub](https://hub.docker.com/r/gehlenborglab/higlass-server/).
+[DockerHub](https://hub.docker.com/r/gehlenborglab/higlass/).
 
 ## Running locally
 
@@ -10,7 +10,7 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```
-docker run --detach --publish 8888:80 gehlenborglab/higlass-server
+docker run --detach --publish 8888:80 gehlenborglab/higlass
 ```
 
 Then visit [localhost:8888](http://localhost:8888/) in your browser.
