@@ -39,6 +39,8 @@ while getopts 'dp:v:w:' OPT; do
   esac
 done
 
+mkdir -p $VOLUME/log || echo "Log directory already exists"
+
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
 "USAGE: $0 -d                           # For defaults, or...
@@ -48,17 +50,15 @@ fi
 
 set -o verbose # Keep this after the usage message to reduce clutter.
 
+
 # Network
 docker network create --driver bridge network-$STAMP
 
 
 # Redis
-REDIS_HOST=redis
 docker run --name redis-container-$STAMP \
            --network network-$STAMP \
-           --hostname $REDIS_HOST \
-           --detach \
-           redis:3.2.7-alpine
+           --detach redis:3.2.7-alpine
 
 
 # HiGlass
@@ -74,7 +74,8 @@ docker run --name hg-container-$STAMP \
            --network network-$STAMP \
            --hostname $HG_HOST \
            --volume $VOLUME:/data \
-           --env REDIS_HOST=$REDIS_HOST \
+           --volume $VOLUME/tmp:/tmp \
+           --env REDIS_HOST=container-redis-$STAMP \
            --env REDIS_PORT=6379 \
            --detach \
            hg-image-$STAMP
