@@ -11,6 +11,8 @@ install:
   - sudo dpkg -i $DEB
   - sudo docker --version
 
+  - pip install requests # for latest.py
+
 script:
   - sudo ./build.sh -d
 
