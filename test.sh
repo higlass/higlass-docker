@@ -21,7 +21,10 @@ done
 set -e
 
 JSON=`curl -s $URL`
-printf "\n\nAPI: \n$JSON"
+printf "\n\nAPI, tilesets: \n$JSON"
+
+JSON_HITS_REDIS=`curl -s http://localhost:$PORT/api/v1/tiles/`
+printf "\n\nAPI, tiles: \n$JSON_HITS_REDIS"
 
 HTML=`curl -s http://localhost:$PORT/`
 printf "\n\nhomepage: \n$HTML" | head -c 200
