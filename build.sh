@@ -42,8 +42,7 @@ set -o verbose # Keep this after the usage message to reduce clutter.
 
 docker network create --driver bridge network-$STAMP
 
-REDIS_HOST=redis
-docker run --hostname $REDIS_HOST \
+docker run --name container-redis-$STAMP \
            --network network-$STAMP \
            --detach redis:3.2.7-alpine
 
@@ -56,14 +55,15 @@ docker build --cache-from $REPO:latest \
 
 mkdir -p $VOLUME
 docker run --name container-$STAMP \
-           --publish $PORT:80 \
            --network network-$STAMP \
+           --publish $PORT:80 \
            --volume $VOLUME:/data \
            --volume $VOLUME/tmp:/tmp \
+           --env REDIS_HOST=container-redis-$STAMP \
+           --env REDIS_PORT=6379 \
            --detach --publish-all image-$STAMP
 
-#         --env REDIS_HOST=$REDIS_HOST \
-#         --env REDIS_PORT=6379 \
+
 docker ps -a
 
 export STAMP
