@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set +o verbose # Less clutter at the start...
 
+STAMP=$1
+
 # $PORT may be 0 if defaults were used, so we do need to look it up.
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 URL=http://localhost:$PORT/api/v1/tilesets/
