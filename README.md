@@ -10,7 +10,7 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```
-docker run --detach --publish 8888:80 gehlenborglab/higlass
+docker run --detach --publish 8888:80 gehlenborglab/higlass:v0.0.3
 ```
 
 Then visit [localhost:8888](http://localhost:8888/) in your browser.
