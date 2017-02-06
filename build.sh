@@ -46,8 +46,8 @@ mkdir -p $VOLUME/log || echo "Log directory already exists"
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
 "USAGE: $0 -d                           # For a stable default build
-       $0 -l                           # Pull the latest dependencies, and timestamp container
-       $0 -p PORT -v VOLUME -w WORKERS # If one is given, all are required." >&2
+       $0 -l                           # Pull the latest dependencies, timestamp container, and test both modes
+       $0 -p PORT -v VOLUME -w WORKERS # If one is given, all are required" >&2
   exit 1
 fi
 
@@ -85,6 +85,12 @@ docker run --name container-$STAMP \
 
 docker ps -a
 
-export STAMP
-export PORT
-./test.sh
+./test.sh $STAMP
+
+if [ $PORT == 0 ]; then
+  # If we are running with -l ("latest"), we also want to be sure
+  # that the built image can run on its own, without any extra configuration.
+  docker run --name container-$STAMP-single \
+             --detach --publish-all image-$STAMP
+  ./test.sh $STAMP-single
+fi
