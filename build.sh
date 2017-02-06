@@ -59,8 +59,7 @@ docker run --name container-redis-$STAMP \
            --network network-$STAMP \
            --volume $VOLUME:/data \
            --detach redis:3.2.7-alpine \
-            redis-server \
-           --appendonly yes 
+            redis-server 
 
 # When development settles down, consider going back to static Dockerfile.
 perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g;" \
