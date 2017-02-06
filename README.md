@@ -33,8 +33,7 @@ check out the corresponding repos.
 To work on the Docker deployment, checkout this repo, install Docker, and then:
 
 ```bash
-# build and run with a mounted volume of /data on port 80 with 4 workers
-./build.sh -v/data -p80 -w4
+./build.sh -l
 
 # If that doesn't work, check the port mapping:
 docker ps
