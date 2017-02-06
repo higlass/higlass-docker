@@ -45,8 +45,9 @@ docker network create --driver bridge network-$STAMP
 docker run --name container-redis-$STAMP \
            --network network-$STAMP \
            --volume $VOLUME:/data \
-           --appendonly yes \
            --detach redis:3.2.7-alpine
+            redis-server \
+           --appendonly yes \
 
 # When development settles down, consider going back to static Dockerfile.
 SERVER_VERSION=`python latest.py hms-dbmi/higlass-server`
