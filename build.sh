@@ -8,9 +8,11 @@ error_report() {
 
 trap 'error_report' ERR
 
-STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+STAMP='default'
+SERVER_VERSION=0.2.4 # python latest.py hms-dbmi/higlass-server
+WEBSITE_VERSION=0.3.15 # python latest.py hms-dbmi/higlass-website
 
-while getopts 'dp:v:w:' OPT; do
+while getopts 'dlp:v:w:' OPT; do
   case $OPT in
     p)
       PORT=$OPTARG
@@ -22,10 +24,20 @@ while getopts 'dp:v:w:' OPT; do
       WORKERS=$OPTARG
       ;;
     d)
-      PORT=0 # Kernel will assign randomly.
+      PORT=8080
       VOLUME=/tmp/higlass-docker/volume-$STAMP
       WORKERS=2
       ;;
+    l)
+      STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+      SERVER_VERSION=`python latest.py hms-dbmi/higlass-server` \
+        || ( echo "'sudo pip install requests' should fix this."; exit 1 )
+      WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
+      echo "SERVER_VERSION: $SERVER_VERSION"
+      echo "WEBSITE_VERSION: $WEBSITE_VERSION"
+      PORT=0 # Kernel will assign randomly.
+      VOLUME=/tmp/higlass-docker/volume-$STAMP
+      WORKERS=2
   esac
 done
 
@@ -33,8 +45,9 @@ mkdir -p $VOLUME/log || echo "Log directory already exists"
 
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
-"USAGE: $0 -d              # For defaults, or...
-       $0 -pPORT -vVOLUME -wWORKERS # If one is given, all are required." >&2
+"USAGE: $0 -d                           # For a stable default build
+       $0 -l                           # Pull the latest dependencies, and timestamp container
+       $0 -p PORT -v VOLUME -w WORKERS # If one is given, all are required." >&2
   exit 1
 fi
 
@@ -50,8 +63,6 @@ docker run --name container-redis-$STAMP \
            --appendonly yes 
 
 # When development settles down, consider going back to static Dockerfile.
-SERVER_VERSION=`python latest.py hms-dbmi/higlass-server`
-WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
 perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g;" \
           web-context/Dockerfile.template > web-context/Dockerfile
 

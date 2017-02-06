@@ -14,7 +14,7 @@ install:
   - sudo pip install requests # for latest.py
 
 script:
-  - sudo ./build.sh -d
+  - sudo ./build.sh -l
 
 after_success:
   - REPO=gehlenborglab/higlass
