@@ -69,8 +69,6 @@ REPO=gehlenborglab/higlass
 docker pull $REPO:latest
 docker build --cache-from $REPO:latest \
              --build-arg WORKERS=$WORKERS \
-             --build-arg SERVER_VERSION=$SERVER_VERSION \
-             --build-arg WEBSITE_VERSION=$WEBSITE_VERSION \
              --tag image-$STAMP \
              web-context
 
