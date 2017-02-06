@@ -44,6 +44,8 @@ docker network create --driver bridge network-$STAMP
 
 docker run --name container-redis-$STAMP \
            --network network-$STAMP \
+           --volume $VOLUME:/data \
+           --appendonly yes \
            --detach redis:3.2.7-alpine
 
 # When development settles down, consider going back to static Dockerfile.
