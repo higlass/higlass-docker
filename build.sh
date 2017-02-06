@@ -45,7 +45,7 @@ docker network create --driver bridge network-$STAMP
 docker run --name container-redis-$STAMP \
            --network network-$STAMP \
            --volume $VOLUME:/data \
-           --detach redis:3.2.7-alpine
+           --detach redis:3.2.7-alpine \
             redis-server \
            --appendonly yes 
 
