@@ -47,7 +47,7 @@ docker run --name container-redis-$STAMP \
            --volume $VOLUME:/data \
            --detach redis:3.2.7-alpine
             redis-server \
-           --appendonly yes \
+           --appendonly yes 
 
 # When development settles down, consider going back to static Dockerfile.
 SERVER_VERSION=`python latest.py hms-dbmi/higlass-server`
