@@ -36,7 +36,7 @@ aws ec2 create-tags \
     --tags Key=Name,Value=higlass-server \
            Key=owner,Value=pkerp
 
-status() {
+instance_status() {
     aws ec2 describe-instances \
         --instance-ids $1 \
         --query 'Reservations[0].Instances[0].State.Name' \
@@ -44,7 +44,7 @@ status() {
 }
 
 TRY=0;
-until [[ `status $INSTANCE_ID` == 'running' ]] || [[ $TRY -gt 20 ]]; do
+until [[ `instance_status $INSTANCE_ID` == 'running' ]] || [[ $TRY -gt 20 ]]; do
     echo "try $TRY"
     (( TRY++ ))
     sleep 1
@@ -76,6 +76,21 @@ VOLUME_ID=`aws ec2 create-volume \
     --output text`
 echo "VOLUME_ID=$VOLUME_ID"
 
+
+volume_status() {
+    aws ec2 describe-volumes \
+        --volume-ids $1 \
+        --query 'Volumes[0].State' \
+        --output text
+}
+
+TRY=0;
+until [[ `volume_status $VOLUME_ID` == 'available' ]] || [[ $TRY -gt 20 ]]; do
+    echo "try $TRY"
+    (( TRY++ ))
+    sleep 1
+done
+
 aws ec2 create-tags \
     --resources ${VOLUME_ID} \
     --tags Key=Name,Value=higlass-server-data \
@@ -87,6 +102,8 @@ aws ec2 attach-volume \
     --volume-id ${VOLUME_ID} \
     --instance-id ${INSTANCE_ID} \
     --device /dev/sdf
+
+# TODO: attaching takes time
 
 # make volume useable
 ssh -i ~/$KEY_NAME.pem ubuntu@$IP 'sudo mkfs -t ext4 /dev/xvdf && sudo mount /dev/xvdf /data'
