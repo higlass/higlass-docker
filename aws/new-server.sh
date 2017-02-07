@@ -64,3 +64,33 @@ ssh -i ~/$KEY_NAME.pem ubuntu@$IP \
     -o StrictHostKeyChecking=no \
     'sudo mkdir /data'
 
+
+# Create the volume:
+
+VOLUME_ID=`aws ec2 create-volume \
+    --size 400 \
+    --region us-east-1 \
+    --availability-zone us-east-1c \
+    --volume-type gp2 \
+    --query 'VolumeId' \
+    --output text`
+echo "VOLUME_ID=$VOLUME_ID"
+
+aws ec2 create-tags \
+    --resources ${VOLUME_ID} \
+    --tags Key=Name,Value=higlass-server-data \
+           Key=owner,Value=pkerp \
+
+# Attaching a volume
+
+aws ec2 attach-volume \
+    --volume-id ${VOLUME_ID} \
+    --instance-id ${INSTANCE_ID} \
+    --device /dev/sdf
+
+# make volume useable
+ssh -i ~/$KEY_NAME.pem ubuntu@$IP 'sudo mkfs -t ext4 /dev/xvdf && sudo mount /dev/xvdf /data'
+
+
+# python dependencies
+ssh -i ~/$KEY_NAME.pem ubuntu@$IP 'sudo apt-get install -y python && sudo apt-get install -y python-pip && pip install requests'
