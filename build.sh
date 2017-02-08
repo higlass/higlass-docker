@@ -10,7 +10,7 @@ trap 'error_report' ERR
 
 STAMP='default'
 SERVER_VERSION=0.2.4 # python latest.py hms-dbmi/higlass-server
-WEBSITE_VERSION=0.3.15 # python latest.py hms-dbmi/higlass-website
+WEBSITE_VERSION=0.3.17 # python latest.py hms-dbmi/higlass-website
 
 while getopts 'dlp:v:w:' OPT; do
   case $OPT in
