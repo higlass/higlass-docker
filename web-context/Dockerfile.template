@@ -80,8 +80,7 @@ EXPOSE 80
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
-RUN echo "WORKERS: $WORKERS"
-
+RUN echo "WORKERS=$WORKERS" > /home/higlass/projects/config.sh
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
