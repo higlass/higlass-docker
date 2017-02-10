@@ -74,7 +74,6 @@ docker build --cache-from $REPO:latest \
              --tag image-$STAMP \
              web-context
 
-mkdir -p $VOLUME
 docker run --name container-$STAMP \
            --network network-$STAMP \
            --publish $PORT:80 \
@@ -94,9 +93,13 @@ docker ps -a
 if [ $PORT == 0 ]; then
   # If we are running with -l ("latest"), we also want to be sure
   # that the built image can run on its own, without any extra configuration.
+  # (Test is expecting 'redis-data', even if we do not use it.)
+  for DIR in redis-data hg-data/log hg-tmp; do
+    mkdir -p $VOLUME-single/$DIR || echo "$VOLUME/$DIR already exists"
+  done
   docker run --name container-$STAMP-single \
-             --volume $VOLUME/hg-data:/data \
-             --volume $VOLUME/hg-tmp:/tmp \
+             --volume $VOLUME-single/hg-data:/data \
+             --volume $VOLUME-single/hg-tmp:/tmp \
              --detach \
              --publish-all \
              image-$STAMP
