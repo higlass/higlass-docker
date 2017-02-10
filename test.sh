@@ -56,6 +56,31 @@ diff -y expected-data-dir.txt <(
         && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
         && popd > /dev/null )
 
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
+HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
+
+DOWNLOADS=/tmp/higlass-downloads-$STAMP
+mkdir -p $DOWNLOADS
+wget -O $DOWNLOADS/$COOLER https://s3.amazonaws.com/pkerp/public/$COOLER
+wget -O $DOWNLOADS/$HITILE https://s3.amazonaws.com/pkerp/public/$HITILE
+
+# No good way to fail on error and get the error body.
+# But we want to be sure redundant pushes work, so this is still useful.
+curl -F "datafile=@$DOWNLOADS/$COOLER" \
+     -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
+     http://localhost:$PORT/api/v1/tilesets/
+curl -F "datafile=@$DOWNLOADS/$HITILE" \
+     -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
+     http://localhost:$PORT/api/v1/tilesets/
+
+curl -F "datafile=@$DOWNLOADS/$COOLER" --fail \
+     -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
+     http://localhost:$PORT/api/v1/tilesets/
+curl -F "datafile=@$DOWNLOADS/$HITILE" --fail \
+     -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
+     http://localhost:$PORT/api/v1/tilesets/
+
+
 if [[ "$STAMP" != *-single ]]; then
     # Only run these tests if we've started up a separate redis container.
     PING_REDIS_OUTSIDE=`docker exec container-$STAMP ping -c 1 container-redis-$STAMP`
