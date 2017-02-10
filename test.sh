@@ -42,11 +42,13 @@ echo
 echo
 set -o verbose # ... so we can see which one fails
 
-[[ "$JSON" == '{"count":'* ]] # Redeploy a live server and there will be data already, but should start the same.
+# TODO: Clean up tests... Maybe translate whole thing to Python...
+
+[[ "$JSON" == '{"count":'* ]] || false # Redeploy a live server and there will be data already, but should start the same.
 echo $HTML | grep -o 'HiGlass'
 echo $HTML | grep -o 'Peter Kerpedjiev'
 echo $HTML | grep -o 'Department of Biomedical Informatics'
-[ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ]
+[ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ] || false
 #echo $PING_REDIS_INSIDE | grep -o 'PONG'
 echo $VERSION_TXT | grep -o 'WEBSITE_VERSION'
 

@@ -47,7 +47,6 @@ RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch 
 USER root
 
 ENV HIGLASS_SERVER_BASE_DIR /data
-RUN mkdir -p /data/log
 VOLUME /data
 
 RUN pip install -r higlass-server/requirements.txt
