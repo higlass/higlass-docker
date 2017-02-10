@@ -56,6 +56,17 @@ diff -y expected-data-dir.txt <(
         && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
         && popd > /dev/null )
 
+USERNAME=super
+PASSWORD=super
+
+# We need an authorized user in order to upload.
+# TODO: make this less ugly!
+
+docker exec -it container-$STAMP sh -c \
+  "cd /home/higlass/projects/higlass-server/;
+   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_superuser('$USERNAME', '$PASSWORD', 'email?')\" \
+     | python manage.py shell"
+
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
 
@@ -66,10 +77,10 @@ wget -O $DOWNLOADS/$HITILE https://s3.amazonaws.com/pkerp/public/$HITILE
 
 # No good way to fail on error and get the error body.
 # But we want to be sure redundant pushes work, so this is still useful.
-curl -F "datafile=@$DOWNLOADS/$COOLER" \
+curl -F "datafile=@$DOWNLOADS/$COOLER" -u $USERNAME:$PASSWORD \
      -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
      http://localhost:$PORT/api/v1/tilesets/
-curl -F "datafile=@$DOWNLOADS/$HITILE" \
+curl -F "datafile=@$DOWNLOADS/$HITILE" -u $USERNAME:$PASSWORD \
      -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
      http://localhost:$PORT/api/v1/tilesets/
 
