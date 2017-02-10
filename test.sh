@@ -51,9 +51,9 @@ echo $HTML | grep -o 'Department of Biomedical Informatics'
 [ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ] || false
 #echo $PING_REDIS_INSIDE | grep -o 'PONG'
 echo $VERSION_TXT | grep -o 'WEBSITE_VERSION'
-diff expected-data-dir.txt <(
+diff -y expected-data-dir.txt <(
         pushd /tmp/higlass-docker/volume-$STAMP > /dev/null \
-        && find . | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
+        && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
         && popd > /dev/null )
 
 if [[ "$STAMP" != *-single ]]; then
