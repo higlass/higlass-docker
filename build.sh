@@ -95,6 +95,10 @@ if [ $PORT == 0 ]; then
   # If we are running with -l ("latest"), we also want to be sure
   # that the built image can run on its own, without any extra configuration.
   docker run --name container-$STAMP-single \
-             --detach --publish-all image-$STAMP
+             --volume $VOLUME/hg-data:/data \
+             --volume $VOLUME/hg-tmp:/tmp \
+             --detach \
+             --publish-all \
+             image-$STAMP
   ./test.sh $STAMP-single
 fi
