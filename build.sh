@@ -41,8 +41,6 @@ while getopts 'dlp:v:w:' OPT; do
   esac
 done
 
-mkdir -p $VOLUME/log || echo "Log directory already exists"
-
 if [ -z $PORT ] || [ -z $VOLUME ] || [ -z $WORKERS ]; then
   echo \
 "USAGE: $0 -d                           # For a stable default build
@@ -53,13 +51,17 @@ fi
 
 set -o verbose # Keep this after the usage message to reduce clutter.
 
+for DIR in redis-data hg-data/log hg-tmp; do
+  mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
+done
+
 docker network create --driver bridge network-$STAMP
 
 docker run --name container-redis-$STAMP \
            --network network-$STAMP \
-           --volume $VOLUME:/data \
+           --volume $VOLUME/redis-data:/data \
            --detach redis:3.2.7-alpine \
-            redis-server 
+           redis-server
 
 # When development settles down, consider going back to static Dockerfile.
 perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g;" \
@@ -76,11 +78,13 @@ mkdir -p $VOLUME
 docker run --name container-$STAMP \
            --network network-$STAMP \
            --publish $PORT:80 \
-           --volume $VOLUME:/data \
-           --volume $VOLUME/tmp:/tmp \
+           --volume $VOLUME/hg-data:/data \
+           --volume $VOLUME/hg-tmp:/tmp \
            --env REDIS_HOST=container-redis-$STAMP \
            --env REDIS_PORT=6379 \
-           --detach --publish-all image-$STAMP
+           --detach \
+           --publish-all \
+           image-$STAMP
 
 
 docker ps -a
@@ -91,6 +95,10 @@ if [ $PORT == 0 ]; then
   # If we are running with -l ("latest"), we also want to be sure
   # that the built image can run on its own, without any extra configuration.
   docker run --name container-$STAMP-single \
-             --detach --publish-all image-$STAMP
+             --volume $VOLUME/hg-data:/data \
+             --volume $VOLUME/hg-tmp:/tmp \
+             --detach \
+             --publish-all \
+             image-$STAMP
   ./test.sh $STAMP-single
 fi
