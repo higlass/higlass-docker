@@ -24,7 +24,10 @@ mkdir -p $DOWNLOADS
 NAME=`basename $URL`
 wget -O $DOWNLOADS/$NAME $URL
 
-PORT=8001 # This should agree with hgserver_nginx.conf, I think?
+PORT=8000
+# TODO: discrepancy?
+# hgserver_nginx.conf: 8001
+# uwsgi.ini: 8000
 
 if [[ "$NAME" == *.cool ]]; then
     curl -F "datafile=@$DOWNLOADS/$NAME" -u "$CREDENTIALS" \
