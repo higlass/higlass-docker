@@ -19,15 +19,15 @@ fi
 
 set -o verbose
 
+PORT=8888
+python higlass-server/manage.py runserver localhost:$PORT &
+
+sleep 5 # TODO: wait loop
+
 DOWNLOADS=/tmp/downloads
 mkdir -p $DOWNLOADS
 NAME=`basename $URL`
 wget -O $DOWNLOADS/$NAME $URL
-
-PORT=8000
-# TODO: discrepancy?
-# hgserver_nginx.conf: 8001
-# uwsgi.ini: 8000
 
 if [[ "$NAME" == *.cool ]]; then
     CMD="curl -F \"datafile=@$DOWNLOADS/$NAME\" -u \"$CREDENTIALS\"
@@ -44,3 +44,5 @@ fi
 
 echo $CMD
 $CMD
+
+# TODO: stop server?
