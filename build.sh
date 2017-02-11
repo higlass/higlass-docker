@@ -4,9 +4,7 @@ set -e
 
 error_report() {
   docker logs container-$STAMP
-
-  docker exec -it container-$STAMP sh -c \
-    'for LOG in /tmp/*-std*.log /data/log/*.log; do echo; echo; echo "############"; echo $LOG; echo "############"; cat $LOG; done'
+  docker exec -it container-$STAMP /home/higlass/projects/logs.sh
 }
 
 trap 'error_report' ERR

@@ -72,9 +72,9 @@ COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
 
 docker exec -it container-$STAMP sh -c \
-  "bash /home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER"
+  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER"
 docker exec -it container-$STAMP sh -c \
-  "bash /home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE"
+  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE"
 
 
 if [[ "$STAMP" != *-single ]]; then

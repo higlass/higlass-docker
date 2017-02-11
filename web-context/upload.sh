@@ -30,14 +30,17 @@ PORT=8000
 # uwsgi.ini: 8000
 
 if [[ "$NAME" == *.cool ]]; then
-    curl -F "datafile=@$DOWNLOADS/$NAME" -u "$CREDENTIALS" \
-         -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
-         http://localhost:$PORT/api/v1/tilesets/
+    CMD="curl -F \"datafile=@$DOWNLOADS/$NAME\" -u \"$CREDENTIALS\"
+              -F \"filetype=cooler\" -F \"datatype=matrix\" -F \"uid=cooler\"
+              http://localhost:$PORT/api/v1/tilesets/"
 elif [[ "$NAME" == *.hitile ]]; then
-    curl -F "datafile=@$DOWNLOADS/$HITILE" -u $USERNAME:$PASSWORD \
-         -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
-         http://localhost:$PORT/api/v1/tilesets/
+    CMD="curl -F \"datafile=@$DOWNLOADS/$NAME\" -u \"$CREDENTIALS\"
+              -F \"filetype=hitile\" -F \"datatype=vector\" -F \"uid=hitile\"
+              http://localhost:$PORT/api/v1/tilesets/"
 else
     echo "Unrecognized file type: $NAME" >&2
     exit 1
 fi
+
+echo $CMD
+$CMD
