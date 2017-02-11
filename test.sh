@@ -67,30 +67,14 @@ docker exec -it container-$STAMP sh -c \
    echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', '$PASSWORD', 'email?')\" \
      | python manage.py shell"
 
+S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
 
-DOWNLOADS=/tmp/higlass-downloads-$STAMP
-mkdir -p $DOWNLOADS
-wget -O $DOWNLOADS/$COOLER https://s3.amazonaws.com/pkerp/public/$COOLER
-wget -O $DOWNLOADS/$HITILE https://s3.amazonaws.com/pkerp/public/$HITILE
-
-# No good way to fail on error and get the error body.
-# But we want to be sure redundant pushes work, so this is still useful.
-# TODO: Large PUTs to nginx aren't working. Go directly to django.
-curl -F "datafile=@$DOWNLOADS/$COOLER" -u $USERNAME:$PASSWORD \
-     -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
-     http://localhost:$PORT/api/v1/tilesets/
-curl -F "datafile=@$DOWNLOADS/$HITILE" -u $USERNAME:$PASSWORD \
-     -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
-     http://localhost:$PORT/api/v1/tilesets/
-
-curl -F "datafile=@$DOWNLOADS/$COOLER" --fail \
-     -F "filetype=cooler" -F "datatype=matrix" -F "uid=cooler" \
-     http://localhost:$PORT/api/v1/tilesets/
-curl -F "datafile=@$DOWNLOADS/$HITILE" --fail \
-     -F "filetype=hitile" -F "datatype=vector" -F "uid=hitile" \
-     http://localhost:$PORT/api/v1/tilesets/
+docker exec -it container-$STAMP sh -c \
+  "bash /home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER"
+docker exec -it container-$STAMP sh -c \
+  "bash /home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE"
 
 
 if [[ "$STAMP" != *-single ]]; then

@@ -69,6 +69,7 @@ COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/
 COPY uwsgi.ini .
 COPY uwsgi_params /home/higlass/projects/higlass-server/
+COPY upload.sh .
 # TODO: Is it confusing to have this file in a directory which is otherwise a git checkout?
 
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
