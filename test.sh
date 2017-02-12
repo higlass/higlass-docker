@@ -64,7 +64,7 @@ PASSWORD=password
 
 docker exec -it container-$STAMP sh -c \
   "cd /home/higlass/projects/higlass-server/;
-   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', '$PASSWORD', 'email?')\" \
+   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', password='$PASSWORD')\" \
      | python manage.py shell"
 
 S3=https://s3.amazonaws.com/pkerp/public
