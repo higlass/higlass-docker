@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-while getopts 'c:u:' OPT; do
+while getopts 'c:u:g:' OPT; do
   case $OPT in
     c)
       CREDENTIALS=$OPTARG
@@ -9,11 +9,14 @@ while getopts 'c:u:' OPT; do
     u)
       URL=$OPTARG
       ;;
+    g)
+      COORD=$OPTARG
+      ;;
   esac
 done
 
-if [ -z $CREDENTIALS ] || [ -z $URL ]; then
-  echo "USAGE: $0 -c CREDENTIALS -u URL" >&2
+if [ -z $CREDENTIALS ] || [ -z $URL ] || [ -z $COORD ]; then
+  echo "USAGE: $0 -c CREDENTIALS -u URL -g hg19" >&2
   exit 1
 fi
 
@@ -33,13 +36,13 @@ wget -O $DOWNLOADS/$NAME $URL
 
 if [[ "$NAME" == *.cool ]]; then
     CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
-              -F filetype=cooler -F datatype=matrix -F uid=cooler
-              -F coordSystem=hg19
+              -F filetype=cooler -F datatype=matrix
+              -F coordSystem=$COORD
               http://localhost:$PORT/api/v1/tilesets/"
 elif [[ "$NAME" == *.hitile ]]; then
     CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
-              -F filetype=hitile -F datatype=vector -F uid=hitile
-              -F coordSystem=hg19
+              -F filetype=hitile -F datatype=vector
+              -F coordSystem=$COORD
               http://localhost:$PORT/api/v1/tilesets/"
 else
     # TODO: Add other formats?
