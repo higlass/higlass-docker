@@ -29,9 +29,7 @@ mkdir -p $DOWNLOADS
 NAME=`basename $URL`
 wget -O $DOWNLOADS/$NAME $URL
 
-# debug...
-whoami
-ls -l $DOWNLOADS
+# TODO: Is coordSystem required? Should it be a parameter?
 
 if [[ "$NAME" == *.cool ]]; then
     CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
@@ -44,11 +42,10 @@ elif [[ "$NAME" == *.hitile ]]; then
               -F coordSystem=hg19
               http://localhost:$PORT/api/v1/tilesets/"
 else
+    # TODO: Add other formats?
     echo "Unrecognized file type: $NAME" >&2
     exit 1
 fi
 
 echo $CMD
 $CMD
-
-# TODO: stop server?

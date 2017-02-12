@@ -79,6 +79,7 @@ COPY logs.sh .
 
 EXPOSE 80
 
+RUN mkdir -p /data/log # TODO: Not sure this is best, but the dir needs to exist early
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
 
