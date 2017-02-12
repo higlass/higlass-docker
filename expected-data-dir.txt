@@ -1,0 +1,13 @@
+.
+./hg-data
+./hg-data/db.sqlite3
+./hg-data/log
+./hg-data/log/access.log
+./hg-data/log/error.log
+./hg-data/log/hgs.log
+./hg-tmp
+./hg-tmp/nginx-stderr---supervisor-XXXXXX.log
+./hg-tmp/nginx-stdout---supervisor-XXXXXX.log
+./hg-tmp/uwsgi-stderr---supervisor-XXXXXX.log
+./hg-tmp/uwsgi-stdout---supervisor-XXXXXX.log
+./redis-data

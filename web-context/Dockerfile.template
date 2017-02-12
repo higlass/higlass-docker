@@ -46,9 +46,6 @@ USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
 USER root
 
-ENV HIGLASS_SERVER_BASE_DIR /data
-VOLUME /data
-
 RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
@@ -75,12 +72,19 @@ RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
+
+# Helper scripts:
+COPY upload.sh .
+COPY logs.sh .
+
 EXPOSE 80
+
+ENV HIGLASS_SERVER_BASE_DIR /data
+VOLUME /data
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
 RUN echo "WORKERS: $WORKERS"
-
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.

@@ -51,6 +51,31 @@ echo $HTML | grep -o 'Department of Biomedical Informatics'
 [ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ] || false
 #echo $PING_REDIS_INSIDE | grep -o 'PONG'
 echo $VERSION_TXT | grep -o 'WEBSITE_VERSION'
+diff -y expected-data-dir.txt <(
+        pushd /tmp/higlass-docker/volume-$STAMP > /dev/null \
+        && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
+        && popd > /dev/null )
+
+USERNAME=username
+PASSWORD=password
+
+# We need an authorized user in order to upload.
+# TODO: make this less ugly!
+
+docker exec -it container-$STAMP sh -c \
+  "cd /home/higlass/projects/higlass-server/;
+   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', password='$PASSWORD')\" \
+     | python manage.py shell"
+
+S3=https://s3.amazonaws.com/pkerp/public
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
+HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
+
+docker exec -it container-$STAMP sh -c \
+  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER"
+docker exec -it container-$STAMP sh -c \
+  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE"
+
 
 if [[ "$STAMP" != *-single ]]; then
     # Only run these tests if we've started up a separate redis container.
