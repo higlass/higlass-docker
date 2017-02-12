@@ -75,6 +75,8 @@ docker build --cache-from $REPO:latest \
              --tag image-$STAMP \
              web-context
 
+rm web-context/Dockerfile # Ephemeral: We want to prevent folks from editing it by mistake.
+
 docker run --name container-$STAMP \
            --network network-$STAMP \
            --publish $PORT:80 \
@@ -95,12 +97,10 @@ if [ $PORT == 0 ]; then
   # If we are running with -l ("latest"), we also want to be sure
   # that the built image can run on its own, without any extra configuration.
   # (Test is expecting 'redis-data', even if we do not use it.)
-  for DIR in redis-data hg-data/log hg-tmp; do
-    mkdir -p $VOLUME-single/$DIR || echo "$VOLUME/$DIR already exists"
-  done
+  # As part of this, no volumes are provided on the command line:
+  # We want to be sure the image can run without any particular directory
+  # structure shared with it from the host file system.
   docker run --name container-$STAMP-single \
-             --volume $VOLUME-single/hg-data:/data \
-             --volume $VOLUME-single/hg-tmp:/tmp \
              --detach \
              --publish-all \
              image-$STAMP

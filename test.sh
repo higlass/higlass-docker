@@ -5,24 +5,24 @@ STAMP=$1
 
 # $PORT may be 0 if defaults were used, so we do need to look it up.
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
-URL=http://localhost:$PORT/api/v1/tilesets/
+TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
 echo
 echo "## TESTS ##"
 echo
-echo "If tests fail, or $URL doesn't work, try:"
+echo "If tests fail, or $TILESETS_URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP bash"
 
 set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
-until $(curl --output /dev/null --silent --fail --globoff $URL) || [[ $TRY -gt 20 ]]; do
+until $(curl --output /dev/null --silent --fail --globoff $TILESETS_URL) || [[ $TRY -gt 20 ]]; do
     echo "try $TRY"
     (( TRY++ ))
     sleep 1
 done
 set -e
 
-JSON=`curl -s $URL`
+JSON=`curl -s $TILESETS_URL`
 printf "\n\nAPI, tilesets: \n$JSON"
 
 JSON_HITS_REDIS=`curl -s http://localhost:$PORT/api/v1/tiles/`
@@ -51,10 +51,12 @@ echo $HTML | grep -o 'Department of Biomedical Informatics'
 [ -z `echo $NGINX_LOG | grep -v '/api/v1/tilesets/'` ] || false
 #echo $PING_REDIS_INSIDE | grep -o 'PONG'
 echo $VERSION_TXT | grep -o 'WEBSITE_VERSION'
-diff -y expected-data-dir.txt <(
-        pushd /tmp/higlass-docker/volume-$STAMP > /dev/null \
-        && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
-        && popd > /dev/null )
+if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
+    diff -y expected-data-dir.txt <(
+            pushd /tmp/higlass-docker/volume-$STAMP > /dev/null \
+            && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
+            && popd > /dev/null )
+fi
 
 USERNAME=username
 PASSWORD=password
@@ -76,6 +78,9 @@ docker exec -it container-$STAMP sh -c \
 docker exec -it container-$STAMP sh -c \
   "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE"
 
+# TODO: This is muddled: We want to check if the server came up, but we probably don't want to modify it.
+curl $TILESETS_URL | grep -o $COOLER
+curl $TILESETS_URL | grep -o $HITILE
 
 if [[ "$STAMP" != *-single ]]; then
     # Only run these tests if we've started up a separate redis container.
