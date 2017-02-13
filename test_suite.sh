@@ -3,7 +3,6 @@ set +o verbose # Less clutter at the start...
 
 STAMP=$1
 
-# $PORT may be 0 if defaults were used, so we do need to look it up.
 PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
 TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
@@ -69,7 +68,7 @@ curl $TILESETS_URL | grep -o $COOLER
 #curl $TILESETS_URL | grep -o $HITILE
 
 
-if [[ "$STAMP" != *-single ]]; then
+if [[ "$STAMP" != *-standalone ]]; then
     # Only run these tests if we've started up a separate redis container.
     PING_REDIS_OUTSIDE=`docker exec container-$STAMP ping -c 1 container-redis-$STAMP`
     echo $PING_REDIS_OUTSIDE | grep -o '1 packets received, 0% packet loss'
