@@ -20,7 +20,7 @@ test_standalone() {
                --publish-all \
                image-$STAMP
 
-    ./test_suite.sh $STAMP$SUFFIX
+    ./test_suite.sh $STAMP $SUFFIX
 }
 
 test_redis() {
@@ -51,7 +51,7 @@ test_redis() {
                --publish-all \
                image-$STAMP
 
-    ./test_suite.sh $STAMP$SUFFIX
+    ./test_suite.sh $STAMP $SUFFIX
 }
 
 test_standalone
