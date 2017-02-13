@@ -18,8 +18,11 @@ and then ingest data:
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 # Or pick a URL of your own
-docker exec -it higlass-container ./upload.sh -u $S3/$COOLER -g hg19
+docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
 ```
+
+**TODO**: Default config points to UIDs which won't be on a new instance.
+[This causes JS errors.](https://github.com/hms-dbmi/higlass-docker/issues/102)
 
 Visit [localhost:8888](http://localhost:8888/) in your browser.
 
