@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-while getopts 'c:u:g:' OPT; do
+while getopts 'u:g:' OPT; do
   case $OPT in
-    c)
-      CREDENTIALS=$OPTARG
-      ;;
     u)
       URL=$OPTARG
       ;;
@@ -15,35 +12,49 @@ while getopts 'c:u:g:' OPT; do
   esac
 done
 
-if [ -z $CREDENTIALS ] || [ -z $URL ] || [ -z $COORD ]; then
-  echo "USAGE: $0 -c CREDENTIALS -u URL -g hg19" >&2
+if [ -z $URL ] || [ -z $COORD ]; then
+  echo "USAGE: $0 -u URL -g hg19" >&2
   exit 1
 fi
 
 set -o verbose
 
+# TODO: Do we have a story yet where the user should care about this?
+export USERNAME=username
+export PASSWORD=password
+/home/higlass/projects/create_user.sh
+CREDENTIALS=$USERNAME:$PASSWORD
+
 PORT=8888
 python /home/higlass/projects/higlass-server/manage.py runserver localhost:$PORT &
+DJANGO_PID=$!
 
-# TODO: explicitly wait for server to start
+TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
+
+set +e # So we don't exit travis, instead of exiting the loop.
+TRY=0;
+until $(curl --output /dev/null --silent --fail --globoff $TILESETS_URL) || [[ $TRY -gt 20 ]]; do
+    echo "try $TRY"
+    (( TRY++ ))
+    sleep 1
+done
+set -e
 
 DOWNLOADS=/tmp/downloads
 mkdir -p $DOWNLOADS
 NAME=`basename $URL`
 wget -O $DOWNLOADS/$NAME $URL
 
-# TODO: Is coordSystem required? Should it be a parameter?
-
 if [[ "$NAME" == *.cool ]]; then
     CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
               -F filetype=cooler -F datatype=matrix
               -F coordSystem=$COORD
-              http://localhost:$PORT/api/v1/tilesets/"
+              $TILESETS_URL"
 elif [[ "$NAME" == *.hitile ]]; then
     CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
               -F filetype=hitile -F datatype=vector
               -F coordSystem=$COORD
-              http://localhost:$PORT/api/v1/tilesets/"
+              $TILESETS_URL"
 else
     # TODO: Add other formats?
     echo "Unrecognized file type: $NAME" >&2
@@ -52,3 +63,5 @@ fi
 
 echo $CMD
 $CMD
+
+kill $DJANGO_PID

@@ -58,29 +58,16 @@ if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
             && popd > /dev/null )
 fi
 
-USERNAME=username
-PASSWORD=password
-
-# We need an authorized user in order to upload.
-# TODO: make this less ugly!
-
-docker exec -it container-$STAMP sh -c \
-  "cd higlass-server/;
-   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', password='$PASSWORD')\" \
-     | python manage.py shell"
 
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
-#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
-
-docker exec -it container-$STAMP ./upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER -g hg19
-#docker exec -it container-$STAMP sh -c \
-#  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE -g hg19"
-
-# TODO: This is muddled: We want to check if the server came up, but we probably don't want to modify it.
-# TODO: Is one file enough?
+docker exec -it container-$STAMP ./upload.sh -u $S3/$COOLER -g hg19
 curl $TILESETS_URL | grep -o $COOLER
+
+#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
+#docker exec -it container-$STAMP ./upload.sh  -u $S3/$HITILE -g hg19
 #curl $TILESETS_URL | grep -o $HITILE
+
 
 if [[ "$STAMP" != *-single ]]; then
     # Only run these tests if we've started up a separate redis container.
