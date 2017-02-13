@@ -9,11 +9,22 @@ tests that it works, and if there are no errors in the PR, pushes the image to
 You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
-```
-docker run --detach --publish 8888:80 gehlenborglab/higlass:v0.0.3
+```bash
+docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.7
 ```
 
-Then visit [localhost:8888](http://localhost:8888/) in your browser.
+and then ingest data:
+```bash
+S3=https://s3.amazonaws.com/pkerp/public
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
+# Or pick a URL of your own
+docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
+```
+
+**TODO**: Default config points to UIDs which won't be on a new instance.
+[This causes JS errors.](https://github.com/hms-dbmi/higlass-docker/issues/102)
+
+Visit [localhost:8888](http://localhost:8888/) in your browser.
 
 
 ## Deployment
@@ -33,18 +44,15 @@ check out the corresponding repos.
 To work on the Docker deployment, checkout this repo, install Docker, and then:
 
 ```bash
-./build.sh -l
+./test_runner.sh
 
-# If that doesn't work, check the port mapping:
+# You can see the containers that it has started:
 docker ps
 
-# and then check the logs
-docker logs container-TIMESTAMP
-
-# or connect to an already running container:
+# and you can connect to a running container:
 docker exec --interactive --tty container-TIMESTAMP bash
 
-# remove all containers (use with caution):
+# or remove all containers (use with caution):
 docker ps -a -q | xargs docker stop | xargs docker rm
 ```
 

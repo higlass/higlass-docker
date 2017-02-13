@@ -2,9 +2,9 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION=0.2.4 # python latest.py hms-dbmi/higlass-server
-WEBSITE_VERSION=0.4.1 # python latest.py hms-dbmi/higlass-website
-TAG='latest'
+TAG='v0.0.7'
+SERVER_VERSION='0.2.4' # python latest.py hms-dbmi/higlass-server
+WEBSITE_VERSION='0.5.0' # python latest.py hms-dbmi/higlass-website
 
 while getopts 's:w:l' OPT; do
   case $OPT in
@@ -15,6 +15,7 @@ while getopts 's:w:l' OPT; do
       WORKERS=$OPTARG
       ;;
     l)
+      TAG='latest'
       SERVER_VERSION=`python latest.py hms-dbmi/higlass-server` \
         || ( echo "'sudo pip install requests' should fix this."; exit 1 )
       WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
