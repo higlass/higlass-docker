@@ -73,9 +73,8 @@ RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
 
-# Helper scripts:
-COPY upload.sh .
-COPY logs.sh .
+# Helper scripts
+COPY *.sh ./
 
 EXPOSE 80
 

@@ -2,16 +2,16 @@
 set +o verbose # Less clutter at the start...
 
 STAMP=$1
+SUFFIX=$2
 
-# $PORT may be 0 if defaults were used, so we do need to look it up.
-PORT=`docker port container-$STAMP | perl -pne 's/.*://'`
+PORT=`docker port container-$STAMP$SUFFIX | perl -pne 's/.*://'`
 TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
 echo
-echo "## TESTS ##"
+echo "## TEST: $STAMP$SUFFIX ##"
 echo
 echo "If tests fail, or $TILESETS_URL doesn't work, try:"
-echo "  docker exec --interactive --tty container-$STAMP bash"
+echo "  docker exec --interactive --tty container-$STAMP$SUFFIX bash"
 
 set +e # So we don't exit travis, instead of exiting the loop.
 TRY=0;
@@ -31,7 +31,7 @@ printf "\n\nAPI, tiles: \n$JSON_HITS_REDIS"
 HTML=`curl -s http://localhost:$PORT/`
 printf "\n\nhomepage: \n$HTML" | head -c 200
 
-NGINX_LOG=`docker exec container-$STAMP cat /var/log/nginx/error.log`
+NGINX_LOG=`docker exec container-$STAMP$SUFFIX cat /var/log/nginx/error.log`
 printf "\n\nnginx log: \n$NGINX_LOG"
 # TODO: Make assertions against this.
 
@@ -58,33 +58,20 @@ if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
             && popd > /dev/null )
 fi
 
-USERNAME=username
-PASSWORD=password
-
-# We need an authorized user in order to upload.
-# TODO: make this less ugly!
-
-docker exec -it container-$STAMP sh -c \
-  "cd higlass-server/;
-   echo \"import django.contrib.auth; django.contrib.auth.models.User.objects.create_user('$USERNAME', password='$PASSWORD')\" \
-     | python manage.py shell"
 
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
-#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
-
-docker exec -it container-$STAMP ./upload.sh -c $USERNAME:$PASSWORD -u $S3/$COOLER -g hg19
-#docker exec -it container-$STAMP sh -c \
-#  "/home/higlass/projects/upload.sh -c $USERNAME:$PASSWORD -u $S3/$HITILE -g hg19"
-
-# TODO: This is muddled: We want to check if the server came up, but we probably don't want to modify it.
-# TODO: Is one file enough?
+docker exec -it container-$STAMP$SUFFIX ./upload.sh -u $S3/$COOLER -g hg19
 curl $TILESETS_URL | grep -o $COOLER
+
+#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
+#docker exec -it container-$STAMP ./upload.sh  -u $S3/$HITILE -g hg19
 #curl $TILESETS_URL | grep -o $HITILE
 
-if [[ "$STAMP" != *-single ]]; then
+
+if [[ "$SUFFIX" != '-standalone' ]]; then
     # Only run these tests if we've started up a separate redis container.
-    PING_REDIS_OUTSIDE=`docker exec container-$STAMP ping -c 1 container-redis-$STAMP`
+    PING_REDIS_OUTSIDE=`docker exec container-$STAMP$SUFFIX ping -c 1 container-redis-$STAMP`
     echo $PING_REDIS_OUTSIDE | grep -o '1 packets received, 0% packet loss'
 
     # TODO
@@ -104,4 +91,4 @@ set +o verbose
 echo
 echo 'PASS!'
 echo "  visit:   http://localhost:$PORT"
-echo "  connect: docker exec --interactive --tty container-$STAMP bash"
+echo "  connect: docker exec --interactive --tty container-$STAMP$SUFFIX bash"
