@@ -42,7 +42,6 @@ test_redis() {
     SUFFIX=-with-redis
     docker run --name container-$STAMP$SUFFIX \
                --network network-$STAMP \
-               --publish $PORT:80 \
                --volume $VOLUME/hg-data:/data \
                --volume $VOLUME/hg-tmp:/tmp \
                --env REDIS_HOST=$REDIS_HOST \

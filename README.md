@@ -20,11 +20,16 @@ COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 # Or pick a URL of your own
 docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
 ```
+(Developer note: Without `-t` the script hangs and the temporary django is left running.)
 
-**TODO**: Default config points to UIDs which won't be on a new instance.
-[This causes JS errors.](https://github.com/hms-dbmi/higlass-docker/issues/102)
+The default viewconfig points to UIDs which won't be on a new instance,
+so you'll need a new viewconfig that references the data you've uploaded:
+```bash
+ID=`docker exec higlass-container ./create_viewconf.sh '{"views":[]}'`
+echo "http://localhost:8888/?config=$ID"
+```
 
-Visit [localhost:8888](http://localhost:8888/) in your browser.
+Visit that URL to see your data in HiGlass.
 
 
 ## Deployment
