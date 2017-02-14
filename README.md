@@ -13,6 +13,27 @@ It is also easy to launch your own. Install Docker, and then:
 docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.7
 ```
 
+The default viewconfig points to UIDs which won't be on a new instance,
+so you'll need a new empty viewconfig:
+```json
+{TODO: minimal viewconfig, or have default install be empty}
+```
+
+Then load it via the API:
+```bash
+ID=$(docker exec higlass-container ./create_viewconf.sh "`cat  your-config.json`")
+```
+**TODO**: This is ugly. Could it read stdin? Or should we just tell folks to curl?
+
+You should be able to download your viewconfig from the API,
+and it should define a functional UI:
+```bash
+echo http://localhost:8888/api/v1/viewconfs/?d=$ID
+echo http://localhost:8888/?config=$ID
+```
+
+Visit that URL to see an empty HiGlass.
+
 and then ingest data:
 ```bash
 S3=https://s3.amazonaws.com/pkerp/public
@@ -25,26 +46,7 @@ Developer notes:
 - **TODO**: Ideally, user specifies UID. Failing that, send all output to stdout,
 except for ID, so this can be back-ticked.
 
-The default viewconfig points to UIDs which won't be on a new instance,
-so you'll need a new viewconfig that references the data you've uploaded:
-```json
-{TODO: minimal viewconfig}
-```
-
-Then load it via the API:
-```bash
-ID=$(docker exec higlass-container ./create_viewconf.sh "`cat  your-config.json`")
-```
-**TODO**: This is ugly. Could it read stdin? Or should we just tell folks to curl?
-
-You should be able to download your config from the API,
-and it should define a functional UI:
-```bash
-echo http://localhost:8888/api/v1/viewconfs/?d=$ID
-echo http://localhost:8888/?config=$ID
-```
-
-Visit that URL to see your data in HiGlass.
+You data is now available, and you can add it to a view in the UI.
 
 
 ## Deployment
