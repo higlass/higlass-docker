@@ -20,13 +20,28 @@ COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 # Or pick a URL of your own
 docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
 ```
-(Developer note: Without `-t` the script hangs and the temporary django is left running.)
+Developer notes: 
+- Without `-t` the script hangs and the temporary django is left running.
+- **TODO**: Ideally, user specifies UID. Failing that, send all output to stdout,
+except for ID, so this can be back-ticked.
 
 The default viewconfig points to UIDs which won't be on a new instance,
 so you'll need a new viewconfig that references the data you've uploaded:
+```json
+{TODO: minimal viewconfig}
+```
+
+Then load it via the API:
 ```bash
-ID=`docker exec higlass-container ./create_viewconf.sh '{"views":[]}'`
-echo "http://localhost:8888/?config=$ID"
+ID=$(docker exec higlass-container ./create_viewconf.sh "`cat  your-config.json`")
+```
+**TODO**: This is ugly. Could it read stdin? Or should we just tell folks to curl?
+
+You should be able to download your config from the API,
+and it should define a functional UI:
+```bash
+echo http://localhost:8888/api/v1/viewconfs/?d=$ID
+echo http://localhost:8888/?config=$ID
 ```
 
 Visit that URL to see your data in HiGlass.
