@@ -25,7 +25,7 @@ while getopts 's:w:l' OPT; do
 done
 
 if [ -z $WORKERS ]; then
-  echo "USAGE: $0 [-l] -w WORKERS" >&2
+  echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
   exit 1
 fi
 

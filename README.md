@@ -13,6 +13,27 @@ It is also easy to launch your own. Install Docker, and then:
 docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.7
 ```
 
+The default viewconfig points to UIDs which won't be on a new instance,
+so you'll need a new empty viewconfig:
+```json
+{TODO: minimal viewconfig, or have default install be empty}
+```
+
+Then load it via the API:
+```bash
+ID=$(docker exec higlass-container ./create_viewconf.sh "`cat  your-config.json`")
+```
+**TODO**: This is ugly. Could it read stdin? Or should we just tell folks to curl?
+
+You should be able to download your viewconfig from the API,
+and it should define a functional UI:
+```bash
+echo http://localhost:8888/api/v1/viewconfs/?d=$ID
+echo http://localhost:8888/?config=$ID
+```
+
+Visit that URL to see an empty HiGlass.
+
 and then ingest data:
 ```bash
 S3=https://s3.amazonaws.com/pkerp/public
@@ -20,11 +41,12 @@ COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 # Or pick a URL of your own
 docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
 ```
+Developer notes: 
+- Without `-t` the script hangs and the temporary django is left running.
+- **TODO**: Ideally, user specifies UID. Failing that, send all output to stdout,
+except for ID, so this can be back-ticked.
 
-**TODO**: Default config points to UIDs which won't be on a new instance.
-[This causes JS errors.](https://github.com/hms-dbmi/higlass-docker/issues/102)
-
-Visit [localhost:8888](http://localhost:8888/) in your browser.
+You data is now available, and you can add it to a view in the UI.
 
 
 ## Deployment
