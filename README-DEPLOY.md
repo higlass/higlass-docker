@@ -34,9 +34,7 @@ sudo apt-get -y install docker-engine
 
 Finally, call our script to setup all the containers.
 ```
-git clone https://github.com/hms-dbmi/higlass-docker.git
-cd higlass-docker
-./build.sh -p80 -v/choose/a/directory/for/data
+curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/master/start_production.sh | bash
 ```
 
 When you're done with the instance, clean up:

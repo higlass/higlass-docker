@@ -52,9 +52,14 @@ You data is now available, and you can add it to a view in the UI.
 ## Deployment
 
 Only one Docker container is required, but in production, you'll probably
-want other containers for nginx, redis, etc. Our current
-[deployment strategy](README-DEPLOY.md) wraps up most of the details in the
-`build.sh` script.
+want other containers for nginx, redis, etc. Docker Compose is the usual tool
+for this, but at the present it does not support an analog to the `--from-cache`
+option. Instead, for the moment, we are doing this:
+```
+curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/master/start_production.sh | bash
+```
+
+For more details, read [README-DEPLOY](README-DEPLOY.md).
 
 
 ## Development

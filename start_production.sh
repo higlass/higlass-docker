@@ -2,7 +2,10 @@
 set -e
 set -v
 
-IMAGE=gehlenborglab/higlass:latest
+# Docker image is pinned here, so that you can checkout older
+# versions of this script, and get reproducible deployments.
+# Bump version number as needed.
+IMAGE=gehlenborglab/higlass:v0.0.7
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 PORT=0
 
