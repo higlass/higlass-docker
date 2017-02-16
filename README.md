@@ -10,8 +10,15 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```bash
-docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.8
+docker run --detach \
+           --publish 8888:80 \
+           --volume ~/hg-data:/data \
+           --volume ~/hg-tmp:/tmp \
+           --name higlass-container \
+           gehlenborglab/higlass:v0.0.8
 ```
+The two `--volume` options are necessary to prevent the files you upload from consuming
+all of relatively small space allocated for the root volume.
 
 The default viewconfig points to UIDs which won't be on a new instance,
 so you'll need a new empty viewconfig:
