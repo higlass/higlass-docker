@@ -10,7 +10,7 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```bash
-docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.7
+docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.8
 ```
 
 The default viewconfig points to UIDs which won't be on a new instance,
@@ -56,7 +56,7 @@ want other containers for nginx, redis, etc. Docker Compose is the usual tool
 for this, but at the present it does not support an analog to the `--from-cache`
 option. Instead, for the moment, we are doing this:
 ```
-curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/master/start_production.sh | bash
+curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/v0.0.8/start_production.sh | bash
 ```
 
 For more details, read [README-DEPLOY](README-DEPLOY.md).
