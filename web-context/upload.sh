@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+trap 'pkill -P $$' EXIT # Kill the Django subprocess.
+
 while getopts 'u:g:' OPT; do
   case $OPT in
     u)
@@ -27,7 +29,6 @@ CREDENTIALS=$USERNAME:$PASSWORD
 
 PORT=8888
 python /home/higlass/projects/higlass-server/manage.py runserver localhost:$PORT &
-DJANGO_PID=$!
 
 TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
@@ -63,5 +64,3 @@ fi
 
 echo $CMD
 $CMD
-
-kill $DJANGO_PID
