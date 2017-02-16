@@ -4,15 +4,20 @@ set -v
 
 # Docker image is pinned here, so that you can checkout older
 # versions of this script, and get reproducible deployments.
-# Bump version number as needed.
-IMAGE=gehlenborglab/higlass:v0.0.7
+DOCKER_VERSION=v0.0.8
+IMAGE=gehlenborglab/higlass:$DOCKER_VERSION
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 PORT=0
 
 # NOTE: No parameters should change the behavior in a deep way:
 # We want the tests to cover the same setup as in production.
 
-while getopts 'i:s:p:v:n:' OPT; do
+usage() {
+  echo "USAGE: $0 [-i IMAGE] [-s STAMP] [-p PORT] [-v VOLUME]" >&2
+  exit 1
+}
+
+while getopts 'i:s:p:v:' OPT; do
   case $OPT in
     i)
       IMAGE=$OPTARG
@@ -25,6 +30,9 @@ while getopts 'i:s:p:v:n:' OPT; do
       ;;
     v)
       VOLUME=$OPTARG
+      ;;
+    *)
+      usage
       ;;
   esac
 done

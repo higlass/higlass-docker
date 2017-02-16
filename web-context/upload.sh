@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
+usage() {
+  echo "USAGE: $0 -u URL -g hg19" >&2
+  exit 1
+}
+
 while getopts 'u:g:' OPT; do
   case $OPT in
     u)
@@ -9,12 +14,14 @@ while getopts 'u:g:' OPT; do
     g)
       COORD=$OPTARG
       ;;
+    *)
+      usage
+      ;;
   esac
 done
 
 if [ -z $URL ] || [ -z $COORD ]; then
-  echo "USAGE: $0 -u URL -g hg19" >&2
-  exit 1
+  usage
 fi
 
 set -o verbose

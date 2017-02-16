@@ -2,9 +2,14 @@
 set -e
 
 STAMP='default'
-TAG='v0.0.7'
+TAG=$(grep DOCKER_VERSION start_production.sh | head -n1 | perl -pne 's/.*=//')
 SERVER_VERSION='0.2.4' # python latest.py hms-dbmi/higlass-server
 WEBSITE_VERSION='0.5.0' # python latest.py hms-dbmi/higlass-website
+
+usage() {
+  echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
+  exit 1
+}
 
 while getopts 's:w:l' OPT; do
   case $OPT in
@@ -21,12 +26,15 @@ while getopts 's:w:l' OPT; do
       WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
       echo "SERVER_VERSION: $SERVER_VERSION"
       echo "WEBSITE_VERSION: $WEBSITE_VERSION"
+      ;;
+    *)
+      usage
+      ;;
   esac
 done
 
 if [ -z $WORKERS ]; then
-  echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
-  exit 1
+  usage
 fi
 
 set -o verbose # Keep this after the usage message to reduce clutter.
