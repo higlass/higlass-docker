@@ -4,14 +4,14 @@ set -e
 trap 'pkill -P $$' EXIT # Kill the Django subprocess.
 
 usage() {
-  echo "USAGE: $0 -u URL -g hg19" >&2
+  echo "USAGE: $0 -p PATH -g hg19" >&2
   exit 1
 }
 
-while getopts 'u:g:' OPT; do
+while getopts 'p:g:' OPT; do
   case $OPT in
-    u)
-      URL=$OPTARG
+    p)
+      PATH=$OPTARG
       ;;
     g)
       COORD=$OPTARG
@@ -48,18 +48,13 @@ until $(curl --output /dev/null --silent --fail --globoff $TILESETS_URL) || [[ $
 done
 set -e
 
-DOWNLOADS=/tmp/downloads
-mkdir -p $DOWNLOADS
-NAME=`basename $URL`
-wget -O $DOWNLOADS/$NAME $URL
-
-if [[ "$NAME" == *.cool ]]; then
-    CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
+if [[ "$PATH" == *.cool ]]; then
+    CMD="curl -F datafile=@$PATH -u $CREDENTIALS
               -F filetype=cooler -F datatype=matrix
               -F coordSystem=$COORD
               $TILESETS_URL"
-elif [[ "$NAME" == *.hitile ]]; then
-    CMD="curl -F datafile=@$DOWNLOADS/$NAME -u $CREDENTIALS
+elif [[ "$PATH" == *.hitile ]]; then
+    CMD="curl -F datafile=@$PATH -u $CREDENTIALS
               -F filetype=hitile -F datatype=vector
               -F coordSystem=$COORD
               $TILESETS_URL"

@@ -34,12 +34,25 @@ echo http://localhost:8888/?config=$ID
 
 Visit that URL to see an empty HiGlass.
 
-and then ingest data:
+### Ingest data
+
+To ingest data, you'll need to determine which directory on your machine corresponds
+to `/tmp` in the docker container:
 ```bash
-S3=https://s3.amazonaws.com/pkerp/public
-COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
-# Or pick a URL of your own
-docker exec -t higlass-container ./upload.sh -u $S3/$COOLER -g hg19
+DOCKER_TMP=$(docker inspect higlass-container | grep :/tmp | perl -pne 's/\s*"//;s/:.*//')
+```
+
+Then either move or link your files into that directory, and confirm that it is visible
+within the container:
+```bash
+ln ~/your-data.hitile $DOCKER_TMP
+docker exec higlass-container ls /tmp
+# Should include your-data.hitile
+```
+
+With the data available within the container, it can be ingested:
+```
+docker exec -t higlass-container ./upload.sh -p /tmp/your-data.hitile -g hg19
 ```
 Developer notes: 
 - Without `-t` the script hangs and the temporary django is left running.

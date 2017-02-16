@@ -58,15 +58,17 @@ if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
             && popd > /dev/null )
 fi
 
-
+# Get small sample file:
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
-docker exec -it container-$STAMP$SUFFIX ./upload.sh -u $S3/$COOLER -g hg19
-curl $TILESETS_URL | grep -o $COOLER
+[ -e /tmp/$COOLER ] || wget -O /tmp/$COOLER $S3/$COOLER
 
-#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
-#docker exec -it container-$STAMP ./upload.sh  -u $S3/$HITILE -g hg19
-#curl $TILESETS_URL | grep -o $HITILE
+# Upload: This is essentially copied from the README:
+DOCKER_TMP=$(docker inspect container-$STAMP$SUFFIX | grep :/tmp | perl -pne 's/\s*"//;s/:.*//')
+echo $DOCKER_TMP
+ln /tmp/$COOLER $DOCKER_TMP
+docker exec container-$STAMP$SUFFIX ls /tmp #| grep -o $COOLER
+docker exec -t container-$STAMP$SUFFIX ./upload.sh -p /tmp/$COOLER -g hg19
 
 
 if [[ "$SUFFIX" != '-standalone' ]]; then
