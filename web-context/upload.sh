@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-trap 'pkill -P $$' EXIT # Kill the Django subprocess.
+# TODO needs apt-get for pkill: trap 'pkill -P $$' EXIT # Kill the Django subprocess.
 
 usage() {
   echo "USAGE: $0 -p PATH -g hg19" >&2

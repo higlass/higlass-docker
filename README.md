@@ -8,9 +8,11 @@ tests that it works, and if there are no errors in the PR, pushes the image to
 
 You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
-It is also easy to launch your own. Install Docker, and then:
+It is also easy to launch your own. You'll need a directory where data
+to be shared with higlass can be stored: we'll call this `~/higlass-share`,
+but you can choose any name. Install Docker, and then:
 ```bash
-docker run --detach --publish 8888:80 --name higlass-container gehlenborglab/higlass:v0.0.8
+docker run --detach --publish 8888:80 --volume ~/higlass-share:/share --name higlass-container gehlenborglab/higlass:v0.0.8
 ```
 
 The default viewconfig points to UIDs which won't be on a new instance,
@@ -36,23 +38,17 @@ Visit that URL to see an empty HiGlass.
 
 ### Ingest data
 
-To ingest data, you'll need to determine which directory on your machine corresponds
-to `/tmp` in the docker container:
-```bash
-DOCKER_TMP=$(docker inspect higlass-container | grep :/tmp | perl -pne 's/\s*"//;s/:.*//')
-```
-
-Then either move or link your files into that directory, and confirm that it is visible
+Either move or link your files into the shared directory, and confirm that it is visible
 within the container:
 ```bash
-ln ~/your-data.hitile $DOCKER_TMP
-docker exec higlass-container ls /tmp
+ln ~/higlass-share/your-data.hitile $DOCKER_TMP
+docker exec higlass-container ls /share
 # Should include your-data.hitile
 ```
 
 With the data available within the container, it can be ingested:
 ```
-docker exec -t higlass-container ./upload.sh -p /tmp/your-data.hitile -g hg19
+docker exec -t higlass-container ./upload.sh -p /share/your-data.hitile -g hg19
 ```
 Developer notes: 
 - Without `-t` the script hangs and the temporary django is left running.

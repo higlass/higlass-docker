@@ -18,7 +18,9 @@ test_standalone() {
     # If this starts to get sufficiently complicated that we want to put it in a script
     # by itself, then it has gotten too complicated.
     SUFFIX=-standalone
+    mkdir -p /tmp/hg-share-$STAMP$SUFFIX
     docker run --name container-$STAMP$SUFFIX \
+               --volume /tmp/hg-share-$STAMP$SUFFIX:/share \
                --detach \
                --publish-all \
                image-$STAMP
