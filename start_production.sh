@@ -49,11 +49,15 @@ done
 
 REDIS_HOST=container-redis-$STAMP
 
+# TODO: Should probably make a Dockerfile if configuration gets any more complicated.
+SCRIPT_DIR=$( cd "$( dirname "$0" )" && pwd )
+REDIS_CONF=/usr/local/etc/redis/redis.conf
 docker run --name $REDIS_HOST \
            --network network-$STAMP \
            --volume $VOLUME/redis-data:/data \
+           --volume $SCRIPT_DIR/redis-context/redis.conf:$REDIS_CONF \
            --detach redis:3.2.7-alpine \
-           redis-server
+           redis-server $REDIS_CONF
 
 docker run --name container-$STAMP-with-redis \
            --network network-$STAMP \
