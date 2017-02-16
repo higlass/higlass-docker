@@ -14,6 +14,9 @@ STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 
 
 test_standalone() {
+    # Keep this simple: We want folks just to be able to run the bare Docker container.
+    # If this starts to get sufficiently complicated that we want to put it in a script
+    # by itself, then it has gotten too complicated.
     SUFFIX=-standalone
     docker run --name container-$STAMP$SUFFIX \
                --detach \
@@ -24,31 +27,7 @@ test_standalone() {
 }
 
 test_redis() {
-    docker network create --driver bridge network-$STAMP
-
-    VOLUME=/tmp/higlass-docker/volume-$STAMP
-    for DIR in redis-data hg-data/log hg-tmp; do
-      mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
-    done
-
-    REDIS_HOST=container-redis-$STAMP
-
-    docker run --name $REDIS_HOST \
-               --network network-$STAMP \
-               --volume $VOLUME/redis-data:/data \
-               --detach redis:3.2.7-alpine \
-               redis-server
-
-    SUFFIX=-with-redis
-    docker run --name container-$STAMP$SUFFIX \
-               --network network-$STAMP \
-               --volume $VOLUME/hg-data:/data \
-               --volume $VOLUME/hg-tmp:/tmp \
-               --env REDIS_HOST=$REDIS_HOST \
-               --env REDIS_PORT=6379 \
-               --detach \
-               --publish-all \
-               image-$STAMP
+    ./start_production.sh -s $STAMP -i image-$STAMP
 
     ./test_suite.sh $STAMP $SUFFIX
 }
