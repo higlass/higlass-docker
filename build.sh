@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
+docker_version() {
+  grep DOCKER_VERSION start_production.sh \
+    | head -n1 \
+    | perl -pne 's/.*=//'
+}
+
 STAMP='default'
-TAG=$(grep DOCKER_VERSION start_production.sh | head -n1 | perl -pne 's/.*=//')
+DOCKER_VERSION=$(docker_version)
 SERVER_VERSION='0.2.4' # python latest.py hms-dbmi/higlass-server
 WEBSITE_VERSION='0.5.0' # python latest.py hms-dbmi/higlass-website
 
@@ -20,7 +26,7 @@ while getopts 's:w:l' OPT; do
       WORKERS=$OPTARG
       ;;
     l)
-      TAG='latest'
+      DOCKER_VERSION='latest'
       SERVER_VERSION=`python latest.py hms-dbmi/higlass-server` \
         || ( echo "'sudo pip install requests' should fix this."; exit 1 )
       WEBSITE_VERSION=`python latest.py hms-dbmi/higlass-website`
@@ -44,8 +50,8 @@ perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VE
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
-docker pull $REPO:$TAG
-docker build --cache-from $REPO:$TAG \
+docker pull $REPO:$DOCKER_VERSION
+docker build --cache-from $REPO:$DOCKER_VERSION \
              --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context
