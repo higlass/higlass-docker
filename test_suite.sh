@@ -8,7 +8,7 @@ PORT=`docker port container-$STAMP$SUFFIX | perl -pne 's/.*://'`
 TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
 echo
-echo "## TEST: $STAMP$SUFFIX ##"
+echo "## TEST: container-$STAMP$SUFFIX ##"
 echo
 echo "If tests fail, or $TILESETS_URL doesn't work, try:"
 echo "  docker exec --interactive --tty container-$STAMP$SUFFIX bash"
@@ -66,7 +66,7 @@ docker exec -it container-$STAMP$SUFFIX ./upload.sh -u $S3/$COOLER -g hg19
 curl $TILESETS_URL | grep -o $COOLER
 
 # Large file upload:
-
+# TODO: 30G
 SIZE=4G
 docker exec -it container-$STAMP$SUFFIX sh -c "truncate -s $SIZE /data/$SIZE.hitile && curl --fail -u username:password -F datafile=@/data/$SIZE.hitile -F filetype=cooler -F datatype=matrix -F coordSystem=hg19 http://127.0.0.1/api/v1/tilesets/"
 
