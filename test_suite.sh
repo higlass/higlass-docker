@@ -58,16 +58,17 @@ if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
             && popd > /dev/null )
 fi
 
+# Small file upload:
 
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 docker exec -it container-$STAMP$SUFFIX ./upload.sh -u $S3/$COOLER -g hg19
 curl $TILESETS_URL | grep -o $COOLER
 
-#HITILE=wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile
-#docker exec -it container-$STAMP ./upload.sh  -u $S3/$HITILE -g hg19
-#curl $TILESETS_URL | grep -o $HITILE
+# Large file upload:
 
+SIZE=4G
+docker exec -it container-$STAMP$SUFFIX sh -c "truncate -s $SIZE /data/$SIZE.hitile && curl --fail -u username:password -F datafile=@/data/$SIZE.hitile -F filetype=cooler -F datatype=matrix -F coordSystem=hg19 http://127.0.0.1/api/v1/tilesets/"
 
 if [[ "$SUFFIX" != '-standalone' ]]; then
     # Only run these tests if we've started up a separate redis container.
