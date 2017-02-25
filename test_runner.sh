@@ -27,8 +27,8 @@ test_standalone() {
 }
 
 test_redis() {
+    SUFFIX=-with-redis
     ./start_production.sh -s $STAMP -i image-$STAMP
-
     ./test_suite.sh $STAMP $SUFFIX
 }
 

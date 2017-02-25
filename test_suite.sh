@@ -59,6 +59,7 @@ if [ -e /tmp/higlass-docker/volume-$STAMP ]; then
 fi
 
 
+# TODO: There's a new right way to upload, so remove this?
 S3=https://s3.amazonaws.com/pkerp/public
 COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 docker exec -it container-$STAMP$SUFFIX ./upload.sh -u $S3/$COOLER -g hg19
@@ -71,6 +72,12 @@ curl $TILESETS_URL | grep -o $COOLER
 
 if [[ "$SUFFIX" != '-standalone' ]]; then
     # Only run these tests if we've started up a separate redis container.
+    wget -P /tmp/higlass-docker/volume-$STAMP$SUFFIX/hg-tmp https://s3.amazonaws.com/pkerp/public/$COOLER
+    docker exec container-$STAMP$SUFFIX ls /tmp | grep -o $COOLER
+
+    docker exec container-$STAMP$SUFFIX sh -c "cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid cooler-demo"
+    curl $TILESETS_URL | grep -o $COOLER
+
     PING_REDIS_OUTSIDE=`docker exec container-$STAMP$SUFFIX ping -c 1 container-redis-$STAMP`
     echo $PING_REDIS_OUTSIDE | grep -o '1 packets received, 0% packet loss'
 
