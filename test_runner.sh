@@ -10,7 +10,7 @@ error_report() {
 trap 'error_report' ERR
 
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-./build.sh -l -w 2 -s $STAMP
+./build.sh -l -w 4 -s $STAMP
 
 
 test_standalone() {
