@@ -9,7 +9,7 @@ docker_version() {
 
 STAMP='default'
 DOCKER_VERSION=$(docker_version)
-SERVER_VERSION='0.2.5' # python latest.py hms-dbmi/higlass-server
+SERVER_VERSION='0.2.4' # python latest.py hms-dbmi/higlass-server
 WEBSITE_VERSION='0.5.6' # python latest.py hms-dbmi/higlass-website
 
 usage() {
