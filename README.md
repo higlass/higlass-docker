@@ -15,10 +15,34 @@ docker run --detach \
            --volume ~/hg-data:/data \
            --volume ~/hg-tmp:/tmp \
            --name higlass-container \
-           gehlenborglab/higlass:v0.0.9
+           gehlenborglab/higlass:v0.0.15
 ```
 The two `--volume` options are necessary to prevent the files you upload from consuming
 all of relatively small space allocated for the root volume.
+
+For ingest, you'll need to put your files in one of the shared directories: Then it will
+be available to scripts running inside the container.
+```bash
+# For example...
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool 
+wget -P ~/hg-tmp https://s3.amazonaws.com/pkerp/public/$COOLER
+
+# Confirm that the file is visible inside the container:
+docker exec higlass-container ls /tmp
+
+# Ingest:
+ID=cooler-demo
+docker exec higlass-container sh -c "mkdir -p /data/log; touch /data/log/hgs.log; cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
+# TODO: This could be more compact.
+```
+
+You can now hit the API to confirm that the file was ingested successfully:
+```
+# Summary:
+curl http://localhost:8888/api/v1/tileset_info/?d=$ID
+# Details:
+curl http://localhost:8888/api/v1/tiles/?d=$ID.0.0.0
+```
 
 The default viewconfig points to UIDs which won't be on a new instance,
 so you'll need a new empty viewconfig:
