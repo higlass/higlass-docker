@@ -42,7 +42,8 @@ class CommandlineTest(unittest.TestCase):
     def test_version_txt(self):
         self.assertRun(
             'curl -s http://localhost:{PORT}/version.txt',
-            [r'SERVER_VERSION: \d+\.\d+\.\d+', r'WEBSITE_VERSION: \d+\.\d+\.\d+']
+            [r'SERVER_VERSION: \d+\.\d+\.\d+',
+             r'WEBSITE_VERSION: \d+\.\d+\.\d+']
         )
 
     def test_html(self):
@@ -54,4 +55,16 @@ class CommandlineTest(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(CommandlineTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    lines = [
+        'browse:  http://localhost:{PORT}/',
+        'shell:   docker exec --interactive --tty container-{STAMP}{SUFFIX} bash',
+        'logs:    docker exec container-{STAMP}{SUFFIX} ./logs.sh'
+    ]
+    for line in lines:
+        print(line.format(**os.environ))
+    if result.wasSuccessful():
+        print('PASS!')
+    else:
+        print('FAIL!')
+        exit(1)

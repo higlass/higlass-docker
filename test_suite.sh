@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set +o verbose # Less clutter at the start...
 
-STAMP=$1
-SUFFIX=$2
-
 PORT=`docker port container-$STAMP$SUFFIX | perl -pne 's/.*://'`
 TILESETS_URL=http://localhost:$PORT/api/v1/tilesets/
 
@@ -93,9 +90,3 @@ if [[ "$SUFFIX" != '-standalone' ]]; then
     # -- OR --
     # install the Redis client
 fi
-
-set +o verbose
-echo
-echo 'PASS!'
-echo "  visit:   http://localhost:$PORT"
-echo "  connect: docker exec --interactive --tty container-$STAMP$SUFFIX bash"

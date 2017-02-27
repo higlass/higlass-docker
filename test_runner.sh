@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-error_report() {
-  docker ps -a
-  docker logs container-$STAMP$SUFFIX
-  docker exec -it container-$STAMP$SUFFIX /home/higlass/projects/logs.sh
-}
-
-trap 'error_report' ERR
+#error_report() {
+#  docker ps -a
+#  docker logs container-$STAMP$SUFFIX
+#  docker exec -it container-$STAMP$SUFFIX /home/higlass/projects/logs.sh
+#}
+#
+#trap 'error_report' ERR
 
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 ./build.sh -l -w 4 -s $STAMP
@@ -23,14 +23,14 @@ test_standalone() {
                --publish-all \
                image-$STAMP
 
-    ./test_suite.sh $STAMP $SUFFIX
+    ./test_suite.sh
     python tests.py
 }
 
 test_redis() {
-    SUFFIX=-with-redis
+    export SUFFIX=-with-redis
     ./start_production.sh -s $STAMP -i image-$STAMP
-    ./test_suite.sh $STAMP $SUFFIX
+    ./test_suite.sh
     python tests.py
 }
 
