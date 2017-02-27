@@ -18,6 +18,8 @@ class CommandlineTest(unittest.TestCase):
         for re in res:
             self.assertRegexpMatches(output, re)
 
+    # Tests:
+
     def test_hello(self):
         self.assertRun('echo "hello?"', [r'hello'])
 
@@ -52,6 +54,45 @@ class CommandlineTest(unittest.TestCase):
             [r'Peter Kerpedjiev', r'Harvard Medical School',
              r'HiGlass is a tool for exploring']
         )
+
+    # def test_data_dir(self):
+    #     self.assertRun(
+    #         '''
+    #         diff -y expected-data-dir.txt <(
+    #         pushd /tmp/higlass-docker/volume-{STAMP} > /dev/null \
+    #         && find . | sort | perl -pne 's/-\w+\.log/-XXXXXX.log/' \
+    #         && popd > /dev/null )
+    #         ''',
+    #         [r'^$']
+    #     )
+
+
+    def test_upload(self):
+        # TODO: There's a new right way to upload, so redo this...
+        os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
+        os.environ['COOLER'] = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool'
+        self.assertRun('docker exec -it container-{STAMP}{SUFFIX} ./upload.sh -u {S3}/{COOLER} -g hg19')
+        self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [os.environ['COOLER']])
+
+
+    def test_ingest(self):
+        if os.environ['SUFFIX'] != '-standalone':
+            os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
+            os.environ['COOLER'] = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool'
+            self.assertRun('wget -P /tmp/higlass-docker/volume-{STAMP}{SUFFIX}/hg-tmp {S3}/{COOLER}')
+            self.assertRun('docker exec container-{STAMP}{SUFFIX} ls /tmp', [os.environ['COOLER']])
+
+            ingest_cmd = 'python manage.py ingest_tileset --filename /tmp/{COOLER} --filetype cooler --datatype matrix --uid cooler-demo-{STAMP}'
+            self.assertRun('docker exec container-{STAMP}{SUFFIX} sh -c "cd higlass-server; ' + ingest_cmd + '"')
+            self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [
+                os.environ['COOLER'],
+                'cooler-demo-\S+'
+            ])
+
+            self.assertRun('docker exec container-{STAMP}{SUFFIX} ping -c 1 container-redis-{STAMP}',
+                           [r'1 packets received, 0% packet loss'])
+
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(CommandlineTest)
