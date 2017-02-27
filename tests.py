@@ -1,6 +1,7 @@
 import unittest
 import subprocess
 import os
+import time
 
 class CommandlineTest(unittest.TestCase):
     def setUp(self):
@@ -10,8 +11,11 @@ class CommandlineTest(unittest.TestCase):
             "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ),
             shell=True
         ).strip()
-        os.environ['TILESETS_URL']='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
-        # TODO: Wait till server starts
+        status = 1
+        url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
+        while status != 0:
+            status = subprocess.call('curl '+url, shell=True)
+            time.sleep(1)
 
     def assertRun(self, command, res=[r'']):
         output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
@@ -78,14 +82,14 @@ class CommandlineTest(unittest.TestCase):
     def test_ingest(self):
         if os.environ['SUFFIX'] != '-standalone':
             os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
-            os.environ['COOLER'] = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool'
+            cooler_stem = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires'
+            os.environ['COOLER'] = cooler_stem + '.cool'
             self.assertRun('wget -P /tmp/higlass-docker/volume-{STAMP}{SUFFIX}/hg-tmp {S3}/{COOLER}')
             self.assertRun('docker exec container-{STAMP}{SUFFIX} ls /tmp', [os.environ['COOLER']])
 
             ingest_cmd = 'python manage.py ingest_tileset --filename /tmp/{COOLER} --filetype cooler --datatype matrix --uid cooler-demo-{STAMP}'
             self.assertRun('docker exec container-{STAMP}{SUFFIX} sh -c "cd higlass-server; ' + ingest_cmd + '"')
             self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [
-                os.environ['COOLER'],
                 'cooler-demo-\S+'
             ])
 

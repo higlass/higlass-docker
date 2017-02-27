@@ -1,17 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-#error_report() {
-#  docker ps -a
-#  docker logs container-$STAMP$SUFFIX
-#  docker exec -it container-$STAMP$SUFFIX /home/higlass/projects/logs.sh
-#}
-#
-#trap 'error_report' ERR
-
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-./build.sh -l -w 4 -s $STAMP
-
+./build.sh -w 4 -s $STAMP
 
 test_standalone() {
     # Keep this simple: We want folks just to be able to run the bare Docker container.
@@ -22,15 +13,12 @@ test_standalone() {
                --detach \
                --publish-all \
                image-$STAMP
-
-    ./test_suite.sh
     python tests.py
 }
 
 test_redis() {
     export SUFFIX=-with-redis
     ./start_production.sh -s $STAMP -i image-$STAMP
-    ./test_suite.sh
     python tests.py
 }
 
