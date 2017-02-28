@@ -30,15 +30,12 @@ after_success:
 
         BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`;
         tag_push $IMAGE $REPO:$BRANCH;
-
-        HASH=`git rev-parse HEAD`;
-        tag_push $IMAGE $REPO:git-$HASH;
-
-        tag_push $IMAGE $REPO:travis-$TRAVIS_JOB_NUMBER;
+        tag_push $IMAGE $REPO:latest-pr;
       fi
   - >
       if [ ! -z "$TRAVIS_TAG" ]; then
         echo "Git tag!";
         tag_push $IMAGE $REPO:$TRAVIS_TAG;
+        tag_push $IMAGE $REPO:latest;
       fi
 
