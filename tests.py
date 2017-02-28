@@ -7,10 +7,8 @@ class CommandlineTest(unittest.TestCase):
     def setUp(self):
         # self.suffix = os.environ['SUFFIX']
         # self.stamp = os.environ['STAMP']
-        os.environ['PORT'] = subprocess.check_output(
-            "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ),
-            shell=True
-        ).strip()
+        command = "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ)
+        os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
         status = 1
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
         while status != 0:
