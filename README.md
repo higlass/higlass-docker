@@ -32,8 +32,7 @@ docker exec higlass-container ls /tmp
 
 # Ingest:
 ID=cooler-demo
-docker exec higlass-container sh -c "mkdir -p /data/log; touch /data/log/hgs.log; cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
-# TODO: This could be more compact.
+docker exec higlass-container python higlass-server/manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID
 ```
 
 You can now hit the API to confirm that the file was ingested successfully:
@@ -104,8 +103,11 @@ To work on the Docker deployment, checkout this repo, install Docker, and then:
 ```bash
 ./test_runner.sh
 
-# You can see the containers that it has started:
+# You can see the containers that have started:
 docker ps
+
+# View all the logs from the container:
+docker exec container-TIMESTAMP ./logs.sh
 
 # and you can connect to a running container:
 docker exec --interactive --tty container-TIMESTAMP bash
