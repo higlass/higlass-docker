@@ -15,7 +15,7 @@ docker run --detach \
            --volume ~/hg-data:/data \
            --volume ~/hg-tmp:/tmp \
            --name higlass-container \
-           gehlenborglab/higlass:v0.0.15
+           gehlenborglab/higlass:v0.0.18
 ```
 The two `--volume` options are necessary to prevent the files you upload from consuming
 all of relatively small space allocated for the root volume.
