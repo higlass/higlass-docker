@@ -32,8 +32,7 @@ docker exec higlass-container ls /tmp
 
 # Ingest:
 ID=cooler-demo
-docker exec higlass-container sh -c "cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
-# TODO: This could be more compact.
+docker exec higlass-container sh -c "python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
 ```
 
 You can now hit the API to confirm that the file was ingested successfully:

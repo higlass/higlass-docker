@@ -78,7 +78,9 @@ COPY *.sh ./
 
 EXPOSE 80
 
-RUN mkdir -p /data/log # TODO: Not sure this is best, but the dir needs to exist early
+# Not essential, but makes the README a little more direct.
+WORKDIR higlass-server
+
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
 
