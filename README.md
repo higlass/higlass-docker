@@ -32,7 +32,7 @@ docker exec higlass-container ls /tmp
 
 # Ingest:
 ID=cooler-demo
-docker exec higlass-container sh -c "mkdir -p /data/log; touch /data/log/hgs.log; cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
+docker exec higlass-container sh -c "cd higlass-server; python manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID"
 # TODO: This could be more compact.
 ```
 
