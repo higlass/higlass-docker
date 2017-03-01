@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: We needed for an earlier workflow, but nothing references it now. Remove?
+
 if [ -z $USERNAME ] || [ -z $PASSWORD ]; then
   echo "USERNAME and PASSWORD envvars must be set" >&2
   exit 1

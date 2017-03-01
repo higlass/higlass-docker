@@ -69,14 +69,6 @@ class CommandlineTest(unittest.TestCase):
     #     )
 
 
-    def test_upload(self):
-        # TODO: There's a new right way to upload, so redo this...
-        os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
-        os.environ['COOLER'] = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool'
-        self.assertRun('docker exec -it container-{STAMP}{SUFFIX} ./upload.sh -u {S3}/{COOLER} -g hg19')
-        self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [os.environ['COOLER']])
-
-
     def test_ingest(self):
         if os.environ['SUFFIX'] != '-standalone':
             os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
