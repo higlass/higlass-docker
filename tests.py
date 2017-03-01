@@ -85,8 +85,8 @@ class CommandlineTest(unittest.TestCase):
             self.assertRun('wget -P /tmp/higlass-docker/volume-{STAMP}{SUFFIX}/hg-tmp {S3}/{COOLER}')
             self.assertRun('docker exec container-{STAMP}{SUFFIX} ls /tmp', [os.environ['COOLER']])
 
-            ingest_cmd = 'python manage.py ingest_tileset --filename /tmp/{COOLER} --filetype cooler --datatype matrix --uid cooler-demo-{STAMP}'
-            self.assertRun('docker exec container-{STAMP}{SUFFIX} sh -c "cd higlass-server; ' + ingest_cmd + '"')
+            ingest_cmd = 'python higlass-server/manage.py ingest_tileset --filename /tmp/{COOLER} --filetype cooler --datatype matrix --uid cooler-demo-{STAMP}'
+            self.assertRun('docker exec container-{STAMP}{SUFFIX} ' + ingest_cmd)
             self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [
                 'cooler-demo-\S+'
             ])

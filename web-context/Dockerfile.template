@@ -78,9 +78,6 @@ COPY *.sh ./
 
 EXPOSE 80
 
-# Not essential, but makes the README a little more direct.
-WORKDIR higlass-server
-
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
 
