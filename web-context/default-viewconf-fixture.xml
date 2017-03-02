@@ -12,14 +12,12 @@
   "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
-      "uid": "aa", <!-- TODO: Is uid required? -->
-      "initialXDomain": [ <!-- TODO: What should this be? -->
-        -423891570.77376175,
-        3388188937.0643153
-      ],
-      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&amp;", <!-- TODO: Where does this come from? Is it required? Magic IDs scare me. -->
+      <!--
+      New UI will allow user to pick a genome assembly.
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&amp;",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      -->
       "tracks": {
         "top": [],
         "left": [],
@@ -27,16 +25,13 @@
         "right": [],
         "bottom": []
       },
-      "initialYDomain": [
-        576798516.0398846, <!-- TODO: What should this be? -->
-        2667720272.6485295
-      ],
+      "initialXDomain": [ 0, 3200000000 ],
+      "initialYDomain": [ 0, 3200000000 ],
       "layout": {
         "w": 6,
         "h": 12,
         "x": 0,
         "y": 0,
-        "i": "aa", <!-- TODO: What is "aa"? -->
         "moved": false,
         "static": false
       }

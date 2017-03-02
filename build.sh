@@ -4,7 +4,7 @@ set -e
 STAMP='default'
 CACHE_DOCKER_VERSION='latest'
 SERVER_VERSION='0.3.0' # python latest.py hms-dbmi/higlass-server
-WEBSITE_VERSION='0.5.6' # python latest.py hms-dbmi/higlass-website
+WEBSITE_VERSION='0.5.9' # python latest.py hms-dbmi/higlass-website
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
