@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object model="tilesets.ViewConf" pk="1">
+        <field name="created">2017-03-01 18:00</field>
+        <field name="uuid">default</field>
+        <field name="viewconf">{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs/",
+  "views": [
+    {
+      <!--
+      New UI will allow user to pick a genome assembly.
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&amp;",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      -->
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "initialXDomain": [ 0, 3200000000 ],
+      "initialYDomain": [ 0, 3200000000 ],
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}</field>
+    </object>
+</django-objects>

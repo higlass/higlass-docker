@@ -9,10 +9,11 @@ class CommandlineTest(unittest.TestCase):
         # self.stamp = os.environ['STAMP']
         command = "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ)
         os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
-        status = 1
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
-        while status != 0:
-            status = subprocess.call('curl '+url, shell=True)
+        while True:
+            if 0 == subprocess.call('curl --fail --silent '+url+' > /dev/null', shell=True):
+                break
+            print('still waiting for server...')
             time.sleep(1)
 
     def assertRun(self, command, res=[r'']):
@@ -25,15 +26,20 @@ class CommandlineTest(unittest.TestCase):
     def test_hello(self):
         self.assertRun('echo "hello?"', [r'hello'])
 
+    def test_default_viewconf(self):
+        self.assertRun(
+            'curl --silent http://localhost:{PORT}/api/v1/viewconf/?d=default',
+            [r'trackSourceServers'])
+
     def test_tilesets(self):
         self.assertRun(
-            'curl -s http://localhost:{PORT}/api/v1/tilesets/',
-            [r'\{"count":']
+            'curl --silent http://localhost:{PORT}/api/v1/tilesets/',
+            [r'"count":']
         )
 
     def test_tiles(self):
         self.assertRun(
-            'curl -s http://localhost:{PORT}/api/v1/tiles/',
+            'curl --silent http://localhost:{PORT}/api/v1/tiles/',
             [r'\{\}']
         )
 
@@ -67,14 +73,6 @@ class CommandlineTest(unittest.TestCase):
     #         ''',
     #         [r'^$']
     #     )
-
-
-    def test_upload(self):
-        # TODO: There's a new right way to upload, so redo this...
-        os.environ['S3'] = 'https://s3.amazonaws.com/pkerp/public'
-        os.environ['COOLER'] = 'dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool'
-        self.assertRun('docker exec -it container-{STAMP}{SUFFIX} ./upload.sh -u {S3}/{COOLER} -g hg19')
-        self.assertRun('curl http://localhost:{PORT}/api/v1/tilesets/', [os.environ['COOLER']])
 
 
     def test_ingest(self):

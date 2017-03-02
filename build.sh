@@ -2,9 +2,8 @@
 set -e
 
 STAMP='default'
-CACHE_DOCKER_VERSION='latest'
-SERVER_VERSION='0.2.6' # python latest.py hms-dbmi/higlass-server
-WEBSITE_VERSION='0.5.6' # python latest.py hms-dbmi/higlass-website
+SERVER_VERSION='0.3.0'
+WEBSITE_VERSION='0.5.9'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
@@ -36,8 +35,8 @@ perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VE
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
-docker pull $REPO:$CACHE_DOCKER_VERSION
-docker build --cache-from $REPO:$CACHE_DOCKER_VERSION \
+docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
+docker build --cache-from $REPO \
              --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context
