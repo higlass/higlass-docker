@@ -61,6 +61,7 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
 
 # Setup supervisord and nginx
 USER root
+COPY default-viewconf-fixture.json .
 COPY supervisord.conf .
 COPY nginx.conf /etc/nginx/
 COPY sites-enabled/* /etc/nginx/sites-enabled/

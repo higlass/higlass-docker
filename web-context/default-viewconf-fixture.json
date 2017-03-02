@@ -1,0 +1,9 @@
+[{
+  "model": "tilesets.ViewConf",
+  "pk": 1,
+  "fields": {
+    "created": "2017-03-01 18:00",
+    "uuid": "default",
+    "viewconf": "{}"
+  }
+}]

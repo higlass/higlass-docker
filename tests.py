@@ -9,10 +9,11 @@ class CommandlineTest(unittest.TestCase):
         # self.stamp = os.environ['STAMP']
         command = "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ)
         os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
-        status = 1
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
-        while status != 0:
-            status = subprocess.call('curl '+url, shell=True)
+        while True:
+            if 0 == subprocess.call('curl --silent '+url+' > /dev/null', shell=True):
+                break
+            print('still waiting for server...')
             time.sleep(1)
 
     def assertRun(self, command, res=[r'']):
@@ -25,15 +26,21 @@ class CommandlineTest(unittest.TestCase):
     def test_hello(self):
         self.assertRun('echo "hello?"', [r'hello'])
 
+    # TODO:
+    # def test_default_viewconf(self):
+    #     self.assertRun(
+    #         'curl --silent http://localhost:{PORT}/api/v1/viewconf/?d=default',
+    #         [r'hello'])
+
     def test_tilesets(self):
         self.assertRun(
-            'curl -s http://localhost:{PORT}/api/v1/tilesets/',
-            [r'\{"count":']
+            'curl --silent http://localhost:{PORT}/api/v1/tilesets/',
+            [r'"count":']
         )
 
     def test_tiles(self):
         self.assertRun(
-            'curl -s http://localhost:{PORT}/api/v1/tiles/',
+            'curl --silent http://localhost:{PORT}/api/v1/tiles/',
             [r'\{\}']
         )
 
