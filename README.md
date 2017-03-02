@@ -10,6 +10,7 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```bash
+docker pull gehlenborglab/higlass # Ensure that you have the latest.
 docker run --detach \
            --publish 8888:80 \
            --volume ~/hg-data:/data \
