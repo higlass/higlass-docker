@@ -44,6 +44,16 @@ curl http://localhost:8888/api/v1/tileset_info/?d=$ID
 curl http://localhost:8888/api/v1/tiles/?d=$ID.0.0.0
 ```
 
+### Django admin interface
+
+The admin interface lets you interact with and inspect the data stored in the local higlass instance.
+To access the admin interface you need to first create an admin user:
+
+```bash
+docker exec -it higlass-container higlass-server/manage.py createsuperuser
+```
+
+The admin interface can then be accessed at: `http://localhost:8888/admin/`
 
 ## Deployment
 

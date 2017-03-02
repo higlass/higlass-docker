@@ -63,6 +63,11 @@ class CommandlineTest(unittest.TestCase):
              r'HiGlass is a tool for exploring']
         )
 
+    def test_admin(self):
+        self.assertRun(
+            'curl -L http://localhost:{PORT}/admin/',
+            [r'Password'])
+
     # def test_data_dir(self):
     #     self.assertRun(
     #         '''
