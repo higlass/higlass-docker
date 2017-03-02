@@ -11,7 +11,7 @@ class CommandlineTest(unittest.TestCase):
         os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
         while True:
-            if 0 == subprocess.call('curl --silent '+url+' > /dev/null', shell=True):
+            if 0 == subprocess.call('curl --fail --silent '+url+' > /dev/null', shell=True):
                 break
             print('still waiting for server...')
             time.sleep(1)
