@@ -26,11 +26,10 @@ class CommandlineTest(unittest.TestCase):
     def test_hello(self):
         self.assertRun('echo "hello?"', [r'hello'])
 
-    # TODO:
-    # def test_default_viewconf(self):
-    #     self.assertRun(
-    #         'curl --silent http://localhost:{PORT}/api/v1/viewconf/?d=default',
-    #         [r'hello'])
+    def test_default_viewconf(self):
+        self.assertRun(
+            'curl --silent http://localhost:{PORT}/api/v1/viewconf/?d=default',
+            [r'chromInfoPath'])
 
     def test_tilesets(self):
         self.assertRun(
