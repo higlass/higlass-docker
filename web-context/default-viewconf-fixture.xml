@@ -28,7 +28,7 @@
       "initialXDomain": [ 0, 3200000000 ],
       "initialYDomain": [ 0, 3200000000 ],
       "layout": {
-        "w": 6,
+        "w": 12,
         "h": 12,
         "x": 0,
         "y": 0,
