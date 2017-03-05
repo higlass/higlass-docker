@@ -4,7 +4,7 @@ Builds a docker container wrapping higlass-client and higlass-server in nginx,
 tests that it works, and if there are no errors in the PR, pushes the image to 
 [DockerHub](https://hub.docker.com/r/gehlenborglab/higlass/).
 
-## Running locally
+## Running Locally
 
 You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
@@ -43,6 +43,11 @@ curl http://localhost:8888/api/v1/tileset_info/?d=$ID
 # Details:
 curl http://localhost:8888/api/v1/tiles/?d=$ID.0.0.0
 ```
+
+### Troubleshooting
+
+* Error to launch the container because the container name is already in use (`docker: Error response from daemon: Conflict. The container name "/higlass-container" is already in use by container ...`). Use `docker rm higlass-container` and launch the container again.
+
 
 ### Django admin interface
 
