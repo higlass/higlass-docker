@@ -62,7 +62,7 @@ want other containers for nginx, redis, etc. Docker Compose is the usual tool
 for this, but at the present it does not support an analog to the `--from-cache`
 option. Instead, for the moment, we are doing this:
 ```
-curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/v0.0.8/start_production.sh | bash
+curl https://raw.githubusercontent.com/hms-dbmi/higlass-docker/start_production.sh | bash
 ```
 
 For more details, read [README-DEPLOY](README-DEPLOY.md).
@@ -95,13 +95,7 @@ docker ps -a -q | xargs docker stop | xargs docker rm
 
 ## Releasing updates
 
-Travis will update `latest` on DockerHub with every successful run
-with the name of the branch. This is used as a cache to speed up builds.
-
+Travis will push an image to DockerHub with every successful run.
 If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
-then that version number will be pushed to DockerHub.
-
-If it's a PR, several informative tag names will be pushed:
-- Branch name
-- Git hash
-- Travis run
+then that version number will be pushed to DockerHub, and `latest`
+will be updated as well.
