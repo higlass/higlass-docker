@@ -9,6 +9,7 @@ test_standalone() {
     # If this starts to get sufficiently complicated that we want to put it in a script
     # by itself, then it has gotten too complicated.
     export SUFFIX=-standalone
+    echo "image-$STAMP"
     docker run --name container-$STAMP$SUFFIX \
                --detach \
                --publish-all \
