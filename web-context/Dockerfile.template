@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
         unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python=2.0.7-1 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
+        libcurl4-openssl-dev \
         vim \
     && rm -rf /var/lib/apt/lists/*
 
