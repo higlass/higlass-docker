@@ -35,7 +35,7 @@ USER higlass
 # The idea is that you want to be able to release small updates to the code,
 # without having to refetch all dependencies.
 USER root
-RUN pip install clodius==0.4.4
+RUN pip install clodius==0.4.5
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
