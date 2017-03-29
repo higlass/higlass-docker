@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
         unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python=2.0.7-1 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
-        libcurl4-openssl-dev \
         vim \
     && rm -rf /var/lib/apt/lists/*
 
@@ -36,8 +35,7 @@ USER higlass
 # The idea is that you want to be able to release small updates to the code,
 # without having to refetch all dependencies.
 USER root
-RUN pip install cython
-RUN pip install clodius==0.4.3
+RUN pip install clodius==0.4.4
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
