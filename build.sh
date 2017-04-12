@@ -2,7 +2,7 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='0.4.1'
+SERVER_VERSION='0.4.2'
 WEBSITE_VERSION='0.5.25'
 
 usage() {
