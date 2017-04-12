@@ -2,8 +2,8 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='0.3.6'
-WEBSITE_VERSION='0.5.22'
+SERVER_VERSION='0.4.1'
+WEBSITE_VERSION='0.5.24'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
