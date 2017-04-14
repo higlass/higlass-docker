@@ -47,6 +47,10 @@ USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
 USER root
 
+WORKDIR /home/higlass/projects/higlass-server
+RUN python manage.py collectstatic --noinput -c
+
+WORKDIR /home/higlass/projects
 RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
