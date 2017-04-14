@@ -40,7 +40,6 @@ RUN pip install clodius==0.4.5
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
-RUN python manage.py collectstatic
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
@@ -48,6 +47,10 @@ USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
 USER root
 
+WORKDIR /home/higlass/projects/higlass-server
+RUN python manage.py collectstatic
+
+WORKDIR /home/higlass/projects
 RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
