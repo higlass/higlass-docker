@@ -32,8 +32,7 @@ wget -P ~/hg-tmp https://s3.amazonaws.com/pkerp/public/$COOLER
 docker exec higlass-container ls /tmp
 
 # Ingest:
-ID=cooler-demo
-docker exec higlass-container python higlass-server/manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix --uid $ID
+docker exec higlass-container python higlass-server/manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix
 ```
 
 You can now hit the API to confirm that the file was ingested successfully:
