@@ -71,4 +71,4 @@ docker run --name container-$STAMP-with-redis \
            $IMAGE
 
 # make the demo the main page
-sudo docker exec -it container-$STAMP-with-redis cp higlass-website/demo.html higlass-website/index.html
+docker exec -it container-$STAMP-with-redis cp higlass-website/demo.html higlass-website/index.html
