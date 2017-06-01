@@ -59,8 +59,22 @@ ENV WEBSITE_REPO higlass-website
 RUN wget https://github.com/hms-dbmi/$WEBSITE_REPO/releases/download/v<WEBSITE_VERSION>/dist.zip
 RUN unzip dist.zip -d higlass-website
 
+RUN pwd
+
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/index.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/demo.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/test_demo.html;
+
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/index.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/demo.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/test_demo.html;
+
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
-      echo "WEBSITE_VERSION: <WEBSITE_VERSION>" ) \
+      echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
+      echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
+      ) \
     > higlass-website/version.txt
 
 
