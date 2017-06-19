@@ -3,7 +3,7 @@ set -e
 
 STAMP='default'
 SERVER_VERSION='0.7.2'
-WEBSITE_VERSION='0.6.2'
+WEBSITE_VERSION='0.6.3'
 LIBRARY_VERSION='0.8.7'
 
 usage() {
