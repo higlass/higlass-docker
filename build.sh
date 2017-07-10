@@ -2,7 +2,7 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='cooler-transform'
+SERVER_VERSION='cooler-transforms'
 WEBSITE_VERSION='0.6.9'
 LIBRARY_VERSION='0.8.16'
 
