@@ -40,6 +40,7 @@ RUN pip install clodius==0.4.5
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/cooler-transforms/requirements.txt
 RUN pip install -r requirements.txt
+# bump
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
