@@ -4,7 +4,7 @@ set -e
 STAMP='default'
 SERVER_VERSION='cooler-transforms'
 WEBSITE_VERSION='0.6.9'
-LIBRARY_VERSION='0.8.20'
+LIBRARY_VERSION='0.8.21'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
