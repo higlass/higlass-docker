@@ -1,4 +1,4 @@
-FROM continuumio/miniconda:4.1.11
+FROM continuumio/miniconda3:4.3.14
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
@@ -9,10 +9,10 @@ FROM continuumio/miniconda:4.1.11
 # (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
-        nginx=1.6.2-5+deb8u4 \
+        nginx=1.6.2-5+deb8u5 \
         supervisor=3.0r1-1 \
         unzip=6.0-16+deb8u2 \
-        uwsgi-plugin-python=2.0.7-1 \
+        uwsgi-plugin-python3 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
         libcurl4-openssl-dev \
         vim \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.11.2
-RUN conda install --yes --channel bioconda pysam=0.9.1.4 htslib=1.3.2
+RUN conda install --yes --channel bioconda pysam htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
 
@@ -36,7 +36,8 @@ USER higlass
 # The idea is that you want to be able to release small updates to the code,
 # without having to refetch all dependencies.
 USER root
-RUN pip install clodius==0.4.5
+RUN pip install pyBigWig
+RUN pip install clodius==0.6.1
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/cooler-transforms/requirements.txt
 RUN pip install -r requirements.txt
