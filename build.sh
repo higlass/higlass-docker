@@ -2,7 +2,7 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='cooler-transforms'
+SERVER_VERSION='py3'
 WEBSITE_VERSION='0.6.9'
 LIBRARY_VERSION='0.8.16'
 
