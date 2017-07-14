@@ -2,9 +2,9 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='1.0.2'
+SERVER_VERSION='1.0.3'
 WEBSITE_VERSION='0.6.9'
-LIBRARY_VERSION='0.8.22'
+LIBRARY_VERSION='0.8.23'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
