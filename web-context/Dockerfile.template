@@ -38,7 +38,7 @@ USER higlass
 # without having to refetch all dependencies.
 USER root
 RUN pip install pyBigWig
-RUN pip install clodius==0.6.5
+RUN pip install clodius==0.7.0
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
