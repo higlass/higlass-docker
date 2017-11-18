@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
         libcurl4-openssl-dev \
         g++ \
         vim \
+        build-essential \
+        libssl-dev \
+        libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
