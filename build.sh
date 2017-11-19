@@ -3,7 +3,7 @@ set -e
 
 STAMP='default'
 SERVER_VERSION='1.4.2'
-WEBSITE_VERSION='0.6.14'
+WEB_APP_VERSION='0.8.0'
 LIBRARY_VERSION='0.9.14'
 
 usage() {
@@ -32,7 +32,7 @@ fi
 set -o verbose # Keep this after the usage message to reduce clutter.
 
 # When development settles down, consider going back to static Dockerfile.
-perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
+perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass

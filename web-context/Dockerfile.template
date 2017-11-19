@@ -60,28 +60,16 @@ WORKDIR /home/higlass/projects
 RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
-# Setup website (includes client js)
-ENV WEBSITE_REPO higlass-website
-RUN wget https://github.com/hms-dbmi/$WEBSITE_REPO/releases/download/v<WEBSITE_VERSION>/dist.zip
-RUN unzip dist.zip -d higlass-website
-
-RUN pwd
-
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/demo.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/test_demo.html;
-
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/demo.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/test_demo.html;
+# Setup application (includes client js)
+ENV WEB_APP_REPO higlass-app
+RUN wget https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
+RUN unzip build.zip -d higlass-app
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
-      echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
+      echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
       ) \
-    > higlass-website/version.txt
+    > higlass-app/version.txt
 
 
 # Setup supervisord and nginx
