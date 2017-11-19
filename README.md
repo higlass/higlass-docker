@@ -1,7 +1,7 @@
 # higlass-docker
 
 Builds a docker container wrapping higlass-client and higlass-server in nginx,
-tests that it works, and if there are no errors in the PR, pushes the image to 
+tests that it works, and if there are no errors in the PR, pushes the image to
 [DockerHub](https://hub.docker.com/r/gehlenborglab/higlass/).
 
 ## Running locally
@@ -25,7 +25,7 @@ For ingest, you'll need to put your files in one of the shared directories: Then
 be available to scripts running inside the container.
 ```bash
 # For example...
-COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool 
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 wget -P ~/hg-tmp https://s3.amazonaws.com/pkerp/public/$COOLER
 
 # Confirm that the file is visible inside the container:
@@ -71,7 +71,7 @@ For more details, read [README-DEPLOY](README-DEPLOY.md).
 
 To develop [higlass-client](https://github.com/hms-dbmi/higlass) and
 [higlass-server](https://github.com/hms-dbmi/higlass-server),
-check out the corresponding repos. 
+check out the corresponding repos.
 
 To work on the Docker deployment, checkout this repo, install Docker, and then:
 
@@ -89,6 +89,15 @@ docker exec --interactive --tty container-TIMESTAMP bash
 
 # or remove all containers (use with caution):
 docker ps -a -q | xargs docker stop | xargs docker rm
+```
+
+To manually test the a new image at http://localhost:8888 run:
+
+```bash
+./test_build.sh <NAME>
+
+# You can log into the instance with:
+docker exec -it cont-<NAME> bash
 ```
 
 
