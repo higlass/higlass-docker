@@ -35,7 +35,16 @@ docker exec higlass-container ls /tmp
 docker exec higlass-container python higlass-server/manage.py ingest_tileset --filename /tmp/$COOLER --filetype cooler --datatype matrix
 ```
 
-You can now hit the API to confirm that the file was ingested successfully:
+You can now hit the API to confirm that the file was ingested successfully by
+first listing the available tilesets
+
+```
+curl http://localhost:8888/api/v1/tilesets/
+```
+
+And then trying to actually get some data from the tileset. In the examples
+below, $ID is the uuid shown in the list of tilesets above.
+
 ```
 # Summary:
 curl http://localhost:8888/api/v1/tileset_info/?d=$ID
