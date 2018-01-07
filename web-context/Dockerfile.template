@@ -61,6 +61,10 @@ RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
 # Setup application (includes client js)
+ENV HIPILER_REPO hipiler
+RUN wget https://github.com/flekschas/$HIPILER_REPO/releases/download/v<WEB_APP_VERSION>/hipiler.zip
+RUN unzip build.zip -d hipiler
+
 ENV WEB_APP_REPO higlass-app
 RUN wget https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
 RUN unzip build.zip -d higlass-app
