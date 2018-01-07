@@ -3,8 +3,9 @@ set -e
 
 STAMP='default'
 SERVER_VERSION='1.4.2'
-WEB_APP_VERSION='0.8.0'
-LIBRARY_VERSION='0.9.14'
+WEB_APP_VERSION='0.9.0'
+LIBRARY_VERSION='0.10.6'
+HIPILER='1.1.5'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
