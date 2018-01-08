@@ -3,9 +3,9 @@ set -e
 
 STAMP='default'
 SERVER_VERSION='1.4.2'
-WEB_APP_VERSION='0.9.0'
+WEB_APP_VERSION='0.9.2'
 LIBRARY_VERSION='0.10.6'
-HIPILER='1.1.5'
+HIPILER_VERSION='1.1.7'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
@@ -33,7 +33,7 @@ fi
 set -o verbose # Keep this after the usage message to reduce clutter.
 
 # When development settles down, consider going back to static Dockerfile.
-perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
+perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g; s/<HIPILER_VERSION>/$HIPILER_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
