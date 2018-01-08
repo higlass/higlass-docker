@@ -62,16 +62,17 @@ USER higlass
 
 # Setup application (includes client js)
 ENV HIPILER_REPO hipiler
-RUN wget https://github.com/flekschas/$HIPILER_REPO/releases/download/v<WEB_APP_VERSION>/hipiler.zip
-RUN unzip build.zip -d hipiler
+RUN wget -O hipiler.zip https://github.com/flekschas/$HIPILER_REPO/releases/download/v<HIPILER_VERSION>/build.zip
+RUN unzip hipiler.zip -d hipiler
 
 ENV WEB_APP_REPO higlass-app
-RUN wget https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
-RUN unzip build.zip -d higlass-app
+RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
+RUN unzip higlass-app.zip -d higlass-app
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
+      echo "HIPILER_VERSION: <HIPILER_VERSION>"; \
       ) \
     > higlass-app/version.txt
 
