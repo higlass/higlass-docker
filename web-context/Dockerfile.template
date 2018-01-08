@@ -68,6 +68,7 @@ RUN unzip hipiler.zip -d hipiler
 ENV WEB_APP_REPO higlass-app
 RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
 RUN unzip higlass-app.zip -d higlass-app
+RUN sed -i -E 's/higlass@[0-9]+\.[0-9]+\.[0-9]+/higlass@<LIBRARY_VERSION>/g' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
