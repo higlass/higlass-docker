@@ -13,6 +13,7 @@ test_standalone() {
     docker run --name container-$STAMP$SUFFIX \
                --detach \
                --publish-all \
+	       --privileged \
                image-$STAMP
     python tests.py
 }

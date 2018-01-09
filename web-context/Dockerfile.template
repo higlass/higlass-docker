@@ -10,7 +10,7 @@ FROM continuumio/miniconda3:4.3.14
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
         nginx=1.6.2-5+deb8u5 \
-        supervisor=3.0r1-1 \
+        supervisor=3.0r1-1+deb8u1 \
         unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python3 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
@@ -20,6 +20,10 @@ RUN apt-get update && apt-get install -y \
         build-essential \
         libssl-dev \
         libpng-dev \
+	fuse \
+	libfuse-dev \
+        curl \
+        make \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
@@ -27,6 +31,20 @@ RUN conda install --yes cython==0.25.2 numpy=1.12.0
 RUN conda install --yes --channel bioconda pysam htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
+# goofys setup
+WORKDIR /tmp
+ENV PATH=$PATH:/usr/local/go/bin
+RUN curl -O https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz && \
+    rm go1.8.3.linux-amd64.tar.gz
+
+RUN curl -L -O https://github.com/kahing/catfs/releases/download/v0.4.0/catfs && \
+    mv catfs /usr/bin && chmod 0755 /usr/bin/catfs
+
+ENV PATH=$PATH:/root/go/bin
+WORKDIR /root/go/src/github.com/kahing/goofys
+RUN git clone --depth 1 https://github.com/kahing/goofys.git --branch v0.0.18 .
+RUN go get . && make install
 
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
@@ -108,6 +126,15 @@ EXPOSE 80
 
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
+
+# mount the goofyfs file system through supervisor
+# make sure env is set here
+ARG KEY
+ENV AWS_ACCESS_KEY_ID ${KEY}
+ARG SECRET
+ENV AWS_SECRET_ACCESS_KEY ${SECRET}
+ARG BUCKET
+ENV AWS_BUCKET ${BUCKET}
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
