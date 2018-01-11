@@ -61,14 +61,14 @@ USER root
 RUN pip install pyBigWig
 RUN pip install clodius==0.7.2
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/4dn-dcic/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 # bump
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
+RUN git clone --depth 1 https://github.com/4dn-dcic/higlass-server.git --branch v<SERVER_VERSION>
 USER root
 
 WORKDIR /home/higlass/projects/higlass-server
