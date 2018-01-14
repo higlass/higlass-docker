@@ -36,7 +36,7 @@ set -o verbose # Keep this after the usage message to reduce clutter.
 perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g; s/<HIPILER_VERSION>/$HIPILER_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
-REPO=gehlenborglab/higlass
+REPO=pkerpedjiev/higlass:test
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
 docker build --cache-from $REPO \
              --build-arg WORKERS=$WORKERS \
