@@ -1,0 +1,3 @@
+mkdir -p ~/data/hg-data
+mkdir -p ~/data/redis-data
+mkdir -p ~/data/hg-tmp

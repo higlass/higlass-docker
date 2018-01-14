@@ -1,46 +1,22 @@
 version: '3.1'
 services:
-    db:
-        image: postgres
-        restart: always
-        volumes:
-            - ~/data/rg-data/postgres:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_USER=mydbuser
-            - POSTGRES_PASSWORD=mydbpassword
-            - POSTGRES_DB=resgen-db
     redis:
         image: "redis:alpine"
+        volumes:
+            -  ~/data/redis-data:/data
+            -  ~/projects/higlass-docker/redis-context/redis.conf:/usr/local/etc/redis/redis.conf
 
-    resgen:
+    higlass:
         depends_on:
-            - "db"
             - "redis"
-        command: bash -c "bash -c '/home/resgen/projects/prepare.sh'; /home/resgen/projects/wait-for-it/wait-for-it.sh db:5432 -- supervisord -n"
-        image: "pkerpedjiev/resgen:latest"
+        command: bash -c "supervisord -n"
+        image: "pkerpedjiev/higlass:test"
         ports:
             - 8999:80
         volumes:
-            - ~/data/rg-data/:/data
-            - ~/data/rg-tmp/:/tmp
+            - ~/data/hg-data/:/data
+            - ~/data/hg-tmp/:/tmp
         environment:
             - REDIS_HOST=redis
             - REDIS_PORT=6379
-            - RESGEN_SERVER_DB_NAME=resgen-db
-            - RESGEN_SERVER_DB_HOST=db
-            - RESGEN_SERVER_DB_USER=mydbuser
-            - RESGEN_SERVER_DB_PASSWORD=mydbpassword
-            - RESGEN_AWS_BUCKET=resgen-test
-            - RESGEN_AWS_BUCKET_PREFIX=tmp
-            - RESGEN_AWS_BUCKET_MOUNT_POINT=aws
-        container_name: "resgen-container"
-        privileged: true
-        secrets:
-            - secret_access_key_personal
-            - access_key_id_personal
-
-secrets:
-    access_key_id_personal:
-        file: ~/.aws/access_key_id_personal
-    secret_access_key_personal:
-        file: ~/.aws/secret_access_key_personal
+        container_name: "higlass-container"
