@@ -68,7 +68,7 @@ RUN pip install -r requirements.txt
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/4dn-dcic/higlass-server.git --branch v<SERVER_VERSION>
+RUN git clone --depth 1 https://github.com/4dn-dcic/higlass-server.git --branch master 
 USER root
 
 WORKDIR /home/higlass/projects/higlass-server
