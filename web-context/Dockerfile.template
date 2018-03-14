@@ -34,16 +34,16 @@ RUN pip install uwsgi==2.0.14
 # goofys setup
 WORKDIR /tmp
 ENV PATH=$PATH:/usr/local/go/bin
-RUN curl -O https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz && \
-    rm go1.8.3.linux-amd64.tar.gz
+RUN curl -O https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz && \
+    rm go1.9.2.linux-amd64.tar.gz
 
 RUN curl -L -O https://github.com/kahing/catfs/releases/download/v0.4.0/catfs && \
     mv catfs /usr/bin && chmod 0755 /usr/bin/catfs
 
 ENV PATH=$PATH:/root/go/bin
 WORKDIR /root/go/src/github.com/kahing/goofys
-RUN git clone --depth 1 https://github.com/kahing/goofys.git --branch v0.0.18 .
+RUN git clone --depth 1 https://github.com/kahing/goofys.git --branch v0.19.0 .
 RUN go get . && make install
 
 # Setup home directory

@@ -7,7 +7,7 @@ set -v
 DOCKER_VERSION=v0.0.18
 IMAGE=gehlenborglab/higlass:$DOCKER_VERSION
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
-PORT=0
+PORT=80
 
 # NOTE: No parameters should change the behavior in a deep way:
 # We want the tests to cover the same setup as in production.
