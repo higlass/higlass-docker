@@ -126,9 +126,8 @@ EXPOSE 80
 
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
-mkdir -p /data/media/aws
-mkdir -p /data/media/aws/${BUCKET}
-mkdir -p /data/media/aws/${BUCKET2}
+RUN mkdir -p /data/media/aws/${BUCKET}
+RUN mkdir -p /data/media/aws/${BUCKET2}
 
 # mount the goofyfs file system through supervisor
 # make sure env is set here
