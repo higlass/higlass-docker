@@ -43,7 +43,7 @@ fi
 
 docker network create --driver bridge network-$STAMP
 
-for DIR in redis-data hg-data/log hg-tmp; do
+for DIR in redis-data hg-data/log hg-tmp hg-data/media hg-data/media/aws; do
   mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
 done
 
@@ -66,6 +66,7 @@ docker run --name container-$STAMP-with-redis \
            --volume $VOLUME/hg-tmp:/tmp \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
+	   --privileged
            --detach \
            --publish-all \
            $IMAGE

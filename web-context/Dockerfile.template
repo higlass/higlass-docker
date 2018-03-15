@@ -38,7 +38,7 @@ RUN curl -O https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz && 
     tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz && \
     rm go1.9.2.linux-amd64.tar.gz
 
-RUN curl -L -O https://github.com/kahing/catfs/releases/download/v0.4.0/catfs && \
+RUN curl -L -O https://github.com/kahing/catfs/releases/download/v0.8.0/catfs && \
     mv catfs /usr/bin && chmod 0755 /usr/bin/catfs
 
 ENV PATH=$PATH:/root/go/bin
@@ -138,7 +138,7 @@ ARG SECRET
 ENV AWS_SECRET_ACCESS_KEY ${SECRET}
 ARG BUCKET
 ENV AWS_BUCKET ${BUCKET}
-ENV AWS_BUCKET_2 ${BUCKET2}
+ENV AWS_BUCKET2 ${BUCKET2}
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
