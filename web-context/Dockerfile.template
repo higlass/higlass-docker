@@ -126,6 +126,9 @@ EXPOSE 80
 
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
+mkdir -p /data/media/aws
+mkdir -p /data/media/aws/${BUCKET}
+mkdir -p /data/media/aws/${BUCKET2}
 
 # mount the goofyfs file system through supervisor
 # make sure env is set here
@@ -135,6 +138,7 @@ ARG SECRET
 ENV AWS_SECRET_ACCESS_KEY ${SECRET}
 ARG BUCKET
 ENV AWS_BUCKET ${BUCKET}
+ENV AWS_BUCKET_2 ${BUCKET2}
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}

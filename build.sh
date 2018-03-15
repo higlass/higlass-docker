@@ -42,6 +42,7 @@ docker build --cache-from $REPO \
 	     --build-arg KEY=$AWS_ACCESS_KEY_ID \
 	     --build-arg SECRET=$AWS_SECRET_ACCESS_KEY \
 	     --build-arg BUCKET=$AWS_BUCKET \
+	     --build-arg BUCKET2=$AWS_BUCKET2 \
              --tag image-$STAMP \
              web-context
 
