@@ -23,6 +23,9 @@ def main():
     parser.add_argument('-t', '--temp-dir', default='/tmp/higlass-docker',
     					 help="The temp directory to use", 
                                          type=str)
+    parser.add_argument('-n', '--name', default='higlass-container',
+    					 help='The name of the container to use', 
+                                         type=str)
     #parser.add_argument('-u', '--useless', action='store_true', 
     #					 help='Another useless option')
 
