@@ -85,6 +85,7 @@ RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
+      echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
       ) \
     > higlass-website/version.txt
 

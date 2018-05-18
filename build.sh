@@ -34,7 +34,7 @@ fi
 set -o verbose # Keep this after the usage message to reduce clutter.
 
 # When development settles down, consider going back to static Dockerfile.
-perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
+perl -pne "s/<MULTIVEC_VERSION>/$MULTIVEC_VERSION/g; s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
