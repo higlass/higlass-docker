@@ -7,6 +7,7 @@ SERVER_VERSION='1.6.0'
 WEBSITE_VERSION='0.6.24'
 LIBRARY_VERSION='1.0.0-alpha.2'
 MULTIVEC_VERSION='0.1.5'
+HGTILES_VERSION='0.2.3'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
@@ -34,7 +35,7 @@ fi
 set -o verbose # Keep this after the usage message to reduce clutter.
 
 # When development settles down, consider going back to static Dockerfile.
-perl -pne "s/<MULTIVEC_VERSION>/$MULTIVEC_VERSION/g; s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
+perl -pne "s/<HGTILES_VERSION>/$HGTILES_VERSION/g; s/<MULTIVEC_VERSION>/$MULTIVEC_VERSION/g; s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEBSITE_VERSION>/$WEBSITE_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
