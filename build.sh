@@ -2,6 +2,7 @@
 set -e
 
 STAMP='default'
+
 SERVER_VERSION='1.6.0'
 WEBSITE_VERSION='0.6.24'
 LIBRARY_VERSION='1.0.0-alpha.2'
