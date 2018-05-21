@@ -93,6 +93,9 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
       echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
+      echo "HGTILES_VERSION: <HGTILES_VERSION>"; \
+      echo "CLODIUS_VERSION: <CLODIUS_VERSION>"; \
+      echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
       ) \
     > higlass-website/version.txt
 
