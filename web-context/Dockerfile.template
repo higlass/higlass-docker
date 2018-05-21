@@ -42,11 +42,12 @@ USER higlass
 USER root
 RUN pip install pyBigWig
 RUN pip install clodius==<CLODIUS_VERSION>
-RUN pip install hgtiles==<HGTILES_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
+
 # bump
+RUN pip install hgtiles==<HGTILES_VERSION>
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
@@ -82,6 +83,11 @@ RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com
 RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/app/index.html;
 RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/demo.html;
 RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/test_demo.html;
+
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/demo.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/test_demo.html;
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
