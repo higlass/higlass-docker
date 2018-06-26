@@ -12,7 +12,8 @@ test_standalone() {
     echo "image-$STAMP"
     docker run --name container-$STAMP$SUFFIX \
                --detach \
-               --publish-all \
+               --publish 80:80/tcp \
+	       --privileged \
                image-$STAMP
     python tests.py
 }
@@ -24,4 +25,4 @@ test_redis() {
 }
 
 test_standalone
-test_redis
+#test_redis

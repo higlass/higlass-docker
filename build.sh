@@ -44,6 +44,10 @@ REPO=gehlenborglab/higlass
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
 docker build --cache-from $REPO \
              --build-arg WORKERS=$WORKERS \
+	     --build-arg KEY=$AWS_ACCESS_KEY_ID \
+	     --build-arg SECRET=$AWS_SECRET_ACCESS_KEY \
+	     --build-arg BUCKET=$AWS_BUCKET \
+	     --build-arg BUCKET2=$AWS_BUCKET2 \
              --tag image-$STAMP \
              web-context
 

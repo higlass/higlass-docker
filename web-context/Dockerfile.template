@@ -10,7 +10,7 @@ FROM continuumio/miniconda3:4.3.14
 RUN apt-get update && apt-get install -y \
         gcc=4:4.9.2-2 \
         nginx=1.6.2-5+deb8u5 \
-        supervisor=3.0r1-1 \
+        supervisor=3.0r1-1+deb8u1 \
         unzip=6.0-16+deb8u2 \
         uwsgi-plugin-python3 \
         zlib1g-dev=1:1.2.8.dfsg-2+b1 \
@@ -20,6 +20,10 @@ RUN apt-get update && apt-get install -y \
         build-essential \
         libssl-dev \
         libpng-dev \
+	fuse \
+	libfuse-dev \
+        curl \
+        make \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
@@ -27,6 +31,20 @@ RUN conda install --yes cython==0.25.2 numpy=1.12.0
 RUN conda install --yes --channel bioconda pysam htslib=1.3.2
 RUN pip install uwsgi==2.0.14
 
+# goofys setup
+WORKDIR /tmp
+ENV PATH=$PATH:/usr/local/go/bin
+RUN curl -O https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.9.2.linux-amd64.tar.gz && \
+    rm go1.9.2.linux-amd64.tar.gz
+
+RUN curl -L -O https://github.com/kahing/catfs/releases/download/v0.8.0/catfs && \
+    mv catfs /usr/bin && chmod 0755 /usr/bin/catfs
+
+ENV PATH=$PATH:/root/go/bin
+WORKDIR /root/go/src/github.com/kahing/goofys
+RUN git clone --depth 1 https://github.com/kahing/goofys.git --branch v0.19.0 .
+RUN go get . && make install
 
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
@@ -43,7 +61,7 @@ USER root
 RUN pip install pyBigWig
 RUN pip install clodius==<CLODIUS_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/4dn-dcic/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 
 # bump
@@ -52,7 +70,7 @@ RUN pip install hgtiles==<HGTILES_VERSION>
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
+RUN git clone --depth 1 https://github.com/4dn-dcic/higlass-server.git --branch master 
 USER root
 
 WORKDIR /home/higlass/projects/higlass-server
@@ -114,20 +132,31 @@ COPY uwsgi.ini .
 # Helper scripts
 COPY *.sh ./
 
-
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
-
 EXPOSE 80
 
-ENV HIGLASS_SERVER_BASE_DIR /data
-VOLUME /data
+# mount the goofyfs file system through supervisor
+# make sure env is set here
+ARG KEY
+ENV AWS_ACCESS_KEY_ID ${KEY}
+ARG SECRET
+ENV AWS_SECRET_ACCESS_KEY ${SECRET}
+ARG BUCKET
+ENV AWS_BUCKET ${BUCKET}
+ARG BUCKET2
+ENV AWS_BUCKET2 ${BUCKET2}
 
 ARG WORKERS
 ENV WORKERS ${WORKERS}
 RUN echo "WORKERS: $WORKERS"
+
+ENV HIGLASS_SERVER_BASE_DIR /data
+VOLUME /data
+RUN mkdir -p /data/media/aws/$BUCKET
+RUN mkdir -p /data/media/aws/$BUCKET2
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
