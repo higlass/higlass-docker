@@ -139,8 +139,8 @@ RUN echo "WORKERS: $WORKERS"
 
 ENV HIGLASS_SERVER_BASE_DIR /data
 VOLUME /data
-RUN mkdir -p /data/media/aws/$BUCKET
-RUN mkdir -p /data/media/aws/$BUCKET2
+RUN mkdir -p /data/media/$BUCKET
+RUN mkdir -p /data/media/$BUCKET2
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
