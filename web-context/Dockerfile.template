@@ -61,21 +61,20 @@ USER root
 RUN pip install pyBigWig
 RUN pip install clodius==0.7.2
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/4dn-dcic/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 # bump
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/4dn-dcic/higlass-server.git --branch master 
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION> 
 USER root
 
 WORKDIR /home/higlass/projects/higlass-server
 RUN python manage.py collectstatic --noinput -c
 
 WORKDIR /home/higlass/projects
-RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
 # Setup website (includes client js)
@@ -116,14 +115,11 @@ COPY uwsgi.ini .
 # Helper scripts
 COPY *.sh ./
 
-
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
-
 EXPOSE 80
-
 
 # mount the goofyfs file system through supervisor
 # make sure env is set here
@@ -140,11 +136,10 @@ ARG WORKERS
 ENV WORKERS ${WORKERS}
 RUN echo "WORKERS: $WORKERS"
 
-
 ENV HIGLASS_SERVER_BASE_DIR /data
-RUN mkdir -p /data/media/aws/$BUCKET
-RUN mkdir -p /data/media/aws/$BUCKET2
 VOLUME /data
+RUN mkdir -p /data/media/$BUCKET
+RUN mkdir -p /data/media/$BUCKET2
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.

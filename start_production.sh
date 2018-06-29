@@ -66,7 +66,7 @@ docker run --name container-$STAMP-with-redis \
            --volume $VOLUME/hg-tmp:/tmp \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
-	   --privileged
+	   --privileged \
            --detach \
            --publish-all \
            $IMAGE
