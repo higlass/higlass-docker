@@ -24,5 +24,5 @@ test_redis() {
     python tests.py
 }
 
-test_standalone
-#test_redis
+# test_standalone
+test_redis
