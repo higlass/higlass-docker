@@ -4,7 +4,7 @@ set -v
 
 # Docker image is pinned here, so that you can checkout older
 # versions of this script, and get reproducible deployments.
-DOCKER_VERSION=v1.7.1
+DOCKER_VERSION=v0.4.13
 IMAGE=gehlenborglab/higlass:$DOCKER_VERSION
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 PORT=80
@@ -66,7 +66,7 @@ docker run --name container-$STAMP-with-redis \
            --volume $VOLUME/hg-tmp:/tmp \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
-	   --privileged \
+	       --privileged \
            --detach \
            --publish-all \
            $IMAGE
