@@ -43,7 +43,7 @@ fi
 
 docker network create --driver bridge network-$STAMP
 
-for DIR in redis-data hg-data/log hg-tmp hg-data/media; do
+for DIR in redis-data hg-data/log hg-tmp hg-data/media hg-data/media/$AWS_BUCKET hg-data/media/$AWS_BUCKET2; do
   mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
 done
 
