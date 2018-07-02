@@ -2,7 +2,7 @@
 set -e
 
 # keep these updated with http://higlass.io/version.txt
-SERVER_VERSION='1.7.0'
+SERVER_VERSION='1.7.1'
 WEBSITE_VERSION='0.6.27'
 LIBRARY_VERSION='1.0.4'
 MULTIVEC_VERSION='0.1.10'
