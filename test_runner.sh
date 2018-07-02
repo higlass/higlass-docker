@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Coordinates build.sh and start_production.sh
 set -e
 
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
@@ -18,11 +19,12 @@ test_standalone() {
     python tests.py
 }
 
-test_redis() {
+# use this one
+test_with_redis() {
     export SUFFIX=-with-redis
     ./start_production.sh -s $STAMP -i image-$STAMP
     python tests.py
 }
 
 # test_standalone
-test_redis
+test_with_redis
