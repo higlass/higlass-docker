@@ -145,9 +145,9 @@ RUN echo "AWS_BUCKET: $BUCKET"
 RUN echo "BUCKET2: $BUCKET2"
 
 ENV HIGLASS_SERVER_BASE_DIR /data
+VOLUME /data
 RUN mkdir -p /data/media/$BUCKET
 RUN mkdir -p /data/media/$BUCKET2
-VOLUME /data
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
