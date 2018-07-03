@@ -4,6 +4,7 @@ set -v
 
 # Docker image is pinned here, so that you can checkout older
 # versions of this script, and get reproducible deployments.
+# DOCKER_VERSION is the version of hms-dbmi/higlass-docker, but is not used
 DOCKER_VERSION=v0.4.13
 IMAGE=gehlenborglab/higlass:$DOCKER_VERSION
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
@@ -43,6 +44,8 @@ fi
 
 docker network create --driver bridge network-$STAMP
 
+# Create all directories we need. These will be mounted to data, so really
+# /hg-data/media/$AWS_BUCKET is /data/media/$AWS_BUCKET, for example
 for DIR in redis-data hg-data/log hg-tmp hg-data/media hg-data/media/$AWS_BUCKET hg-data/media/$AWS_BUCKET2; do
   mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
 done
