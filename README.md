@@ -107,3 +107,7 @@ Travis will push an image to DockerHub with every successful run.
 If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
 then that version number will be pushed to DockerHub, and `latest`
 will be updated as well.
+
+## License
+
+The code in this repository is provided under the MIT License.
