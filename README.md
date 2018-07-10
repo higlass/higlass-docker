@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1308947.svg)](https://doi.org/10.5281/zenodo.1308947)
+
 # higlass-docker
 
 Builds a docker container wrapping higlass-client and higlass-server in nginx,
