@@ -2,10 +2,15 @@
 set -e
 
 STAMP='default'
-SERVER_VERSION='1.5.2'
+
 WEB_APP_VERSION='0.9.2'
-LIBRARY_VERSION='1.2.3'
 HIPILER_VERSION='1.1.7'
+SERVER_VERSION='1.7.7'
+LIBRARY_VERSION='1.1.5'
+MULTIVEC_VERSION='0.1.10'
+HGTILES_VERSION='0.2.2'
+CLODIUS_VERSION='0.9.1'
+TIME_INTERVAL_TRACK_VERSION='0.1.9'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
@@ -33,7 +38,7 @@ fi
 set -o verbose # Keep this after the usage message to reduce clutter.
 
 # When development settles down, consider going back to static Dockerfile.
-perl -pne "s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g; s/<HIPILER_VERSION>/$HIPILER_VERSION/g" \
+perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; s/<CLODIUS_VERSION>/$CLODIUS_VERSION/g; s/<HGTILES_VERSION>/$HGTILES_VERSION/g; s/<MULTIVEC_VERSION>/$MULTIVEC_VERSION/g; s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g; s/<HIPILER_VERSION>/$HIPILER_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=gehlenborglab/higlass
