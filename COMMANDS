@@ -1,0 +1,10 @@
+/usr/bin/time ./build.sh -w 2
+
+export DOCKER_ID_USER=pkerpedjiev
+
+docker login
+
+docker tag image-default pkerpedjiev/higlass-develop
+docker push pkerpedjiev/higlass-develop
+docker tag image-default pkerpedjiev/higlass-develop:latest
+docker push pkerpedjiev/higlass-develop:latest
