@@ -5,7 +5,7 @@ set -v
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 
 # Run normal production script
-./start_production.sh $STAMP
+./start_production.sh -s $STAMP -p 80 -v /data
 
 # Set HiGlass.io
 # 1. enable HiGlass.io homepage
