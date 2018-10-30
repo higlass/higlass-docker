@@ -46,7 +46,7 @@ docker network create --driver bridge network-$STAMP
 
 # Create all directories we need. These will be mounted to data, so really
 # /hg-data/media/$AWS_BUCKET is /data/media/$AWS_BUCKET, for example
-for DIR in redis-data hg-data/log hg-tmp hg-data/media hg-data/media/$AWS_BUCKET hg-data/media/$AWS_BUCKET2; do
+for DIR in redis-data hg-data/log hg-tmp hg-data/media hg-data/media/$AWS_BUCKET hg-data/media/$AWS_BUCKET2 hg-data/media/$AWS_BUCKET3 hg-data/media/$AWS_BUCKET4; do
   mkdir -p $VOLUME/$DIR || echo "$VOLUME/$DIR already exists"
 done
 

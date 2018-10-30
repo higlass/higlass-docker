@@ -42,6 +42,8 @@ perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; s/<CL
 echo "Used AWS buckets are:"
 echo $AWS_BUCKET
 echo $AWS_BUCKET2
+echo $AWS_BUCKET3
+echo $AWS_BUCKET4
 
 REPO=gehlenborglab/higlass
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
@@ -51,6 +53,8 @@ docker build --cache-from $REPO \
 	         --build-arg SECRET=$AWS_SECRET_ACCESS_KEY \
 	         --build-arg BUCKET=$AWS_BUCKET \
 	         --build-arg BUCKET2=$AWS_BUCKET2 \
+             --build-arg BUCKET=$AWS_BUCKET3 \
+	         --build-arg BUCKET2=$AWS_BUCKET4 \
              --tag image-$STAMP \
              web-context
 
