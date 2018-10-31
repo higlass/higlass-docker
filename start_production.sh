@@ -5,7 +5,7 @@ set -v
 # Docker image is pinned here, so that you can checkout older
 # versions of this script, and get reproducible deployments.
 # DOCKER_VERSION is the version of hms-dbmi/higlass-docker, but is not used
-DOCKER_VERSION=v0.4.13
+DOCKER_VERSION=v0.4.33
 IMAGE=gehlenborglab/higlass:$DOCKER_VERSION
 STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
 PORT=80
