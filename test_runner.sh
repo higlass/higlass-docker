@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Coordinates build.sh and start_production.sh
+# This causes a new Docker image to built, rather than pulling one
+# from dockerhub, which is done when you run start_production.sh
 set -e
 
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
