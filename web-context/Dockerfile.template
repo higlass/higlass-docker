@@ -72,10 +72,25 @@ RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/d
 RUN unzip higlass-app.zip -d higlass-app
 RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 
-# RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/index.html;
-# RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/app/index.html;
-# RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/demo.html;
-# RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/test_demo.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/index.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/demo.html;
+RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/test_demo.html;
+
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/index.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/demo.html;
+RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/test_demo.html;
+
+RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/demo.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/test_demo.html;
+
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/app/index.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/demo.html;
+RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/test_demo.html;
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \

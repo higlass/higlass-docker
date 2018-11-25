@@ -1,0 +1,4 @@
+docker tag image-default pkerpedjiev/higlass-develop
+docker push pkerpedjiev/higlass-develop
+docker tag image-default pkerpedjiev/higlass-develop:latest
+docker push pkerpedjiev/higlass-develop:latest
