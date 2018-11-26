@@ -70,27 +70,16 @@ RUN unzip hipiler.zip -d hipiler
 ENV WEB_APP_REPO higlass-app
 RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
 RUN unzip higlass-app.zip -d higlass-app
-RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
+# CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
+# RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
+RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js
+RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/demo.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css#g higlass-website/test_demo.html;
+RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
+RUN wget -O higlass-app/higlass-time-interval-track.min.js https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.min.js
 
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/demo.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js#g higlass-website/test_demo.html;
-
-RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/index.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/demo.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-multivec.js#https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.js#g higlass-website/test_demo.html;
-
-RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/index.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/demo.html;
-RUN sed -i -e s#assets/scripts-third-party/higlass-time-interval-track.js#https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.js#g higlass-website/test_demo.html;
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multivec.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-time-interval-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
