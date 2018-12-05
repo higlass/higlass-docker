@@ -24,4 +24,3 @@ test_redis() {
 }
 
 test_standalone
-test_redis
