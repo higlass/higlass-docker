@@ -12,7 +12,7 @@ class CommandlineTest(unittest.TestCase):
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
         tries = 0
         while tries < 10:
-            p = subprocess.Popen(args=['curl --fail --silent ' + url], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(args=['curl -m 3 --fail --silent ' + url], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             time.sleep(0.5)
             r = p.poll()
 
