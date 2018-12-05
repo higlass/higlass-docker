@@ -10,11 +10,27 @@ class CommandlineTest(unittest.TestCase):
         command = "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ)
         os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
-        while True:
-            if 0 == subprocess.call('curl --fail --silent '+url+' > /dev/null', shell=True):
+        tries = 0
+        while tries < 10:
+            p = subprocess.Popen(args=['curl --fail --silent ' + url], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            time.sleep(0.5)
+            r = p.poll()
+
+            if r == 0:
                 break
-            print('still waiting for server...')
+
             time.sleep(1)
+            r = p.poll()
+            
+            if r == 0:
+                break
+
+            time.sleep(1)
+            r = p.poll()
+            if r == 0:
+                break
+
+            print('still waiting for server...')
 
     def assertRun(self, command, res=[r'']):
         output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
