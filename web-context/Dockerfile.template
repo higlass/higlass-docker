@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.3.14
+FROM continuumio/miniconda3:4.5.11
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
@@ -8,12 +8,12 @@ FROM continuumio/miniconda3:4.3.14
 # and "apt-get install gcc" failed and suggested apt-get update.
 # (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
-        gcc=4:4.9.2-2 \
-        nginx=1.6.2-5+deb8u5 \
-        supervisor=3.0r1-1 \
-        unzip=6.0-16+deb8u2 \
+        gcc \
+        nginx \
+        supervisor \
+        unzip \
         uwsgi-plugin-python3 \
-        zlib1g-dev=1:1.2.8.dfsg-2+b1 \
+        zlib1g-dev \
         libcurl4-openssl-dev \
         g++ \
         vim \
@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y \
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.12.0
 RUN conda install --yes --channel bioconda pysam htslib=1.3.2
-RUN pip install uwsgi==2.0.14
+RUN conda install -c conda-forge --yes uwsgi==2.0.17.1
+# RUN pip install uwsgi==2.0.17
 
 
 # Setup home directory
@@ -43,7 +44,7 @@ USER root
 RUN pip install pyBigWig
 RUN pip install clodius==<CLODIUS_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 
 WORKDIR /home/higlass/projects

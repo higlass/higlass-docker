@@ -2,6 +2,17 @@
 set -e
 
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+
+while getopts 's:w:l' OPT; do
+  case $OPT in
+    s)
+      STAMP=$OPTARG
+      ;;
+  esac
+done
+
+echo "stamp:", $STAMP
+
 ./build.sh -w 4 -s $STAMP
 
 test_standalone() {
@@ -10,6 +21,9 @@ test_standalone() {
     # by itself, then it has gotten too complicated.
     export SUFFIX=-standalone
     echo "image-$STAMP"
+    echo "container-$STAMP$SUFFIX"
+    docker stop container-$STAMP$SUFFIX
+    docker rm container-$STAMP$SUFFIX
     docker run --name container-$STAMP$SUFFIX \
                --detach \
                --publish-all \
