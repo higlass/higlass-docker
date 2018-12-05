@@ -8,8 +8,7 @@ HIPILER_VERSION='1.3.1'
 SERVER_VERSION='1.8.0-rc2'
 LIBRARY_VERSION='1.3.0-rc2'
 MULTIVEC_VERSION='0.2.0-rc.1'
-HGTILES_VERSION='0.2.16'
-CLODIUS_VERSION='0.9.1'
+CLODIUS_VERSION='0.10.0.rc2'
 TIME_INTERVAL_TRACK_VERSION='0.2.0-rc.2'
 
 usage() {
@@ -43,7 +42,7 @@ perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; s/<CL
 
 REPO=gehlenborglab/higlass
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
-docker build --cache-from $REPO \
+docker build --cache-from image-$STAMP \
              --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context

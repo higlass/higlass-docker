@@ -46,9 +46,6 @@ RUN pip install clodius==<CLODIUS_VERSION>
 RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 
-# bump
-RUN pip install hgtiles==<HGTILES_VERSION>
-
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
@@ -87,7 +84,6 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
       echo "HIPILER_VERSION: <HIPILER_VERSION>"; \
       echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
-      echo "HGTILES_VERSION: <HGTILES_VERSION>"; \
       echo "CLODIUS_VERSION: <CLODIUS_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
       ) \
