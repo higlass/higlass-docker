@@ -22,8 +22,8 @@ test_standalone() {
     export SUFFIX=-standalone
     echo "image-$STAMP"
     echo "container-$STAMP$SUFFIX"
-    docker stop container-$STAMP$SUFFIX
-    docker rm container-$STAMP$SUFFIX
+    docker stop container-$STAMP$SUFFIX || true
+    docker rm container-$STAMP$SUFFIX || true
     docker run --name container-$STAMP$SUFFIX \
                --detach \
                --publish-all \
