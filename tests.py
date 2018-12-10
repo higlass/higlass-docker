@@ -4,42 +4,20 @@ import os
 import time
 
 class CommandlineTest(unittest.TestCase):
-    def runRepeatedly(self, command):
-        tries = 0
-        MAX_TRIES = 20
-        while tries < 20:
-            print("starting process", command)
-            p = subprocess.Popen(args=[command], shell=True,
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE)
-
-            for t in [0.1, 0.2, 0.4, 0.8]:
-               r = p.poll()
-               if r == 0:
-                   (out, err) = p.communicate()
-                   print("out:", out)
-                   return out
-
-               time.sleep(t) 
-               print("waiting for server output")
-
-            tries += 1
-
-        return None
-
     def setUp(self):
         # self.suffix = os.environ['SUFFIX']
         # self.stamp = os.environ['STAMP']
         command = "docker port container-{STAMP}{SUFFIX} | perl -pne 's/.*://'".format(**os.environ)
         os.environ['PORT'] = subprocess.check_output(command, shell=True).strip().decode('utf-8')
         url='http://localhost:{PORT}/api/v1/tilesets/'.format(**os.environ)
-        command = 'curl -m 3 --fail --silent ' + url
-
-        self.runRepeatedly(command)
+        while True:
+            if 0 == subprocess.call('curl --fail --silent '+url+' > /dev/null', shell=True):
+                break
+            print('still waiting for server...')
+            time.sleep(1)
 
     def assertRun(self, command, res=[r'']):
-        # print("command:", command.format(**os.environ))
-        output = self.runRepeatedly(command.format(**os.environ))
+        output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
 
         for re in res:
             self.assertRegexpMatches(output, re)
