@@ -30,6 +30,7 @@ RUN conda install --yes --channel bioconda pysam htslib=1.3.2
 RUN conda install -c conda-forge --yes uwsgi==2.0.17.1
 # RUN pip install uwsgi==2.0.17
 
+RUN pip install simple-httpfs==<SIMPLE_HTTPFS_VERSION>
 
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
