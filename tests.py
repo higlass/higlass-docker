@@ -85,6 +85,14 @@ class CommandlineTest(unittest.TestCase):
     #         [r'^$']
     #     )
 
+    def test_ingest_url(self):
+        self.assertRun('curl --header "Content-Type: application/json" ' + 
+                '--request POST ' +
+                """--data '{{ "fileurl": "https://s3.amazonaws.com/pkerp/public""" +
+                """Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool", """ +
+                """ "filetype": "cooler" }}' """ +
+                'http://localhost:{PORT}/api/v1/register_url/', ['uid'])
+        
 
     def test_ingest(self):
         return
