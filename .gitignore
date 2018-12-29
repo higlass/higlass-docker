@@ -3,3 +3,4 @@
 *.swo
 *.swp
 web-context/Dockerfile
+stack-test.yml
