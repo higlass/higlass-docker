@@ -20,7 +20,8 @@ class CommandlineTest(unittest.TestCase):
             time.sleep(1)
             counter -= 1
         if counter == 0:
-            subprocess.call('docker exec container-{STAMP}{SUFFIX} ./logs.sh', shell=True)
+            output = subprocess.check_output('docker exec container-{STAMP}{SUFFIX} ./logs.sh', shell=True)
+            print("output:", output)
 
     def assertRun(self, command, res=[r'']):
         output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
