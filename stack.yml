@@ -16,4 +16,7 @@ services:
         environment:
             - REDIS_HOST=redis
             - REDIS_PORT=6379
+            - HTTPFS_HTTP_DIR=/data/media/http
+            - HTTPFS_HTTPS_DIR=/data/media/https
+            - HTTPFS_FIR_DIR=/data/media/ftp
         container_name: "higlass-comp-container"

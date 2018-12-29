@@ -19,21 +19,7 @@ test_standalone() {
     # Keep this simple: We want folks just to be able to run the bare Docker container.
     # If this starts to get sufficiently complicated that we want to put it in a script
     # by itself, then it has gotten too complicated.
-    export SUFFIX=-standalone
-    echo "image-$STAMP"
-    echo "container-$STAMP$SUFFIX"
-    docker stop container-$STAMP$SUFFIX || true
-    docker rm container-$STAMP$SUFFIX || true
-    docker run --name container-$STAMP$SUFFIX \
-               --detach \
-               --publish-all \
-               image-$STAMP
-    python tests.py
-}
-
-test_redis() {
-    export SUFFIX=-with-redis
-    ./start_production.sh -s $STAMP -i image-$STAMP
+    docker-compose -f stack.yml up -d
     python tests.py
 }
 

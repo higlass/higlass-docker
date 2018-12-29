@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
         libpng-dev \
         htop \
         procps \
+        fuse \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
