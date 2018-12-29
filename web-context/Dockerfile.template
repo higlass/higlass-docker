@@ -108,6 +108,7 @@ COPY supervisord.conf .
 COPY uwsgi.ini .
 # Helper scripts
 COPY *.sh ./
+COPY httpfs.sh ./
 
 
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
