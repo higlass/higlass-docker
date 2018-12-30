@@ -20,3 +20,9 @@ services:
             - HTTPFS_HTTPS_DIR=/data/media/https
             - HTTPFS_FIR_DIR=/data/media/ftp
         container_name: "higlass-comp-container"
+        devices:
+            - /dev/fuse:/dev/fuse:rwm
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - "apparmor:unconfined" 

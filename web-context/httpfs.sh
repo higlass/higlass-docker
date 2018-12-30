@@ -1,16 +1,15 @@
 #! /usr/bin/env bash
-ECHO "Mounting httpfs"
 
 if [ -z "$HTTPFS_HTTP_DIR" ]; then 
-    HTTPFS_HTTP_DIR=/tmp/http
+    HTTPFS_HTTP_DIR=/data/media/http
 fi
 
 if [ -z "$HTTPFS_HTTPS_DIR" ]; then 
-    HTTPFS_HTTPS_DIR=/tmp/https
+    HTTPFS_HTTPS_DIR=/data/media/https
 fi
 
 if [ -z "$HTTPFS_FTP_DIR" ]; then 
-    HTTPFS_HTTPS_DIR=/tmp/ftp
+    HTTPFS_FTP_DIR=/data/media/ftp
 fi
 
 
