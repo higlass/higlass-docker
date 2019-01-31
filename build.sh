@@ -40,7 +40,11 @@ set -o verbose # Keep this after the usage message to reduce clutter.
 perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; s/<CLODIUS_VERSION>/$CLODIUS_VERSION/g; s/<HGTILES_VERSION>/$HGTILES_VERSION/g; s/<MULTIVEC_VERSION>/$MULTIVEC_VERSION/g; s/<SERVER_VERSION>/$SERVER_VERSION/g; s/<WEB_APP_VERSION>/$WEB_APP_VERSION/g; s/<LIBRARY_VERSION>/$LIBRARY_VERSION/g; s/<HIPILER_VERSION>/$HIPILER_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
-docker build --build-arg WORKERS=$WORKERS \
+REPO=higlass/higlass-docker
+docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
+#docker build --cache-from image-$STAMP \
+docker build --cache-from $REPO \
+             --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context
 
