@@ -4,7 +4,7 @@
 
 Builds a docker container wrapping higlass-client and higlass-server in nginx,
 tests that it works, and if there are no errors in the PR, pushes the image to
-[DockerHub](https://hub.docker.com/r/gehlenborglab/higlass/).
+[DockerHub](https://hub.docker.com/r/higlass/higlass-docker/).
 
 ## Running locally
 
@@ -12,13 +12,13 @@ You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```bash
-docker pull gehlenborglab/higlass # Ensure that you have the latest.
+docker pull higlass/higlass-docker # Ensure that you have the latest.
 docker run --detach \
            --publish 8888:80 \
            --volume ~/hg-data:/data \
            --volume ~/hg-tmp:/tmp \
            --name higlass-container \
-           gehlenborglab/higlass
+           higlass/higlass-docker
 ```
 The two `--volume` options are necessary to prevent the files you upload from consuming
 all of relatively small space allocated for the root volume.
