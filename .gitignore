@@ -3,3 +3,5 @@
 *.swo
 *.swp
 web-context/Dockerfile
+web-context/higlass-server
+stack-test.yml
