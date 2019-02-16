@@ -56,7 +56,7 @@ docker run --name $REDIS_HOST \
            --network network-$STAMP \
            --volume $VOLUME/redis-data:/data \
            --volume $SCRIPT_DIR/redis-context/redis.conf:$REDIS_CONF \
-           --detach redis:3.2.7-alpine \
+           --detach redis:5.0.3-alpine \
            redis-server $REDIS_CONF
 
 docker run --name container-$STAMP-with-redis \
