@@ -5,6 +5,15 @@
 set -e
 
 export STAMP=`date +"%Y-%m-%d_%H-%M-%S"`
+
+while getopts 's:w:l' OPT; do
+  case $OPT in
+    s)
+      STAMP=$OPTARG
+      ;;
+  esac
+done
+
 ./build.sh -w 4 -s $STAMP
 
 test_standalone() {
@@ -13,22 +22,24 @@ test_standalone() {
     # by itself, then it has gotten too complicated.
     export SUFFIX=-standalone
     echo "image-$STAMP"
+    echo "container-$STAMP$SUFFIX"
+    docker stop container-$STAMP$SUFFIX || true
+    docker rm container-$STAMP$SUFFIX || true
     docker run --name container-$STAMP$SUFFIX \
                --detach \
                --publish 80:80/tcp \
 	           --privileged \
                image-$STAMP
-    python tests.py
+    # python tests.py
 }
 
 # use this one
-test_with_redis() {
+test_redis() {
     export SUFFIX=-with-redis
     ./start_production.sh -s $STAMP -i image-$STAMP
-    # these tests don't really work anyways right now
     # python tests.py
     echo "DONE!"
 }
 
 # test_standalone
-test_with_redis
+test_redis

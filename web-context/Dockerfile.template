@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.3.14
+FROM continuumio/miniconda3:4.5.11
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
@@ -8,28 +8,31 @@ FROM continuumio/miniconda3:4.3.14
 # and "apt-get install gcc" failed and suggested apt-get update.
 # (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
-        gcc=4:4.9.2-2 \
-        nginx=1.6.2-5+deb8u5 \
-        supervisor=3.0r1-1+deb8u1 \
-        unzip=6.0-16+deb8u2 \
+        gcc \
+        nginx \
+        supervisor \
+        unzip \
         uwsgi-plugin-python3 \
-        zlib1g-dev=1:1.2.8.dfsg-2+b1 \
+        zlib1g-dev \
         libcurl4-openssl-dev \
         g++ \
         vim \
         build-essential \
         libssl-dev \
         libpng-dev \
-	fuse \
-	libfuse-dev \
+	    fuse \
+	    libfuse-dev \
         curl \
         make \
+        htop \
+        procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
-RUN conda install --yes cython==0.25.2 numpy=1.15.3
+RUN conda install --yes cython==0.25.2 numpy=1.12.0
 RUN conda install --yes --channel bioconda pysam htslib=1.3.2
-RUN pip install uwsgi==2.0.14
+RUN conda install -c conda-forge --yes uwsgi==2.0.17.1
+# RUN pip install uwsgi==2.0.17
 
 # goofys setup
 WORKDIR /tmp
@@ -61,15 +64,14 @@ USER root
 RUN pip install pyBigWig
 RUN pip install clodius==<CLODIUS_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/hms-dbmi/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
-# bump
-RUN pip install hgtiles==<HGTILES_VERSION>
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
+RUN git clone https://github.com/vishnubob/wait-for-it.git
 USER root
 
 WORKDIR /home/higlass/projects/higlass-server
@@ -79,32 +81,34 @@ WORKDIR /home/higlass/projects
 RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
-# Setup website (includes client js)
-ENV WEBSITE_REPO higlass-website
-RUN wget https://github.com/hms-dbmi/$WEBSITE_REPO/releases/download/v<WEBSITE_VERSION>/dist.zip
-RUN unzip dist.zip -d higlass-website
+# Setup application (includes client js)
+ENV HIPILER_REPO hipiler
+RUN wget -O hipiler.zip https://github.com/flekschas/$HIPILER_REPO/releases/download/v<HIPILER_VERSION>/build.zip
+RUN unzip hipiler.zip -d hipiler
 
-RUN pwd
+ENV WEB_APP_REPO higlass-app
+RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
+RUN unzip higlass-app.zip -d higlass-app
+# CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
+# RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
+RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js
+RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/demo.html;
-RUN sed -i -e s#assets/styles-third-party/hglib.css#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/styles/hglib.css#g higlass-website/test_demo.html;
+RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
+RUN wget -O higlass-app/higlass-time-interval-track.min.js https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.min.js
 
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/app/index.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/demo.html;
-RUN sed -i -e s#assets/scripts-third-party/hglib.js#https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/scripts/hglib.js#g higlass-website/test_demo.html;
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multivec.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-time-interval-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
-      echo "WEBSITE_VERSION: <WEBSITE_VERSION>"; \
+      echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
       echo "LIBRARY_VERSION: <LIBRARY_VERSION>"; \
+      echo "HIPILER_VERSION: <HIPILER_VERSION>"; \
       echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
-      echo "HGTILES_VERSION: <HGTILES_VERSION>"; \
       echo "CLODIUS_VERSION: <CLODIUS_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
       ) \
-    > higlass-website/version.txt
+    > higlass-app/version.txt
 
 
 # Setup supervisord and nginx
@@ -121,11 +125,16 @@ COPY uwsgi.ini .
 # Helper scripts
 COPY *.sh ./
 
+
 RUN rm /etc/nginx/sites-*/default && grep 'listen' /etc/nginx/sites-*/*
 # Without this, two config files are trying to grab port 80:
 # nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 
+
 EXPOSE 80
+
+ENV HIGLASS_SERVER_BASE_DIR /data
+VOLUME /data
 
 # mount the goofyfs file system through supervisor
 # make sure env is set here
@@ -149,16 +158,6 @@ RUN echo "AWS_BUCKET: $BUCKET"
 RUN echo "AWS_BUCKET2: $BUCKET2"
 RUN echo "AWS_BUCKET3: $BUCKET3"
 RUN echo "AWS_BUCKET4: $BUCKET4"
-
-ENV HIGLASS_SERVER_BASE_DIR /data
-VOLUME /data
-
-# Used to make the directories here, but moved it to start_production.sh
-# It wasn't working?
-# RUN ls /data/media
-# RUN mkdir -p /data/media/$BUCKET
-# RUN mkdir -p /data/media/$BUCKET2
-# RUN ls /data/media
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.

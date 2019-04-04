@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+    redis:
+        image: "redis:alpine"
+
+    higlass:
+        depends_on:
+            - "redis"
+        command: bash -c "/home/higlass/projects/wait-for-it/wait-for-it.sh redis:6379 -- supervisord -n"
+        image: "image-default"
+        ports:
+            - 8989:80
+        volumes:
+            - ~/data/hg-data/:/data
+            - ~/data/hg-tmp/:/tmp
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+        container_name: "higlass-comp-container"
