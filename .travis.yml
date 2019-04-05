@@ -13,11 +13,7 @@ script:
   - sudo ./test_runner.sh
 
 after_success:
-<<<<<<< HEAD
   - REPO=4dndcic/higlass-docker
-=======
-  - REPO=higlass/higlass-docker
->>>>>>> 2fa441290a215a513aaaf8eda851c7aa86c84d4f
   - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'` # TODO: with more containers, can't rely on ordering
   - tag_push() { echo "Tagging into $2"; sudo docker tag $1 $2; sudo docker push $2; }
 
