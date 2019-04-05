@@ -13,7 +13,7 @@ script:
   - sudo ./test_runner.sh
 
 after_success:
-  - REPO=gehlenborglab/higlass
+  - REPO=4dndcic/higlass-docker
   - IMAGE=`sudo docker ps --latest --format '{{ .Image }}'` # TODO: with more containers, can't rely on ordering
   - tag_push() { echo "Tagging into $2"; sudo docker tag $1 $2; sudo docker push $2; }
 
@@ -23,7 +23,6 @@ after_success:
   - >
       if [ "$TRAVIS_EVENT_TYPE" == "pull_request" ]; then
         echo "PR!";
-
         BRANCH=`echo ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} | perl -pne 'chomp;s{.*/}{};s/\W/-/g'`;
         tag_push $IMAGE $REPO:$BRANCH;
         tag_push $IMAGE $REPO:latest-pr;
@@ -34,4 +33,3 @@ after_success:
         tag_push $IMAGE $REPO:$TRAVIS_TAG;
         tag_push $IMAGE $REPO:latest;
       fi
-

@@ -18,6 +18,7 @@ class CommandlineTest(unittest.TestCase):
 
     def assertRun(self, command, res=[r'']):
         output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
+
         for re in res:
             self.assertRegexpMatches(output, re)
 
@@ -63,7 +64,7 @@ class CommandlineTest(unittest.TestCase):
         self.assertRun(
             'curl -s http://localhost:{PORT}/',
             [r'Peter Kerpedjiev', r'Harvard Medical School',
-             r'HiGlass is a tool for exploring']
+             r'Web-based visual exploration and comparison of Hi-C genome interaction maps and other genomic tracks']
         )
 
     def test_admin(self):

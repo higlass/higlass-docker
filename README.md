@@ -1,22 +1,24 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1308947.svg)](https://doi.org/10.5281/zenodo.1308947)
+
 # higlass-docker
 
 Builds a docker container wrapping higlass-client and higlass-server in nginx,
-tests that it works, and if there are no errors in the PR, pushes the image to 
-[DockerHub](https://hub.docker.com/r/gehlenborglab/higlass/).
+tests that it works, and if there are no errors in the PR, pushes the image to
+[DockerHub](https://hub.docker.com/r/higlass/higlass-docker/).
 
-## Running locally
+## Running Locally
 
 You can see HiGlass in action at [higlass.io](http://higlass.io/).
 
 It is also easy to launch your own. Install Docker, and then:
 ```bash
-docker pull gehlenborglab/higlass # Ensure that you have the latest.
+docker pull higlass/higlass-docker # Ensure that you have the latest.
 docker run --detach \
            --publish 8888:80 \
            --volume ~/hg-data:/data \
            --volume ~/hg-tmp:/tmp \
            --name higlass-container \
-           gehlenborglab/higlass
+           higlass/higlass-docker
 ```
 The two `--volume` options are necessary to prevent the files you upload from consuming
 all of relatively small space allocated for the root volume.
@@ -25,7 +27,7 @@ For ingest, you'll need to put your files in one of the shared directories: Then
 be available to scripts running inside the container.
 ```bash
 # For example...
-COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool 
+COOLER=dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool
 wget -P ~/hg-tmp https://s3.amazonaws.com/pkerp/public/$COOLER
 
 # Confirm that the file is visible inside the container:
@@ -51,6 +53,11 @@ curl http://localhost:8888/api/v1/tileset_info/?d=$ID
 # Details:
 curl http://localhost:8888/api/v1/tiles/?d=$ID.0.0.0
 ```
+
+### Troubleshooting
+
+* Error to launch the container because the container name is already in use (`docker: Error response from daemon: Conflict. The container name "/higlass-container" is already in use by container ...`). Use `docker rm higlass-container` and launch the container again.
+
 
 ### Django admin interface
 
@@ -80,7 +87,7 @@ For more details, read [README-DEPLOY](README-DEPLOY.md).
 
 To develop [higlass-client](https://github.com/hms-dbmi/higlass) and
 [higlass-server](https://github.com/hms-dbmi/higlass-server),
-check out the corresponding repos. 
+check out the corresponding repos.
 
 To work on the Docker deployment, checkout this repo, install Docker, and then:
 
@@ -100,6 +107,15 @@ docker exec --interactive --tty container-TIMESTAMP bash
 docker ps -a -q | xargs docker stop | xargs docker rm
 ```
 
+To manually test the a new image at http://localhost:8888 run:
+
+```bash
+./test_build.sh <NAME>
+
+# You can log into the instance with:
+docker exec -it cont-<NAME> bash
+```
+
 
 ## Releasing updates
 
@@ -107,3 +123,7 @@ Travis will push an image to DockerHub with every successful run.
 If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
 then that version number will be pushed to DockerHub, and `latest`
 will be updated as well.
+
+## License
+
+The code in this repository is provided under the MIT License.
