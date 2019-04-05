@@ -4,7 +4,6 @@ set -e
 # keep these updated with http://higlass.io/version.txt
 SERVER_VERSION='1.10.2'
 WEB_APP_VERSION='1.1.0'
-# WEBSITE_VERSION='0.6.32'
 LIBRARY_VERSION='1.5.2'
 HIPILER_VERSION='1.3.1'
 MULTIVEC_VERSION='0.2.0'
