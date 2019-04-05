@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# keep these updated with http://higlass.io/version.txt
-SERVER_VERSION='1.10.2'
+STAMP='default'
+
 WEB_APP_VERSION='1.1.0'
-LIBRARY_VERSION='1.5.2'
 HIPILER_VERSION='1.3.1'
+SERVER_VERSION='1.10.2'
+LIBRARY_VERSION='1.5.2'
 MULTIVEC_VERSION='0.2.0'
 CLODIUS_VERSION='0.10.4'
 TIME_INTERVAL_TRACK_VERSION='0.2.0-rc.2'
@@ -48,6 +49,7 @@ echo $AWS_BUCKET4
 # 4dn uses our own higlass-docker image
 REPO=4dndcic/higlass-docker
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
+#docker build --cache-from image-$STAMP \
 docker build --cache-from $REPO \
              --build-arg WORKERS=$WORKERS \
 	         --build-arg KEY=$AWS_ACCESS_KEY_ID \

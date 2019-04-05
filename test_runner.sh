@@ -14,6 +14,8 @@ while getopts 's:w:l' OPT; do
   esac
 done
 
+echo "stamp:", $STAMP
+
 ./build.sh -w 4 -s $STAMP
 
 test_standalone() {
