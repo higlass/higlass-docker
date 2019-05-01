@@ -78,9 +78,13 @@ RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION
 
 RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
 RUN wget -O higlass-app/higlass-time-interval-track.min.js https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.min.js
+RUN wget -O higlass-app/higlass-linear-labels-track.min.js https://unpkg.com/higlass-linear-labels-track@<LINEAR_LABELS_TRACK_VERSION>/dist/higlass-linear-labels-track.min.js
+RUN wget -O higlass-app/higlass-labelled-points-track.min.js https://unpkg.com/higlass-labelled-points-track@<LABELLED_POINTS_TRACK_VERSION>/dist/higlass-labelled-points-track.min.js
 
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multivec.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-time-interval-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-linear-labels-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-labelled-points-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
@@ -89,9 +93,10 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
       echo "CLODIUS_VERSION: <CLODIUS_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
+      echo "LINEAR_LABELS_TRACK: <LINEAR_LABELS_TRACK>"; \
+      echo "LABELLED_POINTS_TRACK: <LABELLED_POINTS_TRACK>"; \
       ) \
     > higlass-app/version.txt
-
 
 # Setup supervisord and nginx
 USER root
