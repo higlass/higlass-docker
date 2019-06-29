@@ -1,19 +1,27 @@
-version: '3.1'
-services:
-    redis:
-        image: "redis:alpine"
+version: "3.3"
 
+services:
     higlass:
-        depends_on:
-            - "redis"
-        command: bash -c "/home/higlass/projects/wait-for-it/wait-for-it.sh redis:6379 -- supervisord -n"
-        image: "image-default"
+        image: gehlenborglab/higlass:v0.5.5
         ports:
-            - 8989:80
+          - "9083:80"
         volumes:
-            - ~/data/hg-data/:/data
-            - ~/data/hg-tmp/:/tmp
+          - ~/data/hg-data/:/data
+          - ~/data/hg-tmp/:/tmp
+        command: bash -c "sed -i 's/url(\/fo/url(\/hg\/fo/g' higlass-app/static/css/*.css; sed -i 's/url(\/st/url(\/hg\/st/g' higlass-app/static/css/*.css; sed -i 's/href=\"\//href=\"\/hg\//g' higlass-app/index.html; sed -i 's/src=\"\//src=\"\/hg\//g' higlass-app/index.html; sed -i 's/SERVER=\"\"/SERVER=\"\/hg\/api\/v1\"/g' higlass-app/config.js; echo $$'\n'window.HGAC_BASEPATH=\'/hg\'';' >> higlass-app/config.js; supervisord -n"
         environment:
-            - REDIS_HOST=redis
-            - REDIS_PORT=6379
-        container_name: "higlass-comp-container"
+    #        - REDIS_HOST=redis
+    #        - REDIS_PORT=6379
+            - HTTPFS_HTTP_DIR=/data/media/http
+            - HTTPFS_HTTPS_DIR=/data/media/https
+            - HTTPFS_FIR_DIR=/data/media/ftp
+        container_name: "higlass-container"
+    nginx_proxy:
+        image: nginx:latest
+        ports:
+          - 80:80
+        volumes:
+          - ./web-context/local.nginx.conf:/etc/nginx/nginx.conf
+          - ~/data/nginx:/var/log/nginx
+        depends_on:
+          - "higlass"
