@@ -80,13 +80,14 @@ RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multiv
 RUN wget -O higlass-app/higlass-time-interval-track.min.js https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.min.js
 RUN wget -O higlass-app/higlass-linear-labels-track.min.js https://unpkg.com/higlass-linear-labels-track@<LINEAR_LABELS_TRACK_VERSION>/dist/higlass-linear-labels-track.min.js
 RUN wget -O higlass-app/higlass-labelled-points-track.min.js https://unpkg.com/higlass-labelled-points-track@<LABELLED_POINTS_TRACK_VERSION>/dist/higlass-labelled-points-track.min.js
-
 RUN wget -O higlass-app/higlass-bedlike-triangles-track.min.js https://unpkg.com/higlass-bedlike-triangles-track@<BEDLIKE_TRIANGLES_TRACK_VERSION>/dist/higlass-bedlike-triangles-track.min.js
+RUN wget -O higlass-app/higlass-range.min.js https://unpkg.com/higlass-rangek@<RANGE_TRACK_VERSION>/dist/higlass-range.min.js
 
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multivec.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-time-interval-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-linear-labels-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-labelled-points-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-range.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
@@ -97,6 +98,7 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
       echo "LINEAR_LABELS_TRACK: <LINEAR_LABELS_TRACK>"; \
       echo "LABELLED_POINTS_TRACK: <LABELLED_POINTS_TRACK>"; \
+      echo "RANGE_TRACK_VERSION: <RANGE_TRACK_VERSION>"; \
       ) \
     > higlass-app/version.txt
 
