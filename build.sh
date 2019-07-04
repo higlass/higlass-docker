@@ -5,7 +5,7 @@ STAMP='default'
 
 WEB_APP_VERSION='1.1.0'
 HIPILER_VERSION='1.3.1'
-SERVER_VERSION='1.10.3'
+SERVER_VERSION='1.11.0'
 LIBRARY_VERSION='1.6.0'
 MULTIVEC_VERSION='0.2.0'
 CLODIUS_VERSION='0.10.10'
@@ -46,8 +46,8 @@ perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; s/<CL
 
 REPO=higlass/higlass-docker
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
-#docker build --cache-from image-$STAMP \
-docker build --cache-from $REPO \
+# docker build --cache-from $REPO \
+docker build --cache-from image-$STAMP \
              --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context
