@@ -62,7 +62,7 @@ USER higlass
 ##################################
 RUN echo "hi1234"
 ##################################
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch pkerpedjiev/link-unfurling
+RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
 RUN git clone https://github.com/vishnubob/wait-for-it.git
 USER root
 
