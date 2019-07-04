@@ -17,7 +17,7 @@ class CommandlineTest(unittest.TestCase):
             time.sleep(1)
 
     def assertRun(self, command, res=[r'']):
-        output = subprocess.check_output(command.format(**os.environ), shell=True).strip()
+        output = subprocess.check_output(command.format(**os.environ), shell=True).decode('utf8').strip()
 
         for re in res:
             self.assertRegexpMatches(output, re)
