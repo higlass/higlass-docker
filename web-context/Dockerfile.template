@@ -83,7 +83,7 @@ RUN wget -O higlass-app.zip https://github.com/higlass/$WEB_APP_REPO/releases/do
 RUN unzip higlass-app.zip -d higlass-app
 # CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
 # RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
-RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js
+RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
 RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
