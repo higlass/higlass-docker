@@ -51,17 +51,14 @@ USER higlass
 # without having to refetch all dependencies.
 USER root
 RUN pip install pyBigWig
-RUN pip install clodius==<CLODIUS_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install clodius==<CLODIUS_VERSION>
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-##################################
-RUN echo "hi1234"
-##################################
 RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
 RUN git clone https://github.com/vishnubob/wait-for-it.git
 USER root
@@ -70,7 +67,6 @@ WORKDIR /home/higlass/projects/higlass-server
 RUN python manage.py collectstatic --noinput -c
 
 WORKDIR /home/higlass/projects
-RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
 # Setup application (includes client js)
@@ -83,7 +79,7 @@ RUN wget -O higlass-app.zip https://github.com/higlass/$WEB_APP_REPO/releases/do
 RUN unzip higlass-app.zip -d higlass-app
 # CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
 # RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
-RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js
+RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
 RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
