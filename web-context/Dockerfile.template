@@ -77,8 +77,6 @@ RUN unzip hipiler.zip -d hipiler
 ENV WEB_APP_REPO higlass-app
 RUN wget -O higlass-app.zip https://github.com/higlass/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
 RUN unzip higlass-app.zip -d higlass-app
-# CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
-# RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
@@ -104,6 +102,7 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
       echo "LINEAR_LABELS_TRACK: <LINEAR_LABELS_TRACK>"; \
       echo "LABELLED_POINTS_TRACK: <LABELLED_POINTS_TRACK>"; \
+      echo "BEDLIKE_TRIANGLES_TRACK_VERSION: <BEDLIKE_TRIANGLES_TRACK_VERSION>"; \
       echo "RANGE_TRACK_VERSION: <RANGE_TRACK_VERSION>"; \
       ) \
     > higlass-app/version.txt
