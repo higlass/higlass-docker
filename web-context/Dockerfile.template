@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.5.11
+FROM continuumio/miniconda3:4.6.14
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
@@ -26,12 +26,20 @@ RUN apt-get update && apt-get install -y \
         make \
         htop \
         procps \
+        libx11-xcb1 \
+        libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
+        libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
+        libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
+        libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
+        libnss3 \
     && rm -rf /var/lib/apt/lists/*
 
 # Keep big dependencies which are unlikely to change near the top of this file.
 RUN conda install --yes cython==0.25.2 numpy=1.12.0
 RUN conda install --yes --channel bioconda pysam htslib=1.3.2
-RUN conda install -c conda-forge --yes uwsgi==2.0.17.1
+RUN conda install -c conda-forge --yes uwsgi==2.0.18
+RUN conda install -c conda-forge --yes 'icu=58.*'
+RUN conda install -c conda-forge --yes libiconv
 # RUN pip install uwsgi==2.0.17
 
 # goofys setup
@@ -62,10 +70,10 @@ USER higlass
 # without having to refetch all dependencies.
 USER root
 RUN pip install pyBigWig
-RUN pip install clodius==<CLODIUS_VERSION>
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install clodius==<CLODIUS_VERSION>
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
@@ -78,7 +86,6 @@ WORKDIR /home/higlass/projects/higlass-server
 RUN python manage.py collectstatic --noinput -c
 
 WORKDIR /home/higlass/projects
-RUN pip install -r higlass-server/requirements.txt
 USER higlass
 
 # Setup application (includes client js)
@@ -87,18 +94,23 @@ RUN wget -O hipiler.zip https://github.com/flekschas/$HIPILER_REPO/releases/down
 RUN unzip hipiler.zip -d hipiler
 
 ENV WEB_APP_REPO higlass-app
-RUN wget -O higlass-app.zip https://github.com/hms-dbmi/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
+RUN wget -O higlass-app.zip https://github.com/higlass/$WEB_APP_REPO/releases/download/v<WEB_APP_VERSION>/build.zip
 RUN unzip higlass-app.zip -d higlass-app
-# CHANGE THE NEXT LINE TO AFTER UPDATING HGLIB TO v1.3:
-# RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
-RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.js
+RUN wget -O higlass-app/hglib.min.js https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.min.js
 RUN wget -O higlass-app/hglib.min.css https://unpkg.com/higlass@<LIBRARY_VERSION>/dist/hglib.css
 
 RUN wget -O higlass-app/higlass-multivec.min.js https://unpkg.com/higlass-multivec@<MULTIVEC_VERSION>/dist/higlass-multivec.min.js
 RUN wget -O higlass-app/higlass-time-interval-track.min.js https://unpkg.com/higlass-time-interval-track@<TIME_INTERVAL_TRACK_VERSION>/dist/higlass-time-interval-track.min.js
+RUN wget -O higlass-app/higlass-linear-labels-track.min.js https://unpkg.com/higlass-linear-labels-track@<LINEAR_LABELS_TRACK_VERSION>/dist/higlass-linear-labels-track.min.js
+RUN wget -O higlass-app/higlass-labelled-points-track.min.js https://unpkg.com/higlass-labelled-points-track@<LABELLED_POINTS_TRACK_VERSION>/dist/higlass-labelled-points-track.min.js
+RUN wget -O higlass-app/higlass-bedlike-triangles-track.min.js https://unpkg.com/higlass-bedlike-triangles-track@<BEDLIKE_TRIANGLES_TRACK_VERSION>/dist/higlass-bedlike-triangles-track.min.js
+RUN wget -O higlass-app/higlass-range.min.js https://unpkg.com/higlass-range@<RANGE_TRACK_VERSION>/dist/higlass-range.min.js
 
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multivec.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-time-interval-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-linear-labels-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-labelled-points-track.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-range.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "WEB_APP_VERSION: <WEB_APP_VERSION>"; \
@@ -107,6 +119,10 @@ RUN ( echo "SERVER_VERSION: <SERVER_VERSION>"; \
       echo "MULTIVEC_VERSION: <MULTIVEC_VERSION>"; \
       echo "CLODIUS_VERSION: <CLODIUS_VERSION>"; \
       echo "TIME_INTERVAL_TRACK_VERSION: <TIME_INTERVAL_TRACK_VERSION>"; \
+      echo "LINEAR_LABELS_TRACK: <LINEAR_LABELS_TRACK>"; \
+      echo "LABELLED_POINTS_TRACK: <LABELLED_POINTS_TRACK>"; \
+      echo "BEDLIKE_TRIANGLES_TRACK_VERSION: <BEDLIKE_TRIANGLES_TRACK_VERSION>"; \
+      echo "RANGE_TRACK_VERSION: <RANGE_TRACK_VERSION>"; \
       ) \
     > higlass-app/version.txt
 
@@ -158,6 +174,8 @@ RUN echo "AWS_BUCKET: $BUCKET"
 RUN echo "AWS_BUCKET2: $BUCKET2"
 RUN echo "AWS_BUCKET3: $BUCKET3"
 RUN echo "AWS_BUCKET4: $BUCKET4"
+
+RUN pip install pyppeteer
 
 # TODO: Needs to write to logs, but running as root is risky
 # Given as list so that an extra shell does not need to be started.
