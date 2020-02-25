@@ -59,6 +59,7 @@ RUN pip install cytoolz==0.10.0
 RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install clodius==<CLODIUS_VERSION>
+RUN pip install pybbi==<PYBBI_VERSION>
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
