@@ -16,6 +16,7 @@ LABELLED_POINTS_TRACK_VERSION='0.1.12'
 BEDLIKE_TRIANGLES_TRACK_VERSION='0.1.2'
 RANGE_TRACK_VERSION='0.1.1'
 PILEUP_VERSION='0.2.11'
+ARCS_VERSION='0.2.1'
 
 usage() {
   echo "USAGE: $0 -w WORKERS [-s STAMP] [-l]" >&2
@@ -53,6 +54,7 @@ perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; \
            s/<BEDLIKE_TRIANGLES_TRACK_VERSION>/$BEDLIKE_TRIANGLES_TRACK_VERSION/g; \
            s/<RANGE_TRACK_VERSION>/$RANGE_TRACK_VERSION/g; \
            s/<PILEUP_VERSION>/$PILEUP_VERSION/g" \
+           s/<ARCS_VERSION>/$ARCS_VERSION/g" \
           web-context/Dockerfile.template > web-context/Dockerfile
 
 REPO=higlass/higlass-docker
