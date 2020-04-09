@@ -62,8 +62,8 @@ docker run --name $REDIS_HOST \
 docker run --name container-$STAMP-with-redis \
            --network network-$STAMP \
            --publish $PORT:80 \
-           --volume $VOLUME/hg-data:/data \
-           --volume $VOLUME/hg-tmp:/tmp \
+           --volume /Users/pete/data/hg-data:/data \
+           --volume /Users/pete/data/hg-tmp:/tmp \
            --env REDIS_HOST=$REDIS_HOST \
            --env REDIS_PORT=6379 \
            --detach \
