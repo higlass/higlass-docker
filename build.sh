@@ -59,9 +59,8 @@ perl -pne "s/<TIME_INTERVAL_TRACK_VERSION>/$TIME_INTERVAL_TRACK_VERSION/g; \
 
 REPO=higlass/higlass-docker
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
-# docker build --cache-from $REPO \
-docker build --cache-from image-$STAMP \
-             --build-arg WORKERS=$WORKERS \
+# docker build --cache-from image-$STAMP \
+docker build --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
              web-context
 

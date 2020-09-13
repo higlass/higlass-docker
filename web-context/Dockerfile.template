@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.6.14
+FROM ubuntu:18.04
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
@@ -8,9 +8,6 @@ FROM continuumio/miniconda3:4.6.14
 # and "apt-get install gcc" failed and suggested apt-get update.
 # (Was having some trouble with installs, so split it up for granular caching.)
 RUN apt-get update && apt-get install -y \
-        gcc \
-        nginx=1.18.0 \
-        supervisor \
         unzip \
         uwsgi-plugin-python3 \
         zlib1g-dev \
@@ -18,27 +15,33 @@ RUN apt-get update && apt-get install -y \
         g++ \
         vim \
         build-essential \
-        libssl-dev \
         libpng-dev \
-        htop \
-        procps \
-        libx11-xcb1 \
+        libssl-dev \
+        fuse \
+        nginx \
+        supervisor \
+        python3-dev \
+        python3-pip \
+        curl \
+        git-core \
+        wget \
+        bzip2 \
+        libbz2-dev \
+        liblzma-dev \
         libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
         libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
         libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
         libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
         libnss3 \
-        fuse \
     && rm -rf /var/lib/apt/lists/*
 
-# Keep big dependencies which are unlikely to change near the top of this file.
-RUN conda install --yes cython==0.25.2 numpy=1.12.0
-RUN conda install --yes --channel bioconda pysam htslib=1.3.2
-RUN conda install -c conda-forge --yes uwsgi==2.0.18
-RUN conda install -c conda-forge --yes 'icu=58.*'
-RUN conda install -c conda-forge --yes libiconv
-# RUN pip install uwsgi==2.0.17
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash \
+    && apt-get install -y nodejs
 
+RUN ln -s /usr/bin/python3 /usr/local/bin/python \
+    && pip3 install --upgrade pip
+
+RUN pip install cython numpy pysam uwsgi
 
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
