@@ -3,16 +3,10 @@
 
 name: Docker publish
 
-# on:
-#   push:
-#     tags:
-#       - "v*"
-
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+    tags:
+      - "v*"
 
 jobs:
   build:

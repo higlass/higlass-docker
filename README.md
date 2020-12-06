@@ -119,10 +119,12 @@ docker exec -it cont-<NAME> bash
 
 ## Releasing updates
 
-Travis will push an image to DockerHub with every successful run.
-If it's tagged (ie `git tag v0.0.x && git push origin --tags`),
-then that version number will be pushed to DockerHub, and `latest`
-will be updated as well.
+The CI workflow automatically pushes new builds to Dockerhub. All that's necessary is to bump the version number and push to master:
+
+```
+bumpversion [patch,minor,major]
+git push origin master --tags
+```
 
 ## License
 
