@@ -3,6 +3,7 @@ set -e
 
 STAMP='default'
 
+DOCKER_VERSION='0.7.3'
 WEB_APP_VERSION='1.1.9'
 HIPILER_VERSION='1.4.0'
 SERVER_VERSION='1.14.1'
@@ -72,6 +73,8 @@ docker pull $REPO # Defaults to "latest", but just speeds up the build, so preci
 # docker build --cache-from image-$STAMP \
 docker build --build-arg WORKERS=$WORKERS \
              --tag image-$STAMP \
+             --tag ${REPO}:$DOCKER_VERSION \
+             --tag ${REPO}:latest \
              web-context
 
 rm web-context/Dockerfile # Ephemeral: We want to prevent folks from editing it by mistake.
