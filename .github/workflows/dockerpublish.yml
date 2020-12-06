@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: ./build.sh
+      - run: ./build.sh -w 4
       - run: ./push.sh
         env:
           DOCKER_USER: higlass
