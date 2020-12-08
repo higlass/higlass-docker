@@ -119,12 +119,22 @@ docker exec -it cont-<NAME> bash
 
 ## Releasing updates
 
-The CI workflow automatically pushes new builds to Dockerhub. All that's necessary is to bump the version number and push to master:
+The CI workflow automatically pushes new builds to Dockerhub. All that's necessary is to update the changelog bump the version number and push to master:
+
+1. Switch to master branch. Update the CHANGELOG to make sure the latest entry is labelled with the upcoming version number.
+
+2. Bump the version number:
 
 ```
 bumpversion [patch,minor,major]
+```
+
+3. Push the branch and tags to GitHub. This will kick off the build and release CI workflow.
+
+```
 git push origin master --tags
 ```
+
 
 ## License
 
