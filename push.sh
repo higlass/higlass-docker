@@ -1,4 +1,4 @@
-DOCKER_VERSION='0.7.3'
+DOCKER_VERSION='DOCKER_VERSION=='0.7.4''
 REPO=higlass/higlass-docker
 
 sudo docker login -u $DOCKER_USER -p $DOCKER_PASS
