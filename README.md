@@ -85,8 +85,8 @@ For more details, read [README-DEPLOY](README-DEPLOY.md).
 
 ## Development
 
-To develop [higlass-client](https://github.com/hms-dbmi/higlass) and
-[higlass-server](https://github.com/hms-dbmi/higlass-server),
+To develop [higlass-client](https://github.com/higlass/higlass) and
+[higlass-server](https://github.com/higlass/higlass-server),
 check out the corresponding repos.
 
 To work on the Docker deployment, checkout this repo, install Docker, and then:

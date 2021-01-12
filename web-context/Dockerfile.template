@@ -67,7 +67,7 @@ RUN pip install pybbi==<PYBBI_VERSION>
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .
 USER higlass
-RUN git clone --depth 1 https://github.com/hms-dbmi/higlass-server.git --branch v<SERVER_VERSION>
+RUN git clone --depth 1 https://github.com/higlass/higlass-server.git --branch v<SERVER_VERSION>
 RUN git clone https://github.com/vishnubob/wait-for-it.git
 USER root
 
