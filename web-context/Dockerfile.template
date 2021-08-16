@@ -100,6 +100,8 @@ RUN wget -O higlass-app/higlass-range.min.js https://unpkg.com/higlass-range@<RA
 RUN wget -O higlass-app/higlass-arcs.min.js https://unpkg.com/higlass-arcs@<ARCS_VERSION>/dist/higlass-arcs.min.js
 
 RUN wget -O higlass-app/higlass-pileup.min.js https://unpkg.com/higlass-pileup@<PILEUP_VERSION>/dist/higlass-pileup.min.js
+RUN wget -O higlass-app/higlass-dynseq.min.js https://unpkg.com/higlass-dynseq@<DYNSEQ_VERSION>/dist/higlass-dynseq.umd.js
+RUN wget -O higlass-app/higlass-multi-tileset.min.js https://unpkg.com/higlass-multi-tileset@0.1.1/dist/higlass-multi-tileset.umd.js
 RUN wget -O higlass-app/0.higlass-pileup.min.worker.js https://unpkg.com/higlass-pileup@<PILEUP_VERSION>/dist/0.higlass-pileup.min.worker.js
 
 RUN wget -O higlass-app/higlass-transcripts.min.js https://unpkg.com/higlass-transcripts@<TRANSCRIPTS_VERSION>/dist/higlass-transcripts.js
@@ -117,6 +119,9 @@ RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-ran
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-arcs.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-pileup.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-dynseq.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
+RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-multi-tileset.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-transcripts.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
 RUN sed -i -e 's#<script src="/hglib.min.js"></script>#<script src="/higlass-text.min.js"></script><script src="/hglib.min.js"></script>#' higlass-app/index.html
