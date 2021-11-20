@@ -59,7 +59,7 @@ RUN pip install pyBigWig
 # Version 0.10.1 does not build with Python 3.6 so we have to stick to 0.10.0
 RUN pip install cytoolz==0.10.0
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
-RUN wget https://raw.githubusercontent.com/higlass/higlass-server/master/requirements.txt
+RUN wget https://raw.githubusercontent.com/higlass/higlass-server/v<SERVER_VERSION>/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install clodius==<CLODIUS_VERSION>
 RUN pip install pybbi==<PYBBI_VERSION>
