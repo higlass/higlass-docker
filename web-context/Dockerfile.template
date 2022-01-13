@@ -1,8 +1,10 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # NOTE: Versions have been pinned everywhere. These are the latest versions at the moment, because
 # I want to ensure predictable behavior, but I don't know of any problems with higher versions:
 # It would be good to update these over time.
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 # "pip install clodius" complained about missing gcc,
 # and "apt-get install gcc" failed and suggested apt-get update.
@@ -16,6 +18,7 @@ RUN apt-get update && apt-get install -y \
         vim \
         build-essential \
         libpng-dev \
+        libjpeg-dev \
         libssl-dev \
         fuse \
         nginx \
@@ -57,7 +60,7 @@ USER higlass
 USER root
 RUN pip install pyBigWig
 # Version 0.10.1 does not build with Python 3.6 so we have to stick to 0.10.0
-RUN pip install cytoolz==0.10.0
+RUN pip install cytoolz==0.10.1
 # This is *not* tagged: The idea here is *not* to bust the cache on every minor version.
 RUN wget https://raw.githubusercontent.com/higlass/higlass-server/v<SERVER_VERSION>/requirements.txt
 RUN pip install -r requirements.txt

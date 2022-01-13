@@ -76,6 +76,7 @@ REPO=higlass/higlass-docker
 docker pull $REPO # Defaults to "latest", but just speeds up the build, so precise version doesn't matter.
 # docker build --cache-from image-$STAMP \
 docker build --build-arg WORKERS=$WORKERS \
+           	 --platform linux/amd64 \
              --tag image-$STAMP \
              --tag ${REPO}:$DOCKER_VERSION \
              --tag ${REPO}:latest \
