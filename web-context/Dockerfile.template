@@ -66,6 +66,7 @@ RUN wget https://raw.githubusercontent.com/higlass/higlass-server/v<SERVER_VERSI
 RUN pip install -r requirements.txt
 RUN pip install clodius==<CLODIUS_VERSION>
 RUN pip install pybbi==<PYBBI_VERSION>
+RUN pip install numpy==1.22.1
 
 WORKDIR /home/higlass/projects
 RUN chown higlass:higlass .

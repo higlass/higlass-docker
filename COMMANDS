@@ -8,3 +8,12 @@ docker tag image-default pkerpedjiev/higlass-develop
 docker push pkerpedjiev/higlass-develop
 docker tag image-default pkerpedjiev/higlass-develop:latest
 docker push pkerpedjiev/higlass-develop:latest
+
+docker run --detach \
+           --publish 8888:80 \
+           --volume ~/hg-data:/data \
+           --volume ~/hg-tmp:/tmp \
+           --name higlass-container \
+           higlass/higlass-docker
+
+bash -c "mkdir -p /data/log && python manage.py migrate && python manage.py loaddata default-viewconf-fixture.xml; uwsgi --ini /home/higlass/projects/uwsgi.ini --socket :8001 --plugins python --module higlass_server.wsgi --workers 2"
