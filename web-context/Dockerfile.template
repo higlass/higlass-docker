@@ -44,7 +44,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash \
 RUN ln -s /usr/bin/python3 /usr/local/bin/python \
     && pip3 install --upgrade pip
 
-RUN pip install cython numpy pysam uwsgi
+RUN pip install cython numpy pysam uwsgi scipy
 
 # Setup home directory
 RUN groupadd -r higlass && useradd -r -g higlass higlass
